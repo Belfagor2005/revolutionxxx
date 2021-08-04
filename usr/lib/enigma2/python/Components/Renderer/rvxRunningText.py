@@ -36,7 +36,7 @@ from enigma import eWidget, eLabel, eTimer, ePoint, eSize, gFont, \
 from Components.Renderer.Renderer import Renderer
 from skin import parseColor, parseFont
 
-import Plugins.Extensions.revolution.owibranding as xowibranding
+import Plugins.Extensions.revolutionx.owibranding as xowibranding
 
 
 # scroll type:

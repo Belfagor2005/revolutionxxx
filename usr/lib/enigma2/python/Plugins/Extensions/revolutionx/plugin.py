@@ -65,23 +65,25 @@ import hashlib
 import random
 import six
 from os.path import splitext
-from sys import version_info
-PY3 = sys.version_info.major >= 3
-print('Py3: ',PY3)
+# from sys import version_info
+# PY3 = sys.version_info.major >= 3
+if six.PY3:
+    print('six.PY3: True ')
 plugin_path = os.path.dirname(sys.modules[__name__].__file__)
 global skin_path, revol, pngs, pngl, pngx, eDreamOS, file_json, nextmodule, search, pngori
-if PY3:
-    from urllib.request import urlopen, Request
-    from urllib.error import URLError, HTTPError
-    from urllib.parse import urlencode, quote
-else:
-    from urllib2 import urlopen, Request, URLError, HTTPError
-    from urllib import urlencode, quote
+    
+from six.moves.urllib.request import urlopen
+from six.moves.urllib.request import Request
+from six.moves.urllib.parse import urlparse
+from six.moves.urllib.parse import quote
+from six.moves.urllib.parse import quote_plus
+from six.moves.urllib.parse import urlencode
+from six.moves.urllib.error import HTTPError
+from six.moves.urllib.error import URLError
+from six.moves.urllib.request import urlretrieve    
+
 search = False
-try:
-    from urllib.parse import urlparse
-except ImportError:
-     from urlparse import urlparse
+
 try:
     from Plugins.Extensions.SubsSupport import SubsSupport, initSubsSettings
     from Plugins.Extensions.revolutionx.resolver.Utils2 import *
@@ -123,7 +125,8 @@ except:
     eDreamOS = False
 
 def checkStr(txt):
-    if PY3:
+    # if PY3:
+    if six.PY3:
         if isinstance(txt, type(bytes())):
             txt = txt.decode('utf-8')
     else:
@@ -152,10 +155,10 @@ except:
     sslverify = False
 
 if sslverify:
-    try:
-        from urlparse import urlparse
-    except:
-        from urllib.parse import urlparse
+    # try:
+        # from urlparse import urlparse
+    # except:
+        # from urllib.parse import urlparse
     class SNIFactory(ssl.ClientContextFactory):
         def __init__(self, hostname=None):
             self.hostname = hostname
@@ -324,7 +327,6 @@ PanelMain = [
  ('XXXX')]
 
 class Revolmain(Screen):
-
     def __init__(self, session):
         self.session = session
         skin = skin_path + 'revall.xml'
@@ -434,7 +436,6 @@ class Revolmain(Screen):
             nextmodule = 'xxxx'
             # self.session.open(live_stream, name, url, pic, nextmodule)
             self.adultonly()            
-
         else:
             self.mbox = self.session.open(MessageBox, _('Otherwise Use my Plugin Freearhey'), MessageBox.TYPE_INFO, timeout=4)
 
@@ -623,7 +624,6 @@ class live_stream(Screen):
                 nextmodule = 'Videos3'        
             if nextmodule == 'Videos3':
                 nextmodule = 'Videos1'
-                
             print('=====================')
             print(nextmodule)
             print('=====================')
@@ -642,38 +642,16 @@ class live_stream(Screen):
             print('png: ', pic)
             print('info: ', info)
             print('nextmodule live_stream is: ', nextmodule)
-            # if 'Search' in str(name):
-                # search = True
-                # from Screens.VirtualKeyBoard import VirtualKeyBoard
-                # print('Search go movie: ', search)
-                # self.search_text(name, url, pic)
-            if nextmodule == 'Videos1': #work
-                self.session.open(nextvideo1, name, url, pic, nextmodule)
-            if nextmodule == 'Videos2':
-                print('Videos2 play next: ', nextmodule)
-                self.session.open(video2, name, url, pic, nextmodule)
-            if nextmodule == 'Video3': #work
-                self.session.open(video3, name, url, pic, info, nextmodule)               
-            if nextmodule == 'Player': #work
-                self.session.open(Playstream1, name, url, info)                    
+            if nextmodule == 'Videos1':
+                self.session.open(video1, name, url, pic, nextmodule)
+            # if nextmodule == 'Videos2':
+                # print('Videos2 play next: ', nextmodule)
+                # self.session.open(video2, name, url, pic, nextmodule)
+            # if nextmodule == 'Videos3': #work
+                # self.session.open(video3, name, url, pic, info, nextmodule)               
+            # if nextmodule == 'Player': #work
+                # self.session.open(Playstream1, name, url, info)                    
                     
-    # def search_text(self, name, url, pic):
-        # self.namex = name
-        # self.urlx=url
-        # self.picx = pic
-        # self.session.openWithCallback(self.filterChannels, VirtualKeyBoard, title=_("Filter this category..."), text='')
-
-    # def filterChannels(self, result):
-        # if result:
-            # global search
-            # search = False
-            # pic = self.picx
-            # name = str(result) #self.namex
-            # url = self.urlx + str(result)
-            # if nextmodule == 'Videos4':
-                # search = True
-                # self.session.open(nextvideo4, name, url, pic, nextmodule)
-
     def __layoutFinished(self):
         self.setTitle(self.setup_title)
         self['info'].setText('Select')
@@ -707,7 +685,6 @@ class live_stream(Screen):
 
         print('cancel movie nextmodule ', nextmodule)
         self.close(None)
-        
 
     def up(self):
         idx = self["text"].getSelectionIndex()
@@ -756,7 +733,8 @@ class live_stream(Screen):
                     parsed_uri = urlparse(pixmaps)
                     domain = parsed_uri.hostname
                     sniFactory = SNIFactory(domain)
-                    if PY3 == 3:
+                    # if PY3 == 3:
+                    if six.PY3:
                         pixmaps = pixmaps.encode()
                     print('uurrll: ', pixmaps)
                     downloadPage(pixmaps, tmp_image, sniFactory, timeout=5).addCallback(self.downloadPic, tmp_image).addErrback(self.downloadError)
@@ -812,7 +790,7 @@ class live_stream(Screen):
                 print('no cover.. error')
             return
 
-class nextvideo1(Screen):
+class video1(Screen):
     def __init__(self, session, name, url, pic, nextmodule):
         self.session = session
         skin = skin_path + 'revall.xml'
@@ -921,7 +899,7 @@ class nextvideo1(Screen):
         # self.idx == str(idx)        
         content = make_request(self.url)
         # content = six.ensure_str(content)
-        # print("content nextvideo1 =", content)
+        # print("content video1 =", content)
         y = json.loads(content)
         folder_path = "/tmp/tivustream/"
         if not os.path.exists(folder_path):
@@ -935,10 +913,10 @@ class nextvideo1(Screen):
         x = self.name.split("_")
         n = int(x[0])            
         try:        
-            print('In nextvideo1 y["channels"] =', y["channels"])
-            # print('In nextvideo1 n y["channels"][0] =', y["channels"][n]["items"])
-            # print('In nextvideo1 y["channels"][0]["name"]=', y["channels"][0]["name"])
-            # print('In nextvideo1 y["channels"][self.idx]["items"]["title"]=', y["channels"][self.idx]["items"]["title"])
+            print('In video1 y["channels"] =', y["channels"])
+            # print('In video1 n y["channels"][0] =', y["channels"][n]["items"])
+            # print('In video1 y["channels"][0]["name"]=', y["channels"][0]["name"])
+            # print('In video1 y["channels"][self.idx]["items"]["title"]=', y["channels"][self.idx]["items"]["title"])
         except Exception as e:
             print(e)
         is_enabled = True   
@@ -979,10 +957,9 @@ class nextvideo1(Screen):
         except:
            return   
 
-
     def okRun(self):
         idx = self["text"].getSelectionIndex()
-        print('nextvideo1 idx: ', idx)
+        print('video1 idx: ', idx)
         if idx is not None or idx != -1:
             name = self.names[idx]
             url = self.urls[idx]
@@ -1038,7 +1015,8 @@ class nextvideo1(Screen):
                     parsed_uri = urlparse(pixmaps)
                     domain = parsed_uri.hostname
                     sniFactory = SNIFactory(domain)
-                    if PY3 == 3:
+                    # if PY3 == 3:
+                    if six.PY3:
                         pixmaps = pixmaps.encode()
                     print('uurrll: ', pixmaps)
                     downloadPage(pixmaps, tmp_image, sniFactory, timeout=5).addCallback(self.downloadPic, tmp_image).addErrback(self.downloadError)
@@ -1274,7 +1252,8 @@ class video3(Screen):
                     parsed_uri = urlparse(pixmaps)
                     domain = parsed_uri.hostname
                     sniFactory = SNIFactory(domain)
-                    if PY3 == 3:
+                    # if PY3 == 3:
+                    if six.PY3:
                         pixmaps = pixmaps.encode()
                     print('uurrll: ', pixmaps)
                     downloadPage(pixmaps, tmp_image, sniFactory, timeout=5).addCallback(self.downloadPic, tmp_image).addErrback(self.downloadError)
@@ -1657,7 +1636,6 @@ class Playstream1(Screen):
         self.session.nav.playService(srefInit)
         self.close()
 
-
 class TvInfoBarShowHide():
     """ InfoBar show/hide control, accepts toggleShow and hide actions, might start
     fancy animations. """
@@ -1987,7 +1965,6 @@ class plgnstrt(Screen):
         self.onFirstExecBegin.append(self.loadDefaultImage)
         self.onLayoutFinish.append(self.checkDwnld)
 
-
     def decodeImage(self, pngori):
         pixmaps = pngori
         if eDreamOS:
@@ -2157,7 +2134,8 @@ def checks():
 
 def main(session, **kwargs):
     if checks:
-        if PY3:
+        # if PY3:
+        if six.PY3:
             session.open(Revolmain)
         elif eDreamOS:
             session.open(Revolmain)

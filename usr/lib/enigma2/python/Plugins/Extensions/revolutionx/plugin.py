@@ -651,17 +651,11 @@ class live_stream(Screen):
 
     def okRun(self):
         idx = self["text"].getSelectionIndex()
-        # print('idx: ', idx)
         if idx is not None or idx != -1:
             name = self.names[idx]
             url = self.urls[idx]
             pic = self.pics[idx]
             info = self.infos[idx]
-            # print('name: ', name)
-            # print('url: ', url)
-            # print('png: ', pic)
-            # print('info: ', info)
-            # print('nextmodule live_stream is: ', nextmodule)
             if nextmodule == 'Videos1':
                 self.session.open(video1, name, url, pic, info, nextmodule)
                     

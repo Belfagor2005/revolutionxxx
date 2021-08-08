@@ -77,7 +77,7 @@ from six.moves.urllib.parse import quote_plus
 from six.moves.urllib.parse import urlencode
 from six.moves.urllib.error import HTTPError
 from six.moves.urllib.error import URLError
-from six.moves.urllib.request import urlretrieve    
+from six.moves.urllib.request import urlretrieve
 
 search = False
 
@@ -275,7 +275,7 @@ REGEX = re.compile(
 		r'\.\s\d{1,3}\s(ч|ч\.|с\.|с)\s.+|'
 		r'\s(ч|ч\.|с\.|с)\s\d{1,3}.+|'
 		r'\d{1,3}(-я|-й|\sс-н).+|', re.DOTALL)
-        
+
 class rvList(MenuList):
     def __init__(self, list):
         MenuList.__init__(self, list, False, eListboxPythonMultiContent)
@@ -305,7 +305,7 @@ def rvListEntry(name, idx):
             res.append(MultiContentEntryPixmapAlphaTest(pos =(10, 6), size=(34, 25), png =loadPNG(pngs)))
             res.append(MultiContentEntryText(pos=(60, 0), size =(1000, 50), font =2, text =name, color = 0xa6d1fe, flags =RT_HALIGN_LEFT))
         return res
-        
+
 def getExternalJson(strPath):
     strSource = make_request(strPath)
     jsonToItems(strSource)
@@ -317,7 +317,7 @@ def jsonToItems(strJson):
         if nvs :
             vS = dataJson['groups'][0]["stations"][0]["url"]
             if not vS.startswith("http"):
-                pass 
+                pass
             return getExternalJson(vS)
     except:
         pass
@@ -451,13 +451,13 @@ class Revolmain(Screen):
         if sel == ('XXXX'):
             if str(config.plugins.revolutionx.code.value) != str(pin):
                 self.mbox = self.session.open(MessageBox, _('You are not allowed!'), MessageBox.TYPE_INFO, timeout=8)
-                return   
+                return
             else:
                 self.name = 'XXXX'
-                self.url = 'https://tivustream.website/php_filter/kodi19/xxxJob.php?utKodi=TVSXXX' 
+                self.url = 'https://tivustream.website/php_filter/kodi19/xxxJob.php?utKodi=TVSXXX'
                 self.pic = piconlive
                 nextmodule = 'xxxx'
-                self.adultonly()            
+                self.adultonly()
         else:
             self.mbox = self.session.open(MessageBox, _('Otherwise Use my Plugin Freearhey'), MessageBox.TYPE_INFO, timeout=4)
 
@@ -639,9 +639,9 @@ class live_stream(Screen):
                 i = i+1
             except:
                 break
-            nextmodule = "Videos1"       
+            nextmodule = "Videos1"
             if nextmodule == 'Player':
-                nextmodule = 'Videos3'        
+                nextmodule = 'Videos3'
             if nextmodule == 'Videos3':
                 nextmodule = 'Videos1'
             print('=====================')
@@ -658,7 +658,7 @@ class live_stream(Screen):
             info = self.infos[idx]
             if nextmodule == 'Videos1':
                 self.session.open(video1, name, url, pic, info, nextmodule)
-                    
+
     def __layoutFinished(self):
         self.setTitle(self.setup_title)
         self['info'].setText('Select')
@@ -682,13 +682,13 @@ class live_stream(Screen):
     def cancel(self):
         global nextmodule
         if nextmodule == 'Videos1':
-            nextmodule = 'xxxx'  
-            
+            nextmodule = 'xxxx'
+
         if nextmodule == 'Videos3':
-            nextmodule = 'Videos1' 
-            
+            nextmodule = 'Videos1'
+
         if nextmodule == 'Player':
-            nextmodule = 'Videos3'        
+            nextmodule = 'Videos3'
 
         print('cancel movie nextmodule ', nextmodule)
         self.close(None)
@@ -836,7 +836,7 @@ class video1(Screen):
         # print('self.name: ', self.name)
         # print('self.url: ', self.url)
         # print('self.pic: ', self.pic)
-        # print('self.info: ', self.info)        
+        # print('self.info: ', self.info)
         self.downloading = False
         self.currentList = 'text'
         self['title'] = Label(name)
@@ -917,15 +917,15 @@ class video1(Screen):
         with open('/tmp/tivustream/channels') as json_file:
             y = json.load(json_file)
         x = self.name.split("_")
-        n = int(x[0])            
-        try:        
+        n = int(x[0])
+        try:
             print('In video1 y["channels"] =', y["channels"])
             # print('In video1 n y["channels"][0] =', y["channels"][n]["items"])
             # print('In video1 y["channels"][0]["name"]=', y["channels"][0]["name"])
             # print('In video1 y["channels"][self.idx]["items"]["title"]=', y["channels"][self.idx]["items"]["title"])
         except Exception as e:
             print(e)
-        is_enabled = True   
+        is_enabled = True
         title = "NO TIT"
         thumb = "https://www.andreisfina.it/wp-content/uploads/2018/12/no_image.jpg"
         fanart = "https://www.andreisfina.it/wp-content/uploads/2018/12/no_image.jpg"
@@ -957,9 +957,9 @@ class video1(Screen):
                 self.pics.append(checkStr(pic))
                 self.infos.append(checkStr(info))
             nextmodule = "Videos3"
-            showlist(self.names, self['text'])  
+            showlist(self.names, self['text'])
         except:
-           return   
+           return
 
     def okRun(self):
         idx = self["text"].getSelectionIndex()
@@ -976,7 +976,7 @@ class video1(Screen):
             nextmodule = 'Videos1'
         print('cancel movie nextmodule ', nextmodule)
         self.close(None)
-        
+
     def up(self):
         self[self.currentList].up()
         self.load_infos()
@@ -1115,7 +1115,7 @@ class video3(Screen):
         print('self.name: ', self.name)
         print('self.url: ', self.url)
         print('self.pic: ', self.pic)
-        print('self.info: ', self.info)        
+        print('self.info: ', self.info)
         self.downloading = False
         self.currentList = 'text'
         self['title'] = Label(name)
@@ -1188,7 +1188,7 @@ class video3(Screen):
         self.names.append(name)
         self.urls.append(url)
         self.pics.append(pic)
-        self.infos.append(info)        
+        self.infos.append(info)
         showlist(self.names, self['text'])
 
     def okRun(self):
@@ -1203,7 +1203,7 @@ class video3(Screen):
             # print('name: ', name)
             # print('url: ', url)
             # print('png: ', pic)
-            # print('info: ', info) 
+            # print('info: ', info)
             print('Videos3 nextmodule - is: ', nextmodule)
             self.session.open(Playstream1, name, url, info)
         return
@@ -1376,7 +1376,7 @@ class myconfig(Screen, ConfigListScreen):
         self.list.append(getConfigListEntry(_("Set the path to the Cache folder"), config.plugins.revolutionx.cachefold, _("Press Ok to select the folder containing the picons files")))
         self.list.append(getConfigListEntry(_('Services Player Reference type'), config.plugins.revolutionx.services, _("Configure Service Player Reference")))
         self.list.append(getConfigListEntry(_('Personal Password'), config.plugins.revolutionx.code, _("Set Password - ask by email to tivustream@gmail.com")))
-        
+
         self["config"].list = self.list
         self["config"].setList(self.list)
         # self.setInfo()
@@ -1907,7 +1907,11 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         if "youtube" in str(self.url):
             self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
             return
-
+        # if "youtube" in str(self.url):
+            # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
+            # return
+        if os.path.exists("/usr/sbin/streamlinksrv"):
+            streamtypelist.append("5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/") #ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
         if os.path.exists("/usr/bin/gstplayer"):
             streamtypelist.append("5001")
         if os.path.exists("/usr/bin/exteplayer3"):

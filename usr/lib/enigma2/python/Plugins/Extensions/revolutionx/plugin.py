@@ -1741,11 +1741,12 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
     screen_timeout = 5000
 
     def __init__(self, session, name, url, info):
-        global SREF
+        global SREF, streaml
         Screen.__init__(self, session)
         self.session = session #edit
         self.skinName = 'MoviePlayer'
         title = name
+        streaml = False
         # self['list'] = MenuList([])
         InfoBarMenu.__init__(self)
         InfoBarNotifications.__init__(self)
@@ -1880,7 +1881,6 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         ref = str(url)
         ref = ref.replace(':', '%3a')
         ref = ref.replace(' ','%20')
-
         print('final reference:   ', ref)
         sref = eServiceReference(ref)
         sref.setName(self.name)
@@ -1890,7 +1890,9 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
     def openPlay(self, servicetype, url):
         url = url.replace(':', '%3a')
         url = url.replace(' ','%20')
-        ref = str(servicetype) +':0:1:0:0:0:0:0:0:0:' + str(url)
+        ref = str(servicetype) + ':0:1:0:0:0:0:0:0:0:' + str(url)
+        if streaml == True:
+            ref = str(servicetype) + ':0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + str(url)        
         print('final reference:   ', ref)
         sref = eServiceReference(ref)
         sref.setName(self.name)
@@ -1898,20 +1900,20 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         self.session.nav.playService(sref)
 
     def cicleStreamType(self):
+        global streml
+        streaml = False
         from itertools import cycle, islice
-        self.servicetype = str(config.plugins.revolutionx.services.value) #  '4097'
+        self.servicetype = str(config.plugins.revolutionx.services.value) +':0:1:0:0:0:0:0:0:0:'#  '4097'
         print('servicetype1: ', self.servicetype)
         url = str(self.url)
         currentindex = 0
         streamtypelist = ["4097"]
-        if "youtube" in str(self.url):
-            self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
-            return
         # if "youtube" in str(self.url):
             # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
             # return
         if os.path.exists("/usr/sbin/streamlinksrv"):
-            streamtypelist.append("5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/") #ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
+            streamtypelist.append("5002") #ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
+            streaml = True
         if os.path.exists("/usr/bin/gstplayer"):
             streamtypelist.append("5001")
         if os.path.exists("/usr/bin/exteplayer3"):
@@ -1923,7 +1925,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
                 currentindex = index
                 break
         nextStreamType = islice(cycle(streamtypelist), currentindex + 1, None)
-        self.servicetype = int(next(nextStreamType))
+        self.servicetype = str(next(nextStreamType))
         print('servicetype2: ', self.servicetype)
         self.openPlay(self.servicetype, url)
 
@@ -1940,6 +1942,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
                 self.setAspect(self.init_aspect)
             except:
                 pass
+        streaml = False
         self.close()
 
     def leavePlayer(self):

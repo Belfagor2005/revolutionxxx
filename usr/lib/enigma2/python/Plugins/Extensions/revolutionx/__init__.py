@@ -34,5 +34,5 @@ else:
         else:
             print(("[%s] fallback to default translation for %s" % (PluginLanguageDomain, txt)))
             return gettext.gettext(txt)
-    language.addCallback(localeInit())
+    language.addCallback(localeInit)
 

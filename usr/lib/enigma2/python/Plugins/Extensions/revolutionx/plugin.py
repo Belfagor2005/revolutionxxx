@@ -124,6 +124,7 @@ try:
     from urlparse import urlparse
 except:
     from urllib.parse import urlparse
+
 def checkStr(txt):
     if six.PY3:
         if isinstance(txt, type(bytes())):
@@ -489,6 +490,7 @@ class Revolmain(Screen):
         self[self.currentList].pageDown()
         self.load_poster()
 
+
     def load_poster(self):
         sel = self['text'].getSelectedIndex()
         if sel is not None or sel != -1:
@@ -496,13 +498,16 @@ class Revolmain(Screen):
                 pixmaps = piconlive
             else:
                 pixmaps = piconinter
-            if eDreamOS:
+            size = self['poster'].instance.size()              
+            # size = self.instance.size()
+            sc = AVSwitch().getFramebufferScale()            
+            self.picload = ePicLoad()
+
+            if os.path.exists('/var/lib/dpkg/status'):
                 self['poster'].instance.setPixmap(gPixmapPtr())
             else:
                 self['poster'].instance.setPixmap(None)
-            sc = AVSwitch().getFramebufferScale()
-            self.picload = ePicLoad()
-            size = self['poster'].instance.size()
+  
             self.picload.setPara((size.width(),
              size.height(),
              sc[0],
@@ -510,19 +515,16 @@ class Revolmain(Screen):
              False,
              1,
              '#FF000000'))
-            ptr = self.picload.getData()
-            if eDreamOS:
-                if self.picload.startDecode(pixmaps, False) == 0:
-                    ptr = self.picload.getData()
+            if os.path.exists('/var/lib/dpkg/status'):
+                self.picload.startDecode(pixmaps, False)
             else:
-                if self.picload.startDecode(pixmaps, 0, 0, False) == 0:
-                    ptr = self.picload.getData()
-            if ptr != None:
+                self.picload.startDecode(pixmaps, 0, 0, False)
+            ptr = self.picload.getData()
+            if ptr is not None:
                 self['poster'].instance.setPixmap(ptr)
                 self['poster'].show()
             else:
                 print('no cover.. error')
-            return
 
 #Videos1
 class live_stream(Screen):
@@ -752,6 +754,9 @@ class live_stream(Screen):
                 print("Error: can't find file or read data")
             return
 
+
+
+
     def downloadError(self, raw):
         try:
             if fileExists(tmp_image):
@@ -769,13 +774,16 @@ class live_stream(Screen):
     def poster_resize(self, png):
             self["poster"].show()
             pixmaps = png
-            if eDreamOS:
+            size = self['poster'].instance.size()              
+            # size = self.instance.size()
+            self.picload = ePicLoad()
+            sc = AVSwitch().getFramebufferScale()
+
+            if os.path.exists('/var/lib/dpkg/status'):
                 self['poster'].instance.setPixmap(gPixmapPtr())
             else:
                 self['poster'].instance.setPixmap(None)
-            sc = AVSwitch().getFramebufferScale()
-            self.picload = ePicLoad()
-            size = self['poster'].instance.size()
+  
             self.picload.setPara((size.width(),
              size.height(),
              sc[0],
@@ -783,19 +791,17 @@ class live_stream(Screen):
              False,
              1,
              '#FF000000'))
-            ptr = self.picload.getData()
-            if eDreamOS:
-                if self.picload.startDecode(pixmaps, False) == 0:
-                    ptr = self.picload.getData()
+            if os.path.exists('/var/lib/dpkg/status'):
+                self.picload.startDecode(pixmaps, False)
             else:
-                if self.picload.startDecode(pixmaps, 0, 0, False) == 0:
-                    ptr = self.picload.getData()
-            if ptr != None:
+                self.picload.startDecode(pixmaps, 0, 0, False)
+            ptr = self.picload.getData()
+            if ptr is not None:
                 self['poster'].instance.setPixmap(ptr)
                 self['poster'].show()
             else:
                 print('no cover.. error')
-            return
+
 
 class video1(Screen):
     def __init__(self, session, name, url, pic, info, nextmodule):
@@ -1048,13 +1054,16 @@ class video1(Screen):
     def poster_resize(self, png):
             self["poster"].show()
             pixmaps = png
-            if eDreamOS:
+            size = self['poster'].instance.size()              
+            # size = self.instance.size()
+            self.picload = ePicLoad()
+            sc = AVSwitch().getFramebufferScale()
+
+            if os.path.exists('/var/lib/dpkg/status'):
                 self['poster'].instance.setPixmap(gPixmapPtr())
             else:
                 self['poster'].instance.setPixmap(None)
-            sc = AVSwitch().getFramebufferScale()
-            self.picload = ePicLoad()
-            size = self['poster'].instance.size()
+  
             self.picload.setPara((size.width(),
              size.height(),
              sc[0],
@@ -1062,19 +1071,17 @@ class video1(Screen):
              False,
              1,
              '#FF000000'))
-            ptr = self.picload.getData()
-            if eDreamOS:
-                if self.picload.startDecode(pixmaps, False) == 0:
-                    ptr = self.picload.getData()
+            if os.path.exists('/var/lib/dpkg/status'):
+                self.picload.startDecode(pixmaps, False)
             else:
-                if self.picload.startDecode(pixmaps, 0, 0, False) == 0:
-                    ptr = self.picload.getData()
-            if ptr != None:
+                self.picload.startDecode(pixmaps, 0, 0, False)
+            ptr = self.picload.getData()
+            if ptr is not None:
                 self['poster'].instance.setPixmap(ptr)
                 self['poster'].show()
             else:
                 print('no cover.. error')
-            return
+
 
 class video3(Screen):
     def __init__(self, session, name, url, pic, info, nextmodule):
@@ -1286,13 +1293,16 @@ class video3(Screen):
     def poster_resize(self, png):
             self["poster"].show()
             pixmaps = png
-            if eDreamOS:
+            size = self['poster'].instance.size()              
+            # size = self.instance.size()
+            self.picload = ePicLoad()
+            sc = AVSwitch().getFramebufferScale()
+
+            if os.path.exists('/var/lib/dpkg/status'):
                 self['poster'].instance.setPixmap(gPixmapPtr())
             else:
                 self['poster'].instance.setPixmap(None)
-            sc = AVSwitch().getFramebufferScale()
-            self.picload = ePicLoad()
-            size = self['poster'].instance.size()
+  
             self.picload.setPara((size.width(),
              size.height(),
              sc[0],
@@ -1300,19 +1310,17 @@ class video3(Screen):
              False,
              1,
              '#FF000000'))
-            ptr = self.picload.getData()
-            if eDreamOS:
-                if self.picload.startDecode(pixmaps, False) == 0:
-                    ptr = self.picload.getData()
+            if os.path.exists('/var/lib/dpkg/status'):
+                self.picload.startDecode(pixmaps, False)
             else:
-                if self.picload.startDecode(pixmaps, 0, 0, False) == 0:
-                    ptr = self.picload.getData()
-            if ptr != None:
+                self.picload.startDecode(pixmaps, 0, 0, False)
+            ptr = self.picload.getData()
+            if ptr is not None:
                 self['poster'].instance.setPixmap(ptr)
                 self['poster'].show()
             else:
                 print('no cover.. error')
-            return
+
 
 class myconfig(Screen, ConfigListScreen):
     def __init__(self, session):

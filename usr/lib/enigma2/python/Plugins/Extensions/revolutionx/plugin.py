@@ -5,7 +5,7 @@ Info http://t.me/tivustream
 ****************************************
 *        coded by Lululla              *
 *                                      *
-*             08/08/2021               *
+*             27/09/2021               *
 ****************************************
 '''
 from __future__ import print_function
@@ -101,7 +101,7 @@ def logdata(name = '', data = None):
         pass
 
 def getversioninfo():
-    currversion = '1.0'
+    currversion = '1.1'
     version_file = plugin_path + '/version'
     if os.path.exists(version_file):
         try:
@@ -754,13 +754,6 @@ class live_stream(Screen):
             print(ex)
             print('exe downloadError')
 
-    def downloadPic(self, data, pictmp):
-        if fileExists(pictmp):
-            self.poster_resize(pictmp)
-        else:
-            print('logo not found')
-
-
     def poster_resize(self, png):
         self["poster"].hide()
         if os.path.exists(png):
@@ -1029,13 +1022,6 @@ class video1(Screen):
             print(ex)
             print('exe downloadError')
 
-    def downloadPic(self, data, pictmp):
-        if fileExists(pictmp):
-            self.poster_resize(pictmp)
-        else:
-            print('logo not found')
-
-
     def poster_resize(self, png):
         self["poster"].hide()
         if os.path.exists(png):
@@ -1253,6 +1239,7 @@ class video3(Screen):
                 pass
             except:
                 pass
+
     def downloadError(self, png):
         try:
             if fileExists(png):
@@ -1261,12 +1248,6 @@ class video3(Screen):
             self.poster_resize(no_cover)
             print(ex)
             print('exe downloadError')
-
-    def downloadPic(self, data, pictmp):
-        if fileExists(pictmp):
-            self.poster_resize(pictmp)
-        else:
-            print('logo not found')
 
     def poster_resize(self, png):
         self["poster"].hide()

@@ -80,7 +80,7 @@ from six.moves.urllib.error import URLError
 from six.moves.urllib.request import urlretrieve
 
 search = False
-
+_session = None
 try:
     from Plugins.Extensions.SubsSupport import SubsSupport, initSubsSettings
     from Plugins.Extensions.revolutionx.resolver.Utils2 import *
@@ -335,6 +335,8 @@ PanelMain = [
 class Revolmain(Screen):
     def __init__(self, session):
         self.session = session
+        global _session
+        _session = session        
         skin = skin_path + 'revall.xml'
         with open(skin, 'r') as f:
             self.skin = f.read()
@@ -389,17 +391,20 @@ class Revolmain(Screen):
     def showIMDB(self):
         itype = idx
         name = self.names[itype]
-        if os.path.exists("/usr/lib/enigma2/python/Plugins/Extensions/TMBD"):
-            from Plugins.Extensions.TMBD.plugin import TMBD
-            text_clear = name
-            text = charRemove(text_clear)
-            self.session.open(TMBD, text, False)
-        elif os.path.exists("/usr/lib/enigma2/python/Plugins/Extensions/IMDb"):
-            from Plugins.Extensions.IMDb.plugin import IMDB
-            text_clear = name
-            text = charRemove(text_clear)
-            HHHHH = text
-            self.session.open(IMDB, HHHHH)
+        text_clear = name
+        if is_tmdb:
+            try:
+                text = charRemove(text_clear)
+                _session.open(tmdb.tmdbScreen, text, 0)
+            except Exception as e:
+                print("[XCF] Tmdb: ", e)
+        elif is_imdb:
+            try:
+                text = charRemove(text_clear)
+                imdb(_session, text)
+            except Exception as e:
+                print("[XCF] imdb: ", e) 
+
         else:
             inf = idx
             if inf and inf != '':
@@ -516,6 +521,8 @@ class Revolmain(Screen):
 class live_stream(Screen):
     def __init__(self, session, name, url, pic, nextmodule):
         self.session = session
+        global _session
+        _session = session        
         skin = skin_path + 'revall.xml'
         with open(skin, 'r') as f:
             self.skin = f.read()
@@ -572,17 +579,19 @@ class live_stream(Screen):
     def showIMDB(self):
         idx = self["text"].getSelectionIndex()
         name = self.names[idx]
-        if os.path.exists("/usr/lib/enigma2/python/Plugins/Extensions/TMBD"):
-            from Plugins.Extensions.TMBD.plugin import TMBD
-            text_clear = name
-            text = charRemove(text_clear)
-            self.session.open(TMBD, text, False)
-        elif os.path.exists("/usr/lib/enigma2/python/Plugins/Extensions/IMDb"):
-            from Plugins.Extensions.IMDb.plugin import IMDB
-            text_clear = name
-            text = charRemove(text_clear)
-            HHHHH = text
-            self.session.open(IMDB, HHHHH)
+        text_clear = name
+        if is_tmdb:
+            try:
+                text = charRemove(text_clear)
+                _session.open(tmdb.tmdbScreen, text, 0)
+            except Exception as e:
+                print("[XCF] Tmdb: ", e)
+        elif is_imdb:
+            try:
+                text = charRemove(text_clear)
+                imdb(_session, text)
+            except Exception as e:
+                print("[XCF] imdb: ", e) 
         else:
             inf = idx
             if inf and inf != '':
@@ -776,6 +785,8 @@ class live_stream(Screen):
 class video1(Screen):
     def __init__(self, session, name, url, pic, info, nextmodule):
         self.session = session
+        global _session
+        _session = session        
         skin = skin_path + 'revall.xml'
         with open(skin, 'r') as f:
             self.skin = f.read()
@@ -835,17 +846,19 @@ class video1(Screen):
     def showIMDB(self):
         idx = self["text"].getSelectionIndex()
         name = self.names[idx]
-        if os.path.exists("/usr/lib/enigma2/python/Plugins/Extensions/TMBD"):
-            from Plugins.Extensions.TMBD.plugin import TMBD
-            text_clear = name
-            text = charRemove(text_clear)
-            self.session.open(TMBD, text, False)
-        elif os.path.exists("/usr/lib/enigma2/python/Plugins/Extensions/IMDb"):
-            from Plugins.Extensions.IMDb.plugin import IMDB
-            text_clear = name
-            text = charRemove(text_clear)
-            HHHHH = text
-            self.session.open(IMDB, HHHHH)
+        text_clear = name
+        if is_tmdb:
+            try:
+                text = charRemove(text_clear)
+                _session.open(tmdb.tmdbScreen, text, 0)
+            except Exception as e:
+                print("[XCF] Tmdb: ", e)
+        elif is_imdb:
+            try:
+                text = charRemove(text_clear)
+                imdb(_session, text)
+            except Exception as e:
+                print("[XCF] imdb: ", e)         
         else:
             inf = idx
             if inf and inf != '':
@@ -1044,6 +1057,8 @@ class video1(Screen):
 class video3(Screen):
     def __init__(self, session, name, url, pic, info, nextmodule):
         self.session = session
+        global _session
+        _session = session        
         skin = skin_path + 'revall.xml'
         with open(skin, 'r') as f:
             self.skin = f.read()
@@ -1103,17 +1118,19 @@ class video3(Screen):
     def showIMDB(self):
         idx = self["text"].getSelectionIndex()
         name = self.names[idx]
-        if os.path.exists("/usr/lib/enigma2/python/Plugins/Extensions/TMBD"):
-            from Plugins.Extensions.TMBD.plugin import TMBD
-            text_clear = name
-            text = charRemove(text_clear)
-            self.session.open(TMBD, text, False)
-        elif os.path.exists("/usr/lib/enigma2/python/Plugins/Extensions/IMDb"):
-            from Plugins.Extensions.IMDb.plugin import IMDB
-            text_clear = name
-            text = charRemove(text_clear)
-            HHHHH = text
-            self.session.open(IMDB, HHHHH)
+        text_clear = name
+        if is_tmdb:
+            try:
+                text = charRemove(text_clear)
+                _session.open(tmdb.tmdbScreen, text, 0)
+            except Exception as e:
+                print("[XCF] Tmdb: ", e)
+        elif is_imdb:
+            try:
+                text = charRemove(text_clear)
+                imdb(_session, text)
+            except Exception as e:
+                print("[XCF] imdb: ", e)         
         else:
             inf = idx
             if inf and inf != '':
@@ -1278,6 +1295,8 @@ class myconfig(Screen, ConfigListScreen):
         self.setup_title = _("Config")
         self.onChangedEntry = []
         self.session = session
+        global _session
+        _session = session        
         self.setTitle(title_plug)
         self['description'] = Label('')
         info = ''
@@ -1445,6 +1464,8 @@ class Playstream1(Screen):
     def __init__(self, session, name, url, info):
         Screen.__init__(self, session)
         self.session = session
+        global _session
+        _session = session        
         skin = skin_path + 'Playstream1.xml'
         with open(skin, 'r') as f:
             self.skin = f.read()
@@ -1698,6 +1719,8 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         global SREF, streaml
         Screen.__init__(self, session)
         self.session = session
+        global _session
+        _session = session        
         self.skinName = 'MoviePlayer'
         title = name
         streaml = False
@@ -1812,16 +1835,19 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         return
 
     def showIMDB(self):
-        if os.path.exists("/usr/lib/enigma2/python/Plugins/Extensions/TMBD"):
-            from Plugins.Extensions.TMBD.plugin import TMBD
-            text_clear = self.name
-            text = charRemove(text_clear)
-            self.session.open(TMBD, text, False)
-        elif os.path.exists("/usr/lib/enigma2/python/Plugins/Extensions/IMDb"):
-            from Plugins.Extensions.IMDb.plugin import IMDB
-            text_clear = self.name
-            text = charRemove(text_clear)
-            self.session.open(IMDB, text)
+        text_clear = self.name
+        if is_tmdb:
+            try:
+                text = charRemove(text_clear)
+                _session.open(tmdb.tmdbScreen, text, 0)
+            except Exception as e:
+                print("[XCF] Tmdb: ", e)
+        elif is_imdb:
+            try:
+                text = charRemove(text_clear)
+                imdb(_session, text)
+            except Exception as e:
+                print("[XCF] imdb: ", e)     
         else:
             inf = self.info
             if inf and inf != '':

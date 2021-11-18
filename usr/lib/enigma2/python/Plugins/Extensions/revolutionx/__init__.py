@@ -2,14 +2,11 @@
 # -*- coding: utf-8 -*-
 from Components.Language import language
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS, SCOPE_LANGUAGE
-import gettext, base64
+import gettext 
 from os import environ as os_environ
-plugin_path = '/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/'
 PluginLanguageDomain = 'revolution'
 PluginLanguagePath = 'Extensions/revolution/res/locale'
-# UrlSvr = 'aHR0cDov+L3BhdGJ+1d2ViLmN+vbS9pcH+R2Lw=='
-# UrlSvr = UrlSvr.replace('+', '')
-# UrlLst = base64.b64decode(UrlSvr)
+
 try:
     from enigma import eMediaDatabase
     isDreamOS = True

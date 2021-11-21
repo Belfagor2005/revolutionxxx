@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#15.11.2021
+#19.11.2021
 #a common tips used from Lululla
 #
 import sys
@@ -41,7 +41,7 @@ def isHD():
     desktopSize = getDesktopSize()
     return desktopSize[0] >= 1280 and desktopSize[0] < 1920
 
-
+        
 def DreamOS():
     if os.path.exists('/var/lib/dpkg/status'):
         return DreamOS
@@ -271,10 +271,12 @@ def ConverDateBack(data):
     return year + month + day
 
 def isExtEplayer3Available():
-        return os.path.isfile(eEnv.resolve('$bindir/exteplayer3'))
+    from enigma import eEnv
+    return os.path.isfile(eEnv.resolve('$bindir/exteplayer3'))
 
 def isStreamlinkAvailable():
-        return os.path.isdir(eEnv.resolve('/usr/lib/python2.7/site-packages/streamlink'))
+    from enigma import eEnv
+    return os.path.isdir(eEnv.resolve('/usr/lib/python2.7/site-packages/streamlink'))
 
 # def Controlexteplayer():
     # exteplayer = False
@@ -661,3 +663,54 @@ def charRemove(text):
         myreplace = myreplace.replace(ch, "").replace("  ", " ").replace("   ", " ").strip()
     return myreplace
 
+#######################################    
+
+def addstreamboq(bouquetname=None):
+           boqfile="/etc/enigma2/bouquets.tv"
+           if not os.path.exists(boqfile):
+              pass
+           else:
+              fp=open(boqfile,"r")
+              lines=fp.readlines()
+              fp.close()
+              add=True
+              for line in lines:
+                 if "userbouquet."+bouquetname+".tv" in line :
+                    add=False
+                    break
+           if add==True:   
+              fp=open(boqfile,"a")                               
+              fp.write('#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "userbouquet.%s.tv" ORDER BY bouquet\n'% bouquetname) 
+              fp.close()
+              add=True
+
+def stream2bouquet(url=None,name=None,bouquetname=None):
+          error='none' 
+          bouquetname='XBMCAddons'                              
+          fileName ="/etc/enigma2/userbouquet.%s.tv" % bouquetname
+          out = '#SERVICE 4097:0:0:0:0:0:0:0:0:0:%s:%s\r\n' % (quote(url), quote(name))
+          #py3
+          #out = '#SERVICE 4097:0:0:0:0:0:0:0:0:0:%s:%s\r\n' % (urllib.parse.quote(url), urllib.parse.quote(name))
+          try:
+              addstreamboq(bouquetname)
+              if not os.path.exists(fileName):
+                 fp = open(fileName, 'w')
+                 fp.write("#NAME %s\n"%bouquetname) 
+                 fp.close()
+                 fp = open(fileName, 'a')                          
+                 fp.write(out)                 
+              else:
+                 fp=open(fileName,'r')
+                 lines=fp.readlines()
+                 fp.close()
+                 for line in lines:
+                     if out in line:
+                        error=(_('Stream already added to bouquet'))
+                        return error
+                 fp = open(fileName, 'a')                          
+                 fp.write(out)                 
+              fp.write("")
+              fp.close()              
+          except:
+             error=(_('Adding to bouquet failed'))
+          return error

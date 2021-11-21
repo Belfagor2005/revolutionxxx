@@ -205,7 +205,7 @@ if not os.path.exists(revol):
         print(('Error creating directory %s:\n%s') % (revol, str(e)))
 logdata("path picons: ", str(revol))
 
-if isFHD:
+if isFHD():
     skin_path = res_plugin_path + 'skins/fhd/'
 else:
     skin_path = res_plugin_path + 'skins/hd/'
@@ -248,7 +248,7 @@ class rvList(MenuList):
         self.l.setFont(7, gFont('Regular', 34))
         self.l.setFont(8, gFont('Regular', 36))
         self.l.setFont(9, gFont('Regular', 40))
-        if isFHD:
+        if isFHD():
             self.l.setItemHeight(50)
         else:
             self.l.setItemHeight(40)
@@ -257,7 +257,7 @@ def rvListEntry(name, idx):
     pngs = ico1_path
     res = [name]
     if fileExists(pngs):
-        if isFHD:
+        if isFHD():
             res.append(MultiContentEntryPixmapAlphaTest(pos =(10, 12), size =(34, 25), png =loadPNG(pngs)))
             res.append(MultiContentEntryText(pos=(60, 0), size =(1900, 50), font =7, text=name, color = 0xa6d1fe, flags =RT_HALIGN_LEFT | RT_VALIGN_CENTER))
         else:
@@ -268,7 +268,7 @@ def rvListEntry(name, idx):
 def rvoneListEntry(name):
     pngx = ico1_path
     res = [name]
-    if isFHD:
+    if isFHD():
         res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
         res.append(MultiContentEntryText(pos=(60, 0), size=(1900, 50), font=7, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:

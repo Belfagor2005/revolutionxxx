@@ -14,7 +14,7 @@ from Components.AVSwitch import AVSwitch
 from Components.ActionMap import ActionMap, NumberActionMap
 from Components.Button import Button
 from Components.ConfigList import ConfigListScreen
-from Components.HTMLComponent import *
+# from Components.HTMLComponent import *
 from Components.Input import Input
 from Components.Label import Label
 from Components.MenuList import MenuList
@@ -64,7 +64,7 @@ import hashlib
 import random
 import six
 from os.path import splitext
-from Plugins.Extensions.revolutionx.Utils import *
+from Plugins.Extensions.revolutionx.resolver.Utils import *
 if six.PY3:
     print('six.PY3: True ')
 plugin_path = os.path.dirname(sys.modules[__name__].__file__)
@@ -2019,13 +2019,11 @@ def checks():
 def main(session, **kwargs):
     if checks:
         try:
-            from Plugins.Extensions.revolutionx.Update import upd_done
+            from Plugins.Extensions.revolutionx.resolver.Update import upd_done
             upd_done()
         except:       
             pass    
-        if six.PY3:
-            session.open(Revolmain)
-        elif os.path.exists('/var/lib/dpkg/status'):
+        if os.path.exists('/var/lib/dpkg/status'):
             session.open(Revolmain)
         else:
             session.open(plgnstrt)

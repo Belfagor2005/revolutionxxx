@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#19.11.2021
+#25.11.2021
 #a common tips used from Lululla
 #
 import sys
@@ -126,7 +126,7 @@ def check(url):
         return False
     except socket.timeout:
         return False
-        
+
 def checkStr(txt):
     # convert variable to type str both in Python 2 and 3
     if PY3:
@@ -138,7 +138,7 @@ def checkStr(txt):
         if type(txt) == type(unicode()):
             txt = txt.encode('utf-8')
     return txt
-    
+
 # def checkStr(txt):
     #import six
     # if six.PY3:
@@ -170,6 +170,7 @@ def b64encoder(source):
 def b64decoder(source):
     if PY3:
         # source = source.decode('utf-8')
+        import base64
         source = base64.b64decode(source).decode('utf-8')
     content = source
     return content
@@ -195,7 +196,7 @@ try:
 	is_imdb = True
 except Exception:
 	is_imdb = False
-    
+
 
 def substr(data,start,end):
     i1 = data.find(start)
@@ -346,13 +347,13 @@ def isStreamlinkAvailable():
 # WHERE_CHANNEL_CONTEXT_MENU = 15
 
 #========================getUrl
-    
+
 # if sys.version_info >= (2, 7, 9):
     # try:
         # import ssl
         # sslContext = ssl._create_unverified_context()
     # except:
-        # sslContext = None    
+        # sslContext = None
 # def ssl_urlopen(url):
     # if sslContext:
         # return urlopen(url, context=sslContext)
@@ -422,21 +423,21 @@ def RequestAgent():
 	return RandomAgent
 
 def ReadUrl(url):
-    if sys.version_info.major == 3:    
-        import urllib.request as urllib2    
+    if sys.version_info.major == 3:
+        import urllib.request as urllib2
     elif sys.version_info.major == 2:
         import urllib2
 
     try:
-        import ssl        
-        CONTEXT = ssl.SSLContext(ssl.PROTOCOL_SSLv23) 
+        import ssl
+        CONTEXT = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
     except:
-        CONTEXT = None    
+        CONTEXT = None
 
-    TIMEOUT_URL = 15  
-    print(_("ReadUrl1:\n  url = %s") % url)                                              
-    try: 
-        req = urllib2.Request(url)                      
+    TIMEOUT_URL = 15
+    print(_("ReadUrl1:\n  url = %s") % url)
+    try:
+        req = urllib2.Request(url)
         req.add_header('User-Agent', RequestAgent())
         try:
           r = urllib2.urlopen(req,None,TIMEOUT_URL,context=CONTEXT)
@@ -444,7 +445,7 @@ def ReadUrl(url):
           r = urllib2.urlopen(req,None,TIMEOUT_URL)
           # CreateLog(_("ReadUrl1 - Errore: %s") % e)
         link = r.read()
-        r.close()      
+        r.close()
 
         dec = "Null"
         dcod = 0
@@ -455,14 +456,14 @@ def ReadUrl(url):
                 dec = "utf-8"
             except Exception as e:
                 dcod = 1
-                print("ReadUrl2 - Errore: %s." % e)                  
+                print("ReadUrl2 - Errore: %s." % e)
             if dcod == 1:
                 dcod = 0
                 try:
                     tlink = link.decode("cp437")
                     dec = "cp437"
                 except Exception as e:
-                    dcod = 1 
+                    dcod = 1
                     print("ReadUrl3 - Errore: %s." % e)
             if dcod == 1:
                 dcod = 0
@@ -471,20 +472,20 @@ def ReadUrl(url):
                     dec = "iso-8859-1"
                 except Exception as e:
                     dcod = 1
-                    CreateLog("ReadUrl4 - Errore: %s." % e)                                      
-            link = tlink            
-                  
-        elif str(type(link)).find('str') != -1:                            
+                    CreateLog("ReadUrl4 - Errore: %s." % e)
+            link = tlink
+
+        elif str(type(link)).find('str') != -1:
             dec = "str"
-               
-        print("CreateLog Codifica ReadUrl: %s." % dec)      
+
+        print("CreateLog Codifica ReadUrl: %s." % dec)
     except Exception as e:
         print("ReadUrl5 - Errore: %s." % e)
-        link = None                        
+        link = None
     return link
-    
-    
-    
+
+
+
 if PY3:
 	def getUrl(url):
 		req = Request(url)
@@ -772,7 +773,27 @@ def charRemove(text):
         myreplace = myreplace.replace(ch, "").replace("  ", " ").replace("   ", " ").strip()
     return myreplace
 
-#######################################    
+def clean_html(html):
+    """Clean an HTML snippet into a readable string"""
+    import xml.sax.saxutils as saxutils
+    # saxutils.unescape("Suzy &amp; John")
+    if type(html) == type(u''):
+        strType = 'unicode'
+    elif type(html) == type(''):
+        strType = 'utf-8'
+        html = html.decode("utf-8", 'ignore')
+    # Newline vs <br />
+    html = html.replace('\n', ' ')
+    html = re.sub(r'\s*<\s*br\s*/?\s*>\s*', '\n', html)
+    html = re.sub(r'<\s*/\s*p\s*>\s*<\s*p[^>]*>', '\n', html)
+    # Strip html tags
+    html = re.sub('<.*?>', '', html)
+    # Replace html entities
+    html = saxutils.unescape(html)  #and for py3 ?
+    if strType == 'utf-8':
+        html = html.encode("utf-8")
+    return html.strip()
+#######################################
 
 def addstreamboq(bouquetname=None):
            boqfile="/etc/enigma2/bouquets.tv"
@@ -787,15 +808,15 @@ def addstreamboq(bouquetname=None):
                  if "userbouquet."+bouquetname+".tv" in line :
                     add=False
                     break
-           if add==True:   
-              fp=open(boqfile,"a")                               
-              fp.write('#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "userbouquet.%s.tv" ORDER BY bouquet\n'% bouquetname) 
+           if add==True:
+              fp=open(boqfile,"a")
+              fp.write('#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "userbouquet.%s.tv" ORDER BY bouquet\n'% bouquetname)
               fp.close()
               add=True
 
 def stream2bouquet(url=None,name=None,bouquetname=None):
-          error='none' 
-          bouquetname='XBMCAddons'                              
+          error='none'
+          bouquetname='XBMCAddons'
           fileName ="/etc/enigma2/userbouquet.%s.tv" % bouquetname
           out = '#SERVICE 4097:0:0:0:0:0:0:0:0:0:%s:%s\r\n' % (quote(url), quote(name))
           #py3
@@ -804,10 +825,10 @@ def stream2bouquet(url=None,name=None,bouquetname=None):
               addstreamboq(bouquetname)
               if not os.path.exists(fileName):
                  fp = open(fileName, 'w')
-                 fp.write("#NAME %s\n"%bouquetname) 
+                 fp.write("#NAME %s\n"%bouquetname)
                  fp.close()
-                 fp = open(fileName, 'a')                          
-                 fp.write(out)                 
+                 fp = open(fileName, 'a')
+                 fp.write(out)
               else:
                  fp=open(fileName,'r')
                  lines=fp.readlines()
@@ -816,10 +837,10 @@ def stream2bouquet(url=None,name=None,bouquetname=None):
                      if out in line:
                         error=(_('Stream already added to bouquet'))
                         return error
-                 fp = open(fileName, 'a')                          
-                 fp.write(out)                 
+                 fp = open(fileName, 'a')
+                 fp.write(out)
               fp.write("")
-              fp.close()              
+              fp.close()
           except:
              error=(_('Adding to bouquet failed'))
           return error

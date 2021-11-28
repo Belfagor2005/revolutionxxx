@@ -64,7 +64,10 @@ import hashlib
 import random
 import six
 from os.path import splitext
-from Plugins.Extensions.revolutionx.resolver.Utils import *
+try:
+    from Plugins.Extensions.revolutionx.Utils import *
+except:
+    from . import Utils
 if six.PY3:
     print('six.PY3: True ')
 plugin_path = os.path.dirname(sys.modules[__name__].__file__)

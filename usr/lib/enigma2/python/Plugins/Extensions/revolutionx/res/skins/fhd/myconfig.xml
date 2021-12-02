@@ -2,7 +2,7 @@
 <screen name="myConfig" position="0,0" size="1920,1080" title="..::mMark Picons Manager::.." backgroundColor="transparent" flags="wfNoBorder">
 	<ePixmap position="0,0" size="1920,1080" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/main2.png" alphatest="blend" zPosition="1" />
 	<ePixmap position="220,40" size="80,60" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvs.png" alphatest="blend" scale="1" zPosition="5" />
-	<widget name="title" position="315,55" size="830,50" font="Regular;34" halign="left" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="5" />
+	<widget name="title" position="315,50" size="830,50" font="Regular;34" halign="left" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="5" />
 	<ePixmap position="220,110" size="970,8" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sep.png" alphatest="blend" zPosition="5" />
 	<!-- Menu List -->
 	<widget name="info" position="220,130" size="970,90" font="Regular;30" halign="center" valign="center" foregroundColor="yellow" backgroundColor="#202020" transparent="0" zPosition="5" />
@@ -19,4 +19,3 @@
   	<widget name="key_yellow" position="835,950" size="300,40" font="Regular;30" halign="right" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
   	<widget name="key_blue" position="835,1005" size="300,40" font="Regular;30" halign="right" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
 </screen>
-

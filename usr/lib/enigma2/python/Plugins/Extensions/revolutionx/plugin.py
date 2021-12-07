@@ -142,29 +142,6 @@ if sslverify:
                 ClientTLSOptions(self.hostname, ctx)
             return ctx
 
-def make_request(url):
-    link = []
-    try:
-        import requests
-        if six.PY3:
-            url = url.encode()
-        link = requests.get(url, headers = {'User-Agent': 'Mozilla/5.0'}).text
-        return link
-    except ImportError:
-        print("Here in client2 getUrl url =", url)
-        if six.PY3:
-            url = url.encode()
-        req = Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urlopen(req, None, 3)
-        link=response.read().decode('utf-8') #03/09/2021
-        response.close()
-        print("Here in client2 link =", link)
-        return link
-    except:
-        return ''
-    return
-
 modechoices = [
                 ("4097", _("ServiceMp3(4097)")),
                 ("1", _("Hardware(1)")),
@@ -571,7 +548,7 @@ class live_stream(Screen):
 
     def readJsonFile(self, name, url, pic):
         global nextmodule
-        strJson = make_request(url)
+        strJson = ReadUrl2(url)
         # content = six.ensure_str(content)
         print('live_stream content B =', strJson)
         y = json.loads(strJson)
@@ -865,7 +842,7 @@ class video1(Screen):
         self.urls = []
         self.pics = []
         self.infos = []
-        content = make_request(self.url)
+        content = ReadUrl2(self.url)
         # content = six.ensure_str(content)
         # print("content video1 =", content)
         y = json.loads(content)
@@ -1447,7 +1424,7 @@ class Playstream1(Screen):
         self['list'] = rvList([])
         self['info'] = Label()
         self['info'].setText('Select Player')
-        self['key_red'] = Button(_('Exit'))
+        self['key_red'] = Button(_('Back'))
         self['key_green'] = Button(_('Select'))
         self['setupActions'] = ActionMap(['SetupActions', 'ColorActions', 'TimerEditActions'], {'red': self.cancel,
          'green': self.okClicked,

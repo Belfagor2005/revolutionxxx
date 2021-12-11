@@ -1,12 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 '''
-Info http://t.me/tivustream
 ****************************************
 *        coded by Lululla              *
 *                                      *
 *             01/12/2021               *
 ****************************************
+Info http://t.me/tivustream                           
 '''
 from __future__ import print_function
 from . import _
@@ -14,7 +14,8 @@ from . import _
 from Components.AVSwitch import AVSwitch
 from Components.ActionMap import ActionMap
 from Components.Button import Button
-from Components.ConfigList import ConfigListScreen
+from Components.ConfigList import ConfigList, ConfigListScreen
+from Components.FileList import FileList
 from Components.Input import Input
 from Components.Label import Label
 from Components.MenuList import MenuList
@@ -41,10 +42,11 @@ from Screens.InfoBarGenerics import InfoBarSeek, InfoBarAudioSelection, InfoBarS
 from Screens.InfoBarGenerics import InfoBarServiceNotifications, InfoBarMoviePlayerSummarySupport, InfoBarMenu
 from Screens.LocationBox import LocationBox
 from Screens.MessageBox import MessageBox
+from Screens.PluginBrowser import PluginBrowser
 from Screens.Screen import Screen
 from Screens.Standby import TryQuitMainloop, Standby
 from Screens.VirtualKeyBoard import VirtualKeyBoard
-from ServiceReference import ServiceReference                                             
+from ServiceReference import ServiceReference
 from Tools.Directories import SCOPE_PLUGINS, resolveFilename
 from Tools.Directories import pathExists, resolveFilename, fileExists, copyfile
 from Tools.Downloader import downloadWithProgress
@@ -69,15 +71,6 @@ import json
 import hashlib
 import random
 import six
-
-try:
-    from Plugins.Extensions.revolutionx.Utils import *
-except:
-    from . import Utils
-if six.PY3:
-    print('six.PY3: True ')
-plugin_path = os.path.dirname(sys.modules[__name__].__file__)
-global skin_path, revol, pngs, pngl, pngx, file_json, nextmodule, search, pngori, pictmp
 from six.moves.urllib.request import urlopen
 from six.moves.urllib.request import Request
 from six.moves.urllib.parse import urlparse
@@ -87,9 +80,21 @@ from six.moves.urllib.parse import urlencode
 # from six.moves.urllib.error import HTTPError
 # from six.moves.urllib.error import URLError
 from six.moves.urllib.request import urlretrieve
+try:
+    from Plugins.Extensions.revolutionx.Utils import *
+except:
+    from . import Utils
+if six.PY3:
+    print('six.PY3: True ')
+plugin_path = os.path.dirname(sys.modules[__name__].__file__)
+global skin_path, revol, pngs, pngl, pngx, file_json, nextmodule, search, pngori, pictmp
+
 
 search = False
 _session = None
+streamlink = False
+if isStreamlinkAvailable:
+    streamlink = True
 
 def trace_error():
     import traceback
@@ -145,7 +150,6 @@ if sslverify:
 modechoices = [
                 ("4097", _("ServiceMp3(4097)")),
                 ("1", _("Hardware(1)")),
-                ("8193", _("eServiceUri(8193)")),
                 ]
 
 if os.path.exists("/usr/bin/gstplayer"):
@@ -154,6 +158,8 @@ if os.path.exists("/usr/bin/exteplayer3"):
     modechoices.append(("5002", _("Exteplayer3(5002)")))
 if os.path.exists("/usr/sbin/streamlinksrv"):
     modechoices.append(("5002", _("Streamlink(5002)")))
+if os.path.exists("/usr/bin/apt-get"):
+    modechoices.append(("8193", _("eServiceUri(8193)")))
 
 config.plugins.revolutionx = ConfigSubsection()
 config.plugins.revolutionx.cachefold = ConfigDirectory(default='/media/hdd/revolutionx/')
@@ -941,9 +947,20 @@ class video1(Screen):
         if idx != None or idx != -1:
             pixmaps = self.pics[idx]
             if pixmaps != "" or pixmaps != "n/A" or pixmaps != None or pixmaps != "null" :
+                                                  
+                 
+                                 
+                                 
+                                      
+                
                 if pixmaps.find('http') == -1:
                     self.poster_resize(no_cover)
                     return
+                                                   
+                                 
+                                                    
+                                              
+                                                                                                                                             
                 else:
                     try:
                         if six.PY3:
@@ -1019,9 +1036,9 @@ class video3(Screen):
         self['info'] = Label(_('Loading data... Please wait'))
         self['pth'] = Label('')
         self['pth'].setText(_('Cache folder ') + revol)
+        self["poster"] = Pixmap()
         self['desc'] = StaticText()
         self['space'] = Label('')
-        self["poster"] = Pixmap()
         #self["poster"].hide()
         self.picload = ePicLoad()
         self.scale = AVSwitch().getFramebufferScale()
@@ -1117,6 +1134,11 @@ class video3(Screen):
         self.urls = []
         self.pics = []
         self.infos = []
+                                                           
+             
+                      
+                
+                                               
         self.names.append(name)
         self.urls.append(url)
         self.pics.append(pic)
@@ -1174,7 +1196,8 @@ class video3(Screen):
         if idx != None or idx != -1:
             pixmaps = self.pics[idx]
             if pixmaps != "" or pixmaps != "n/A" or pixmaps != None or pixmaps != "null" :
-                if pixmaps.find('http') == -1:
+                                                  
+                if pixmaps.find(b'http') == -1:
                     self.poster_resize(no_cover)
                     return
                 else:
@@ -1308,7 +1331,7 @@ class myconfig(Screen, ConfigListScreen):
         fold = config.plugins.tvspro.cachefold.value + "/pic"
         cmd = "rm " + fold + "/*"
         os.system(cmd)
-        self.mbox = self.session.open(MessageBox, _('All cache fold empty!'), MessageBox.TYPE_INFO, timeout=5)
+        self.mbox = self.session.open(MessageBox, _('All cache fold are empty!'), MessageBox.TYPE_INFO, timeout=5)
 
     def keyLeft(self):
         ConfigListScreen.keyLeft(self)
@@ -1419,6 +1442,8 @@ class Playstream1(Screen):
         skin = skin_path + 'Playstream1.xml'
         with open(skin, 'r') as f:
             self.skin = f.read()
+        print('self.skin: ', skin)
+        f.close()
         self.setup_title = ('Select Player Stream')
         self.list = []
         self['list'] = rvList([])
@@ -1434,8 +1459,6 @@ class Playstream1(Screen):
         self.name1 = name
         self.url = url
         self.info = info
-        # if PY3:
-            # self.url = url.encode('utf8')
         print('In Playstream1 self.url =', url)
         global srefInit
         self.initialservice = self.session.nav.getCurrentlyPlayingServiceReference()
@@ -1540,7 +1563,7 @@ class Playstream1(Screen):
         self.close()
 
     def play2(self):
-        if os.path.exists("/usr/sbin/streamlinksrv"):
+        if isStreamlinkAvailable():
             info = self.info
             name = self.name1
             url = self.url
@@ -1552,7 +1575,8 @@ class Playstream1(Screen):
             sref.setName(name)
             self.session.open(Playstream2, name, sref, info)
             self.close()
-
+        else:
+            self.session.open(MessageBox, _('Install Streamlink first'), MessageBox.TYPE_INFO, timeout=5)
     def cancel(self):
         try:
             password_mgr = HTTPPasswordMgrWithDefaultRealm()
@@ -1657,7 +1681,17 @@ class TvInfoBarShowHide():
     def debug(obj, text = ""):
         print(text + " %s\n" % obj)
 
-class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifications, InfoBarAudioSelection, TvInfoBarShowHide):#,InfoBarSubtitleSupport
+class Playstream2(
+    InfoBarBase,
+    InfoBarMenu,
+    InfoBarSeek,
+    InfoBarAudioSelection,
+    InfoBarSubtitleSupport,
+    InfoBarMoviePlayerSummarySupport,
+    InfoBarNotifications,
+    TvInfoBarShowHide,
+    Screen
+):
     STATE_IDLE = 0
     STATE_PLAYING = 1
     STATE_PAUSED = 2
@@ -1674,13 +1708,15 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         self.skinName = 'MoviePlayer'
         title = name
         streaml = False
-        # self['list'] = MenuList([])
-        InfoBarMenu.__init__(self)
-        InfoBarNotifications.__init__(self)
-        InfoBarBase.__init__(self, steal_current_service=True)
-        TvInfoBarShowHide.__init__(self)
-        InfoBarAudioSelection.__init__(self)
-        # InfoBarSubtitleSupport.__init__(self)
+        for x in InfoBarBase, \
+                InfoBarMenu, \
+                InfoBarSeek, \
+                InfoBarAudioSelection, \
+                InfoBarMoviePlayerSummarySupport, \
+                InfoBarSubtitleSupport, \
+                InfoBarNotifications, \
+                TvInfoBarShowHide:
+            x.__init__(self)
         try:
             self.init_aspect = int(self.getAspect())
         except:
@@ -1698,7 +1734,6 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
          'InfobarSeekActions'], {'leavePlayer': self.cancel,
          'epg': self.showIMDB,
          'info': self.showinfo,
-         # 'info': self.cicleStreamType,
          'tv': self.cicleStreamType,
          'stop': self.cancel,
          'cancel': self.cancel,
@@ -1706,11 +1741,11 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         self.allowPiP = False
         self.service = None
         service = None
-        InfoBarSeek.__init__(self, actionmap='InfobarSeekActions')
+        # InfoBarSeek.__init__(self, actionmap='InfobarSeekActions')
         self.icount = 0
         self.info = info
         self.pcip = 'None'
-        self.url = url.replace(':', '%3a').replace(' ','%20')
+        self.url = url
         self.name = decodeHtml(name)
         self.state = self.STATE_PLAYING
         SREF = self.session.nav.getCurrentlyPlayingServiceReference()
@@ -1807,16 +1842,22 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         self.session.nav.playService(sref)
 
     def openPlay(self, servicetype, url):
-        url = url.replace(':', '%3a')
-        url = url.replace(' ','%20')
-        ref = str(servicetype) + ':0:1:0:0:0:0:0:0:0:' + str(url)
+        # url = url.replace(':', '%3a')
+        # url = url.replace(' ','%20')
+        # ref = str(servicetype) + ':0:1:0:0:0:0:0:0:0:' + str(url)
+        # if streaml == True:
+            # ref = str(servicetype) + ':0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + str(url)
+
+        name = self.name
+        ref = "{0}:0:0:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3A"), name.replace(":", "%3A"))
+        print('reference:   ', ref)
         if streaml == True:
-            ref = str(servicetype) + ':0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + str(url)        
-                                                                                                                        
-                                               
+            url = 'http://127.0.0.1:8088/' + str(url)
+            ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3A"), name.replace(":", "%3A"))
+            print('streaml reference:   ', ref)
         print('final reference:   ', ref)
         sref = eServiceReference(ref)
-        sref.setName(self.name)
+        sref.setName(name)
         self.session.nav.stopService()
         self.session.nav.playService(sref)
 
@@ -1824,7 +1865,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         global streml
         streaml = False
         from itertools import cycle, islice
-        self.servicetype = str(config.plugins.revolutionx.services.value)# +':0:1:0:0:0:0:0:0:0:'#  '4097'
+        self.servicetype = str(config.plugins.revolutionx.services.value)
         print('servicetype1: ', self.servicetype)
         url = str(self.url)
         if str(os.path.splitext(self.url)[-1]) == ".m3u8":
@@ -1877,7 +1918,7 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
         if isinstance(self, TvInfoBarShowHide):
             self.doShow()
     def cancel(self):
-        if os.path.exists('/tmp/hls.avi'):
+        if os.path.isfile('/tmp/hls.avi'):
             os.remove('/tmp/hls.avi')
         self.session.nav.stopService()
         self.session.nav.playService(SREF)
@@ -2015,10 +2056,12 @@ class plgnstrt(Screen):
         self.session.openWithCallback(self.close, Revolmain)
 
 def checks():
+    from Plugins.Extensions.revolution.Utils import checkInternet
+    checkInternet()  
     chekin= False
     if checkInternet():
-            chekin = True
-    return
+        chekin = True
+    return chekin
 
 def main(session, **kwargs):
     if checks:
@@ -2027,7 +2070,7 @@ def main(session, **kwargs):
             upd_done()
         except:
             pass
-        if DreamOS():
+        if os.path.exists('/var/lib/dpkg/status'):
             session.open(Revolmain)
         else:
             session.open(plgnstrt)

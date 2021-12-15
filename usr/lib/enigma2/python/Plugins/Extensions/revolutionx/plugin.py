@@ -40,7 +40,7 @@ from Screens.InfoBar import InfoBar
 from Screens.InfoBar import MoviePlayer
 from Screens.InfoBarGenerics import InfoBarShowHide, InfoBarSubtitleSupport, InfoBarSummarySupport, \
 	InfoBarNumberZap, InfoBarMenu, InfoBarEPG, InfoBarSeek, InfoBarMoviePlayerSummarySupport, \
-	InfoBarAudioSelection, InfoBarNotifications, InfoBarServiceNotifications, \
+	InfoBarAudioSelection, InfoBarNotifications, InfoBarServiceNotifications
 from Screens.LocationBox import LocationBox
 from Screens.MessageBox import MessageBox
 from Screens.PluginBrowser import PluginBrowser

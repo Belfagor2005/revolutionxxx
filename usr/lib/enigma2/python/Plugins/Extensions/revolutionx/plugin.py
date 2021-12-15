@@ -38,8 +38,9 @@ from Screens.ChoiceBox import ChoiceBox
 from Screens.Console import Console
 from Screens.InfoBar import InfoBar
 from Screens.InfoBar import MoviePlayer
-from Screens.InfoBarGenerics import InfoBarSeek, InfoBarAudioSelection, InfoBarSubtitleSupport, InfoBarNotifications
-from Screens.InfoBarGenerics import InfoBarServiceNotifications, InfoBarMoviePlayerSummarySupport, InfoBarMenu
+from Screens.InfoBarGenerics import InfoBarShowHide, InfoBarSubtitleSupport, InfoBarSummarySupport, \
+	InfoBarNumberZap, InfoBarMenu, InfoBarEPG, InfoBarSeek, InfoBarMoviePlayerSummarySupport, \
+	InfoBarAudioSelection, InfoBarNotifications, InfoBarServiceNotifications, \
 from Screens.LocationBox import LocationBox
 from Screens.MessageBox import MessageBox
 from Screens.PluginBrowser import PluginBrowser
@@ -86,8 +87,10 @@ except:
     from . import Utils
 if six.PY3:
     print('six.PY3: True ')
+
+
 plugin_path = os.path.dirname(sys.modules[__name__].__file__)
-global skin_path, revol, pngs, pngl, pngx, file_json, nextmodule, search, pngori, pictmp
+global skin_path, revol, pngs, pngl, pngx, file_json, nextmodule, search, pngori, pictmp, piconlive, piconinter
 
 
 search = False
@@ -167,25 +170,32 @@ config.plugins.revolutionx.services = ConfigSelection(default='4097', choices = 
 config.plugins.revolutionx.code = ConfigText(default = "1234")
 pin = 2808
 pin2 = str(config.plugins.revolutionx.code.value)
+
 currversion = getversioninfo()
 title_plug = '..:: TivuStream Pro Revolution XXX V. %s ::..' % currversion
 desc_plug = 'TivuStream Pro Revolution XXX'
-ico_path = plugin_path + '/logo.png'
-no_cover = plugin_path + '/no_coverArt.png'
-res_plugin_path = plugin_path + '/res/'
-ico1_path = res_plugin_path + 'pics/plugin.png'
-ico3_path = res_plugin_path + 'pics/setting.png'
-res_picon_plugin_path = res_plugin_path + 'picons/'
-piconlive = res_picon_plugin_path + 'tv.png'
-piconmovie = res_picon_plugin_path + 'cinema.png'
-piconseries = res_picon_plugin_path + 'series.png'
-# piconsearch = res_picon_plugin_path + 'search.png'
-piconsearch = "https://tivustream.website/php_filter/kodi19/img/search.png"
-piconinter = res_picon_plugin_path + 'inter.png'
-pixmaps = res_picon_plugin_path + 'backg.png'
-revol = config.plugins.revolutionx.cachefold.value.strip()
+# ico_path = plugin_path + '/logo.png'
+# no_cover = plugin_path + '/no_coverArt.png'
+# res_plugin_path = plugin_path + '/res/'
+# ico1_path = res_plugin_path + 'pics/plugin.png'
+# ico3_path = res_plugin_path + 'pics/setting.png'
+# piccons = res_plugin_path + 'picons/'
+# pngori = plugin_path + '/res/pics/fulltop.jpg'
+# piconsearch = "https://tivustream.website/php_filter/kodi19/img/search.png"
+ico_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/logo.png".format('revolutionx'))
+no_cover = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/no_coverArt.png".format('revolutionx'))
+res_plugin_path =  resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/".format('revolutionx'))
+piccons = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/picons/".format('revolutionx'))
+pngori = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/fulltop.jpg".format('revolutionx'))
+piconlive = piccons + 'tv.png'
+piconmovie = piccons + 'cinema.png'
+piconseries = piccons + 'series.png'
+piconsearch = piccons + 'search.png'
+piconinter = piccons + 'inter.png'
+pixmaps = piccons + 'backg.png'
 imgjpg = ("nasa1.jpg", "nasa2.jpg", "nasa.jpg", "fulltop.jpg")
-pngori = plugin_path + '/res/pics/fulltop.jpg'
+revol = config.plugins.revolutionx.cachefold.value.strip()
+
 Path_Tmp = "/tmp"
 pictmp = Path_Tmp + "/poster.jpg"
 if revol.endswith('\/\/'):
@@ -198,9 +208,11 @@ if not os.path.exists(revol):
 logdata("path picons: ", str(revol))
 
 if isFHD():
-    skin_path = res_plugin_path + 'skins/fhd/'
+    skin_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/skins/fhd/".format('revolutionx'))
+    # skin_path = res_plugin_path + 'skins/fhd/'
 else:
-    skin_path = res_plugin_path + 'skins/hd/'
+    skin_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/skins/hd/".format('revolutionx'))
+    # skin_path = res_plugin_path + 'skins/hd/'
 if DreamOS():
     skin_path = skin_path + 'dreamOs/'
 
@@ -246,7 +258,8 @@ class rvList(MenuList):
             self.l.setItemHeight(40)
 
 def rvListEntry(name, idx):
-    pngs = ico1_path
+    # pngs = ico1_path
+    pngs = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/plugins.png".format('revolutionx'))
     res = [name]
     if fileExists(pngs):
         if isFHD():
@@ -258,7 +271,8 @@ def rvListEntry(name, idx):
         return res
 
 def rvoneListEntry(name):
-    pngx = ico1_path
+    # pngx = ico1_path
+    pngx = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/plugin.png".format('revolutionx'))
     res = [name]
     if isFHD():
         res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
@@ -382,7 +396,8 @@ class Revolmain(Screen):
             self.menu_list.append(x)
             idx += 1
         self['text'].setList(list)
-        self.load_poster()
+        self.name = 'XXXX'
+        # self.load_poster()
 
     def okRun(self):
         self.keyNumberGlobalCB(self['text'].getSelectedIndex())
@@ -397,7 +412,7 @@ class Revolmain(Screen):
             else:
                 self.name = 'XXXX'
                 self.url = 'https://tivustream.website/php_filter/kodi19/xxxJob.php?utKodi=TVSXXX'
-                self.pic = piconlive
+                self.pic = pixmaps
                 nextmodule = 'xxxx'
                 self.adultonly()
         else:
@@ -436,7 +451,10 @@ class Revolmain(Screen):
         sel = self['text'].getSelectedIndex()
         if sel != None or sel != -1:
             if sel == 0:
-                pixmaps = piconlive
+                if self.name == 'XXXX':
+                    pixmaps = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/picons/backg.png".format('revolutionx'))
+                else:
+                    pixmaps = piconlive
             else:
                 pixmaps = piconinter
             size = self['poster'].instance.size()
@@ -1197,7 +1215,7 @@ class video3(Screen):
             pixmaps = self.pics[idx]
             if pixmaps != "" or pixmaps != "n/A" or pixmaps != None or pixmaps != "null" :
                                                   
-                if pixmaps.find(b'http') == -1:
+                if pixmaps.find('http') == -1:
                     self.poster_resize(no_cover)
                     return
                 else:
@@ -1687,7 +1705,6 @@ class Playstream2(
     InfoBarSeek,
     InfoBarAudioSelection,
     InfoBarSubtitleSupport,
-    InfoBarMoviePlayerSummarySupport,
     InfoBarNotifications,
     TvInfoBarShowHide,
     Screen
@@ -1712,7 +1729,6 @@ class Playstream2(
                 InfoBarMenu, \
                 InfoBarSeek, \
                 InfoBarAudioSelection, \
-                InfoBarMoviePlayerSummarySupport, \
                 InfoBarSubtitleSupport, \
                 InfoBarNotifications, \
                 TvInfoBarShowHide:
@@ -1790,7 +1806,7 @@ class Playstream2(
         self.setAspect(temp)
 
     def showinfo(self):
-        debug = True
+        # debug = True
         sTitle = ''
         sServiceref = ''
         try:
@@ -1991,7 +2007,8 @@ class plgnstrt(Screen):
         return
 
     def image_downloaded(self):
-        pngori = res_plugin_path + 'pics/fulltop.jpg'
+        # pngori = res_plugin_path + 'pics/fulltop.jpg'
+        pngori = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/fulltop.jpg".format('revolutionx'))
         if os.path.exists(pngori):
             print('image pngori: ', pngori)
             try:
@@ -2005,7 +2022,8 @@ class plgnstrt(Screen):
     def loadDefaultImage(self, failure=None):
         print("*** failure *** %s" % failure)
         global pngori
-        fldpng = '/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/'
+        fldpng = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/".format('revolutionx'))
+        # fldpng = '/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/'
         npj = random.choice(imgjpg)
         pngori = fldpng + npj
         self.poster_resize(pngori)
@@ -2091,7 +2109,8 @@ def mainmenu(session, **kwargs):
 def Plugins(**kwargs):
     ico_path = 'logo.png'
     if not os.path.exists('/var/lib/dpkg/status'):
-        ico_path = res_plugin_path + 'pics/logo.png'
+        ico_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/logo.png".format('tvDream'))
+        # ico_path = res_plugin_path + 'pics/logo.png'
     result = [PluginDescriptor(name =desc_plug, description =title_plug, where =[PluginDescriptor.WHERE_PLUGINMENU], icon =ico_path, fnc =main)]
     return result
 

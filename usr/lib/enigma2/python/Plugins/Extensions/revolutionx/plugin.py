@@ -72,15 +72,26 @@ import json
 import hashlib
 import random
 import six
-from six.moves.urllib.request import urlopen
-from six.moves.urllib.request import Request
-from six.moves.urllib.parse import urlparse
-from six.moves.urllib.parse import quote
-from six.moves.urllib.parse import quote_plus
-from six.moves.urllib.parse import urlencode
-# from six.moves.urllib.error import HTTPError
-# from six.moves.urllib.error import URLError
-from six.moves.urllib.request import urlretrieve
+
+PY3 = sys.version_info.major >= 3
+if PY3:
+        import http.client
+        from http.client import HTTPConnection, CannotSendRequest, BadStatusLine, HTTPException
+        from urllib.error import URLError, HTTPError
+        from urllib.request import urlopen, Request 
+        from urllib.parse import urlparse
+        unicode = str; unichr = chr; long = int
+        PY3 = True
+else:
+# if os.path.exists('/usr/lib/python2.7'):
+        from httplib import HTTPConnection, CannotSendRequest, BadStatusLine, HTTPException
+        from urllib2 import urlopen, Request, URLError, HTTPError
+        from urlparse import urlparse 
+        import httplib
+        import six
+        from htmlentitydefs import name2codepoint as n2cp
+
+
 try:
     from Plugins.Extensions.revolutionx.Utils import *
 except:
@@ -91,7 +102,6 @@ if six.PY3:
 
 plugin_path = os.path.dirname(sys.modules[__name__].__file__)
 global skin_path, revol, pngs, pngl, pngx, file_json, nextmodule, search, pngori, pictmp, piconlive, piconinter
-
 
 search = False
 _session = None
@@ -174,13 +184,6 @@ pin2 = str(config.plugins.revolutionx.code.value)
 currversion = getversioninfo()
 title_plug = '..:: TivuStream Pro Revolution XXX V. %s ::..' % currversion
 desc_plug = 'TivuStream Pro Revolution XXX'
-# ico_path = plugin_path + '/logo.png'
-# no_cover = plugin_path + '/no_coverArt.png'
-# res_plugin_path = plugin_path + '/res/'
-# ico1_path = res_plugin_path + 'pics/plugin.png'
-# ico3_path = res_plugin_path + 'pics/setting.png'
-# piccons = res_plugin_path + 'picons/'
-# pngori = plugin_path + '/res/pics/fulltop.jpg'
 # piconsearch = "https://tivustream.website/php_filter/kodi19/img/search.png"
 ico_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/logo.png".format('revolutionx'))
 no_cover = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/no_coverArt.png".format('revolutionx'))
@@ -239,24 +242,19 @@ REGEX = re.compile(
 		r'\s(ч|ч\.|с\.|с)\s\d{1,3}.+|'
 		r'\d{1,3}(-я|-й|\sс-н).+|', re.DOTALL)
 
+
 class rvList(MenuList):
     def __init__(self, list):
-        MenuList.__init__(self, list, False, eListboxPythonMultiContent)
-        self.l.setFont(0, gFont('Regular', 20))
-        self.l.setFont(1, gFont('Regular', 22))
-        self.l.setFont(2, gFont('Regular', 24))
-        self.l.setFont(3, gFont('Regular', 26))
-        self.l.setFont(4, gFont('Regular', 28))
-        self.l.setFont(5, gFont('Regular', 30))
-        self.l.setFont(6, gFont('Regular', 32))
-        self.l.setFont(7, gFont('Regular', 34))
-        self.l.setFont(8, gFont('Regular', 36))
-        self.l.setFont(9, gFont('Regular', 40))
+        MenuList.__init__(self, list, True, eListboxPythonMultiContent)
         if isFHD():
             self.l.setItemHeight(50)
+            textfont = int(34)
+            self.l.setFont(0, gFont('Regular', textfont))
         else:
-            self.l.setItemHeight(40)
-
+            self.l.setItemHeight(50)
+            textfont = int(24)
+            self.l.setFont(0, gFont('Regular', textfont))
+            
 def rvListEntry(name, idx):
     # pngs = ico1_path
     pngs = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/plugins.png".format('revolutionx'))
@@ -264,10 +262,10 @@ def rvListEntry(name, idx):
     if fileExists(pngs):
         if isFHD():
             res.append(MultiContentEntryPixmapAlphaTest(pos =(10, 12), size =(34, 25), png =loadPNG(pngs)))
-            res.append(MultiContentEntryText(pos=(60, 0), size =(1900, 50), font =7, text=name, color = 0xa6d1fe, flags =RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+            res.append(MultiContentEntryText(pos=(60, 0), size =(1900, 50), font =0, text=name, color = 0xa6d1fe, flags =RT_HALIGN_LEFT | RT_VALIGN_CENTER))
         else:
             res.append(MultiContentEntryPixmapAlphaTest(pos =(10, 6), size=(34, 25), png =loadPNG(pngs)))
-            res.append(MultiContentEntryText(pos=(60, 0), size =(1000, 50), font =2, text =name, color = 0xa6d1fe, flags =RT_HALIGN_LEFT))
+            res.append(MultiContentEntryText(pos=(60, 0), size =(1000, 50), font =0, text =name, color = 0xa6d1fe, flags =RT_HALIGN_LEFT))
         return res
 
 def rvoneListEntry(name):
@@ -276,10 +274,10 @@ def rvoneListEntry(name):
     res = [name]
     if isFHD():
         res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
-        res.append(MultiContentEntryText(pos=(60, 0), size=(1900, 50), font=7, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+        res.append(MultiContentEntryText(pos=(60, 0), size=(1900, 50), font=0, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 6), size=(34, 25), png=loadPNG(pngx)))
-        res.append(MultiContentEntryText(pos=(60, 0), size=(1000, 50), font=2, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT))
+        res.append(MultiContentEntryText(pos=(60, 0), size=(1000, 50), font=0, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT))
     return res
 
 def showlist(data, list):
@@ -368,7 +366,6 @@ class Revolmain(Screen):
                 imdb(_session, text)
             except Exception as e:
                 print("[XCF] imdb: ", e)
-
         else:
             inf = idx
             if inf and inf != '':
@@ -599,7 +596,7 @@ class live_stream(Screen):
                 info = (y["channels"][i]["info"])
                 # print("In live_stream info =", info)
                 self.names.append(checkStr(name))
-                self.urls.append(checkStr(url))
+                self.urls.append(url)
                 self.pics.append(checkStr(pic))
                 self.infos.append(checkStr(info))
                 i = i+1
@@ -914,7 +911,7 @@ class video1(Screen):
                 info = item["info"]
                 # print("In live_stream info =", str(info))
                 self.names.append(checkStr(name))
-                self.urls.append(checkStr(url))
+                self.urls.append(url)
                 self.pics.append(checkStr(pic))
                 self.infos.append(checkStr(info))
             nextmodule = "Videos3"
@@ -965,20 +962,10 @@ class video1(Screen):
         if idx != None or idx != -1:
             pixmaps = self.pics[idx]
             if pixmaps != "" or pixmaps != "n/A" or pixmaps != None or pixmaps != "null" :
-                                                  
-                 
-                                 
-                                 
-                                      
-                
                 if pixmaps.find('http') == -1:
                     self.poster_resize(no_cover)
                     return
-                                                   
-                                 
-                                                    
-                                              
-                                                                                                                                             
+                                                                                                                
                 else:
                     try:
                         if six.PY3:
@@ -1152,11 +1139,6 @@ class video3(Screen):
         self.urls = []
         self.pics = []
         self.infos = []
-                                                           
-             
-                      
-                
-                                               
         self.names.append(name)
         self.urls.append(url)
         self.pics.append(pic)

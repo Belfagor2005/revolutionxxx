@@ -634,7 +634,7 @@ class live_stream(Screen):
         if idx != None or idx != -1:
             info = self.infos[idx]
             name = self.names[idx]
-            self['desc'].setText(str(info))
+            self['desc'].setText(info)
             self['space'].setText(str(name))
 
     def selectionChanged(self):
@@ -848,7 +848,7 @@ class video1(Screen):
         if idx != None or idx != -1:
             info = self.infos[idx]
             name = self.names[idx]
-            self['desc'].setText(str(info))
+            self['desc'].setText(info)
             self['space'].setText(str(name))
 
     def selectionChanged(self):
@@ -1126,7 +1126,7 @@ class video3(Screen):
         else:
             info = ''
             name = ''
-        self['desc'].setText(str(info))
+        self['desc'].setText(info)
         self['space'].setText(str(name))
 
     def selectionChanged(self):
@@ -1832,7 +1832,7 @@ class Playstream2(
 
     def slinkPlay(self, url):
         name = self.name
-        ref = "{0}:{1}".format(url.replace(":", "%3A"), name.replace(":", "%3A"))
+        ref = "{0}:{1}".format(url.replace(":", "%3a"), name.replace(":", "%3a"))
         print('final reference:   ', ref)
         sref = eServiceReference(ref)
         sref.setName(name)
@@ -1847,11 +1847,11 @@ class Playstream2(
             # ref = str(servicetype) + ':0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + str(url)
 
         name = self.name
-        ref = "{0}:0:0:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3A"), name.replace(":", "%3A"))
+        ref = "{0}:0:0:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3a"), name.replace(":", "%3a"))
         print('reference:   ', ref)
         if streaml == True:
             url = 'http://127.0.0.1:8088/' + str(url)
-            ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3A"), name.replace(":", "%3A"))
+            ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3a"), name.replace(":", "%3a"))
             print('streaml reference:   ', ref)
         print('final reference:   ', ref)
         sref = eServiceReference(ref)

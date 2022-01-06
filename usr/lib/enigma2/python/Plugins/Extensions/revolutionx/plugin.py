@@ -333,8 +333,8 @@ class Revolmain(Screen):
         self['title'] = Label(title_plug)
         self['actions'] = ActionMap(['SetupActions', 'DirectionActions', "EPGSelectActions", 'ColorActions', "MenuActions"], {'ok': self.okRun,
          'green': self.okRun,
-         'back': self.closerm,
-         'red': self.closerm,
+         'back': self.cancel,
+         'red': self.cancel,
          # 'yellow': self.remove,
          # 'blue': self.msgtqm,
          'epg': self.showIMDB,
@@ -344,7 +344,7 @@ class Revolmain(Screen):
          'left': self.left,
          'right': self.right,
          'menu': self.goConfig,
-         'cancel': self.closerm}, -1)
+         'cancel': self.cancel}, -1)
         self.onLayoutFinish.append(self.updateMenuList)
         self.onLayoutFinish.append(self.__layoutFinished)
 
@@ -379,7 +379,8 @@ class Revolmain(Screen):
         self['info'].setText('Select')
         self.load_poster()
 
-    def closerm(self):
+    def cancel(self):
+        deletetmp()
         self.close()
 
     def updateMenuList(self):

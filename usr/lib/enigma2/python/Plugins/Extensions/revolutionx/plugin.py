@@ -4,7 +4,7 @@
 ****************************************
 *        coded by Lululla              *
 *                                      *
-*             01/12/2021               *
+*             13/12/2021               *
 ****************************************
 Info http://t.me/tivustream                           
 '''
@@ -358,14 +358,14 @@ class Revolmain(Screen):
                 text = charRemove(text_clear)
                 _session.open(tmdb.tmdbScreen, text, 0)
             except Exception as e:
-                print("[XCF] Tmdb: ", e)
+                print("[XCF] Tmdb: ", str(e))
         elif is_imdb:
             try:
                 from Plugins.Extensions.IMDb.plugin import main as imdb
                 text = charRemove(text_clear)
                 imdb(_session, text)
             except Exception as e:
-                print("[XCF] imdb: ", e)
+                print("[XCF] imdb: ", str(e))
         else:
             inf = idx
             if inf and inf != '':
@@ -552,14 +552,14 @@ class live_stream(Screen):
                 text = charRemove(text_clear)
                 _session.open(tmdb.tmdbScreen, text, 0)
             except Exception as e:
-                print("[XCF] Tmdb: ", e)
+                print("[XCF] Tmdb: ", str(e))
         elif is_imdb:
             try:
                 from Plugins.Extensions.IMDb.plugin import main as imdb
                 text = charRemove(text_clear)
                 imdb(_session, text)
             except Exception as e:
-                print("[XCF] imdb: ", e)
+                print("[XCF] imdb: ", str(e))
         else:
             inf = idx
             if inf and inf != '':
@@ -707,8 +707,8 @@ class live_stream(Screen):
                             downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
                         else:
                             downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                    except Exception as ex:
-                        print(ex)
+                    except Exception as e:
+                        print(str(e))
                         print("Error: can't find file or read data")
                 return
 
@@ -716,8 +716,8 @@ class live_stream(Screen):
         if os.path.exists(pictmp):
             try:
                 self.poster_resize(pictmp)
-            except Exception as ex:
-                print("* error ** %s" % ex)
+            except Exception as e:
+                print("* error ** %s" % str(e))
                 pass
             except:
                 pass
@@ -726,9 +726,9 @@ class live_stream(Screen):
         try:
             if fileExists(png):
                 self.poster_resize(no_cover)
-        except Exception as ex:
+        except Exception as e:
             self.poster_resize(no_cover)
-            print(ex)
+            print(str(e))
             print('exe downloadError')
 
     def poster_resize(self, png):
@@ -821,14 +821,14 @@ class video1(Screen):
                 text = charRemove(text_clear)
                 _session.open(tmdb.tmdbScreen, text, 0)
             except Exception as e:
-                print("[XCF] Tmdb: ", e)
+                print("[XCF] Tmdb: ", str(e))
         elif is_imdb:
             try:
                 from Plugins.Extensions.IMDb.plugin import main as imdb
                 text = charRemove(text_clear)
                 imdb(_session, text)
             except Exception as e:
-                print("[XCF] imdb: ", e)
+                print("[XCF] imdb: ", str(e))
         else:
             inf = idx
             if inf and inf != '':
@@ -883,7 +883,7 @@ class video1(Screen):
             # print('In video1 y["channels"][0]["name"]=', y["channels"][0]["name"])
             # print('In video1 y["channels"][self.idx]["items"]["title"]=', y["channels"][self.idx]["items"]["title"])
         except Exception as e:
-            print(e)
+            print(str(e))
         is_enabled = True
         title = "NO TIT"
         thumb = "https://www.andreisfina.it/wp-content/uploads/2018/12/no_image.jpg"
@@ -982,8 +982,8 @@ class video1(Screen):
                             downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
                         else:
                             downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                    except Exception as ex:
-                        print(ex)
+                    except Exception as e:
+                        print(str(e))
                         print("Error: can't find file or read data")
                 return
 
@@ -991,8 +991,8 @@ class video1(Screen):
         if os.path.exists(pictmp):
             try:
                 self.poster_resize(pictmp)
-            except Exception as ex:
-                print("* error ** %s" % ex)
+            except Exception as e:
+                print("* error ** %s" % str(e))
                 pass
             except:
                 pass
@@ -1001,9 +1001,9 @@ class video1(Screen):
         try:
             if fileExists(png):
                 self.poster_resize(no_cover)
-        except Exception as ex:
+        except Exception as e:
             self.poster_resize(no_cover)
-            print(ex)
+            print(str(e))
             print('exe downloadError')
 
     def poster_resize(self, png):
@@ -1096,14 +1096,14 @@ class video3(Screen):
                 text = charRemove(text_clear)
                 _session.open(tmdb.tmdbScreen, text, 0)
             except Exception as e:
-                print("[XCF] Tmdb: ", e)
+                print("[XCF] Tmdb: ", str(e))
         elif is_imdb:
             try:
                 from Plugins.Extensions.IMDb.plugin import main as imdb
                 text = charRemove(text_clear)
                 imdb(_session, text)
             except Exception as e:
-                print("[XCF] imdb: ", e)
+                print("[XCF] imdb: ", str(e))
         else:
             inf = idx
             if inf and inf != '':
@@ -1216,8 +1216,8 @@ class video3(Screen):
                             downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
                         else:
                             downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                    except Exception as ex:
-                        print(ex)
+                    except Exception as e:
+                        print(str(e))
                         print("Error: can't find file or read data")
                 return
 
@@ -1225,8 +1225,8 @@ class video3(Screen):
         if os.path.exists(pictmp):
             try:
                 self.poster_resize(pictmp)
-            except Exception as ex:
-                print("* error ** %s" % ex)
+            except Exception as e:
+                print("* error ** %s" % str(e))
                 pass
             except:
                 pass
@@ -1235,9 +1235,9 @@ class video3(Screen):
         try:
             if fileExists(png):
                 self.poster_resize(no_cover)
-        except Exception as ex:
+        except Exception as e:
             self.poster_resize(no_cover)
-            print(ex)
+            print(str(e))
             print('exe downloadError')
 
     def poster_resize(self, png):
@@ -1377,7 +1377,7 @@ class myconfig(Screen, ConfigListScreen):
              inhibitDirs=['/bin', '/boot', '/dev', '/home', '/lib', '/proc', '/run', '/sbin', '/sys', '/var'],
              minFree=15)
         except Exception as e:
-            print(('openDirectoryBrowser get failed: ', str(e)))
+            print('openDirectoryBrowser get failed: ', str(e))
 
     def openDirectoryBrowserCB(self, path):
         if path != None:
@@ -1996,8 +1996,8 @@ class plgnstrt(Screen):
             print('image pngori: ', pngori)
             try:
                 self.poster_resize(pngori)
-            except Exception as ex:
-                print(ex)
+            except Exception as e:
+                print(str(e))
                 pass
             except:
                 pass

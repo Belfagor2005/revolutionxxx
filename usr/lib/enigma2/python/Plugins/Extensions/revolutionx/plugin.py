@@ -209,13 +209,9 @@ if not os.path.exists(revol):
     except OSError as e:
         print(('Error creating directory %s:\n%s') % (revol, str(e)))
 logdata("path picons: ", str(revol))
-
+skin_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/skins/hd/".format('revolutionx'))
 if isFHD():
     skin_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/skins/fhd/".format('revolutionx'))
-    # skin_path = res_plugin_path + 'skins/fhd/'
-else:
-    skin_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/skins/hd/".format('revolutionx'))
-    # skin_path = res_plugin_path + 'skins/hd/'
 if DreamOS():
     skin_path = skin_path + 'dreamOs/'
 

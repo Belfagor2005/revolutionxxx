@@ -2070,7 +2070,7 @@ def checks():
 def main(session, **kwargs):
     if checks:
         try:
-            from Plugins.Extensions.revolutionx.resolver.Update import upd_done
+            from Plugins.Extensions.revolutionx.Update import upd_done
             upd_done()
         except:
             pass

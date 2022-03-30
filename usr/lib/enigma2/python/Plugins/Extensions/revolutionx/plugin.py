@@ -83,7 +83,6 @@ if PY3:
         unicode = str; unichr = chr; long = int
         PY3 = True
 else:
-# if os.path.exists('/usr/lib/python2.7'):
         from httplib import HTTPConnection, CannotSendRequest, BadStatusLine, HTTPException
         from urllib2 import urlopen, Request, URLError, HTTPError
         from urlparse import urlparse 
@@ -242,32 +241,35 @@ REGEX = re.compile(
 class rvList(MenuList):
     def __init__(self, list):
         MenuList.__init__(self, list, True, eListboxPythonMultiContent)
-        self.l.setItemHeight(50)
-        textfont = int(24)
-        self.l.setFont(0, gFont('Regular', textfont))        
         if isFHD():
             self.l.setItemHeight(50)
             textfont = int(34)
             self.l.setFont(0, gFont('Regular', textfont))
+        else:    
+            self.l.setItemHeight(50)
+            textfont = int(24)
+            self.l.setFont(0, gFont('Regular', textfont))               
             
 def rvListEntry(name, idx):
     pngs = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/plugins.png".format('revolutionx'))
     res = [name]
-    res.append(MultiContentEntryPixmapAlphaTest(pos =(10, 12), size=(34, 25), png =loadPNG(pngs)))
-    res.append(MultiContentEntryText(pos=(60, 0), size =(1000, 50), font =0, text =name, color = 0xa6d1fe, flags =RT_HALIGN_LEFT))    
     if isFHD():
         res.append(MultiContentEntryPixmapAlphaTest(pos =(10, 12), size =(34, 25), png =loadPNG(pngs)))
         res.append(MultiContentEntryText(pos=(60, 0), size =(1900, 50), font =0, text=name, color = 0xa6d1fe, flags =RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+    else:    
+        res.append(MultiContentEntryPixmapAlphaTest(pos =(10, 12), size=(34, 25), png =loadPNG(pngs)))
+        res.append(MultiContentEntryText(pos=(60, 0), size =(1000, 50), font =0, text =name, color = 0xa6d1fe, flags =RT_HALIGN_LEFT))          
     return res
 
 def rvoneListEntry(name):
     pngx = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/plugin.png".format('revolutionx'))
     res = [name]
-    res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
-    res.append(MultiContentEntryText(pos=(60, 0), size=(1000, 50), font=0, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT))    
     if isFHD():
         res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
         res.append(MultiContentEntryText(pos=(60, 0), size=(1900, 50), font=0, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+    else:    
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
+        res.append(MultiContentEntryText(pos=(60, 0), size=(1000, 50), font=0, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT))            
     return res
 
 def showlist(data, list):

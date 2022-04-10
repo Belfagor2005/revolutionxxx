@@ -4,7 +4,7 @@
 ****************************************
 *        coded by Lululla              *
 *                                      *
-*             25/12/2021               *
+*             10/04/2021               *
 ****************************************
 Info http://t.me/tivustream                           
 '''
@@ -183,7 +183,6 @@ pin2 = str(config.plugins.revolutionx.code.value)
 currversion = getversioninfo()
 title_plug = '..:: TivuStream Pro Revolution XXX V. %s ::..' % currversion
 desc_plug = 'TivuStream Pro Revolution XXX'
-# piconsearch = "https://tivustream.website/php_filter/kodi19/img/search.png"
 ico_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/logo.png".format('revolutionx'))
 no_cover = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/no_coverArt.png".format('revolutionx'))
 res_plugin_path =  resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/".format('revolutionx'))
@@ -607,7 +606,7 @@ class live_stream(Screen):
 
     def okRun(self):
         idx = self["text"].getSelectionIndex()
-        if idx != None or idx != -1:
+        if idx and (idx != '' or idx > -1):
             name = self.names[idx]
             url = self.urls[idx]
             pic = self.pics[idx]
@@ -624,7 +623,7 @@ class live_stream(Screen):
     def load_infos(self):
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
-        if idx != None or idx != -1:
+        if idx and (idx != '' or idx > -1):
             info = self.infos[idx]
             name = self.names[idx]
             self['desc'].setText(info)
@@ -652,7 +651,7 @@ class live_stream(Screen):
     def up(self):
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
-        if idx != None or idx != -1:
+        if idx and (idx != '' or idx > -1):
             self[self.currentList].up()
             self.load_infos()
             self.load_poster()
@@ -677,7 +676,7 @@ class live_stream(Screen):
     def load_poster(self):
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
-        if idx != None or idx != -1:
+        if idx and (idx != '' or idx > -1):
             pixmaps = self.pics[idx]
             # pixmaps = six.ensure_binary(self.pics[idx])
             if pixmaps != "" or pixmaps != "n/A" or pixmaps != None or pixmaps != "null" :
@@ -838,7 +837,7 @@ class video1(Screen):
     def load_infos(self):
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
-        if idx != None or idx != -1:
+        if idx and (idx != '' or idx > -1):
             info = self.infos[idx]
             name = self.names[idx]
             self['desc'].setText(info)
@@ -878,8 +877,11 @@ class video1(Screen):
             print(str(e))
         is_enabled = True
         title = "NO TIT"
-        thumb = "https://www.andreisfina.it/wp-content/uploads/2018/12/no_image.jpg"
-        fanart = "https://www.andreisfina.it/wp-content/uploads/2018/12/no_image.jpg"
+        # thumb = "https://www.andreisfina.it/wp-content/uploads/2018/12/no_image.jpg"
+        # fanart = "https://www.andreisfina.it/wp-content/uploads/2018/12/no_image.jpg"        
+        thumb = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/no_image.jpg".format('revolutionx'))
+        fanart = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/no_image.jpg".format('revolutionx'))
+
         genre = "adult"
         info = ""
         regExp = ""
@@ -915,7 +917,7 @@ class video1(Screen):
     def okRun(self):
         idx = self["text"].getSelectionIndex()
         print('video1 idx: ', idx)
-        if idx != None or idx != -1:
+        if idx and (idx != '' or idx > -1):
             name = self.names[idx]
             url = self.urls[idx]
             pic = self.pics[idx]
@@ -952,7 +954,7 @@ class video1(Screen):
     def load_poster(self):
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
-        if idx != None or idx != -1:
+        if idx and (idx != '' or idx > -1):
             pixmaps = self.pics[idx]
             if pixmaps != "" or pixmaps != "n/A" or pixmaps != None or pixmaps != "null" :
                 if pixmaps.find('http') == -1:
@@ -1113,7 +1115,7 @@ class video3(Screen):
     def load_infos(self):
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
-        if idx != None or idx != -1:
+        if idx and (idx != '' or idx > -1):
             info = self.infos[idx]
             name = self.names[idx]
         else:
@@ -1141,7 +1143,7 @@ class video3(Screen):
     def okRun(self):
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
-        if idx != None or idx != -1:
+        if idx and (idx != '' or idx > -1):
             name = self.names[idx]
             url = self.urls[idx]
             pic = self.pics[idx]
@@ -1186,7 +1188,7 @@ class video3(Screen):
     def load_poster(self):
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
-        if idx != None or idx != -1:
+        if idx and (idx != '' or idx > -1):
             pixmaps = self.pics[idx]
             if pixmaps != "" or pixmaps != "n/A" or pixmaps != None or pixmaps != "null" :
                                                   
@@ -1475,7 +1477,7 @@ class Playstream1(Screen):
 
     def okClicked(self):
         idx = self['list'].getSelectionIndex()
-        if idx != None or idx != -1:
+        if idx and (idx != '' or idx > -1):
             self.name = self.names[idx]
             self.url = self.urls[idx]
             if "youtube" in str(self.url):

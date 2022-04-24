@@ -4,7 +4,7 @@
 ****************************************
 *        coded by Lululla              *
 *                                      *
-*             10/04/2021               *
+*             24/04/2021               *
 ****************************************
 Info http://t.me/tivustream                           
 '''
@@ -95,6 +95,8 @@ try:
     from Plugins.Extensions.revolutionx.Utils import *
 except:
     from . import Utils
+    
+
 if six.PY3:
     print('six.PY3: True ')
 
@@ -389,6 +391,10 @@ class Revolmain(Screen):
         # self.load_poster()
 
     def okRun(self):
+        i = len(self.menu_list)
+        print('iiiiii= ',i)
+        if i < 1:
+            return    
         self.keyNumberGlobalCB(self['text'].getSelectedIndex())
 
     def keyNumberGlobalCB(self, idx):
@@ -605,14 +611,17 @@ class live_stream(Screen):
         showlist(self.names, self['text'])
 
     def okRun(self):
+        i = len(self.names)
+        print('iiiiii= ',i)
+        if i < 1:
+            return
         idx = self["text"].getSelectionIndex()
-        if idx and (idx != '' or idx > -1):
-            name = self.names[idx]
-            url = self.urls[idx]
-            pic = self.pics[idx]
-            info = self.infos[idx]
-            if nextmodule == 'Videos1':
-                self.session.open(video1, name, url, pic, info, nextmodule)
+        name = self.names[idx]
+        url = self.urls[idx]
+        pic = self.pics[idx]
+        info = self.infos[idx]
+        if nextmodule == 'Videos1':
+            self.session.open(video1, name, url, pic, info, nextmodule)
 
     def __layoutFinished(self):
         self.setTitle(self.setup_title)
@@ -621,6 +630,10 @@ class live_stream(Screen):
         self.load_poster()
 
     def load_infos(self):
+        i = len(self.infos)
+        print('iiiiii= ',i)
+        if i < 1:
+            return    
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
         if idx and (idx != '' or idx > -1):
@@ -674,34 +687,37 @@ class live_stream(Screen):
         self.load_poster()
 
     def load_poster(self):
+        i = len(self.pics)
+        print('iiiiii= ',i)
+        if i < 1:
+            return    
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
-        if idx and (idx != '' or idx > -1):
-            pixmaps = self.pics[idx]
-            # pixmaps = six.ensure_binary(self.pics[idx])
-            if pixmaps != "" or pixmaps != "n/A" or pixmaps != None or pixmaps != "null" :
-                if pixmaps.find('http') == -1:
-                    self.poster_resize(no_cover)
-                    return
-                else:
-                    try:
-                        if six.PY3:
-                            pixmaps = six.ensure_binary(self.pics[idx])
-                        # print("debug: pixmaps:",pixmaps)
-                        # print("debug: pixmaps:",type(pixmaps))
-                        if pixmaps.startswith(b"https") and sslverify:
-                            parsed_uri = urlparse(pixmaps)
-                            domain = parsed_uri.hostname
-                            sniFactory = SNIFactory(domain)
-                            # if six.PY3:
-                                # pixmaps = pixmaps.encode()
-                            downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                        else:
-                            downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                    except Exception as e:
-                        print(str(e))
-                        print("Error: can't find file or read data")
+        pixmaps = self.pics[idx]
+        # pixmaps = six.ensure_binary(self.pics[idx])
+        if pixmaps != "" or pixmaps != "n/A" or pixmaps != None or pixmaps != "null" :
+            if pixmaps.find('http') == -1:
+                self.poster_resize(no_cover)
                 return
+            else:
+                try:
+                    if six.PY3:
+                        pixmaps = six.ensure_binary(self.pics[idx])
+                    # print("debug: pixmaps:",pixmaps)
+                    # print("debug: pixmaps:",type(pixmaps))
+                    if pixmaps.startswith(b"https") and sslverify:
+                        parsed_uri = urlparse(pixmaps)
+                        domain = parsed_uri.hostname
+                        sniFactory = SNIFactory(domain)
+                        # if six.PY3:
+                            # pixmaps = pixmaps.encode()
+                        downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                    else:
+                        downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                except Exception as e:
+                    print(str(e))
+                    print("Error: can't find file or read data")
+            return
 
     def downloadPic(self, data, pictmp):
         if os.path.exists(pictmp):
@@ -835,13 +851,16 @@ class video1(Screen):
         self.load_infos()
 
     def load_infos(self):
+        i = len(self.infos)
+        print('iiiiii= ',i)
+        if i < 1:
+            return    
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
-        if idx and (idx != '' or idx > -1):
-            info = self.infos[idx]
-            name = self.names[idx]
-            self['desc'].setText(info)
-            self['space'].setText(str(name))
+        info = self.infos[idx]
+        name = self.names[idx]
+        self['desc'].setText(info)
+        self['space'].setText(str(name))
 
     def selectionChanged(self):
         if self["text"].getCurrent():
@@ -881,7 +900,6 @@ class video1(Screen):
         # fanart = "https://www.andreisfina.it/wp-content/uploads/2018/12/no_image.jpg"        
         thumb = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/no_image.jpg".format('revolutionx'))
         fanart = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/no_image.jpg".format('revolutionx'))
-
         genre = "adult"
         info = ""
         regExp = ""
@@ -915,14 +933,17 @@ class video1(Screen):
            return
 
     def okRun(self):
+        i = len(self.names)
+        print('iiiiii= ',i)
+        if i < 1:
+            return    
         idx = self["text"].getSelectionIndex()
         print('video1 idx: ', idx)
-        if idx and (idx != '' or idx > -1):
-            name = self.names[idx]
-            url = self.urls[idx]
-            pic = self.pics[idx]
-            info = self.infos[idx]
-            self.session.open(video3, name, url, pic, info, nextmodule)
+        name = self.names[idx]
+        url = self.urls[idx]
+        pic = self.pics[idx]
+        info = self.infos[idx]
+        self.session.open(video3, name, url, pic, info, nextmodule)
 
     def cancel(self):
         global nextmodule
@@ -952,34 +973,37 @@ class video1(Screen):
         self.load_poster()
 
     def load_poster(self):
+        i = len(self.pics)
+        print('iiiiii= ',i)
+        if i < 1:
+            return    
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
-        if idx and (idx != '' or idx > -1):
-            pixmaps = self.pics[idx]
-            if pixmaps != "" or pixmaps != "n/A" or pixmaps != None or pixmaps != "null" :
-                if pixmaps.find('http') == -1:
-                    self.poster_resize(no_cover)
-                    return
-                                                                                                                
-                else:
-                    try:
-                        if six.PY3:
-                            pixmaps = six.ensure_binary(self.pics[idx])
-                        # print("debug: pixmaps:",pixmaps)
-                        # print("debug: pixmaps:",type(pixmaps))
-                        if pixmaps.startswith(b"https") and sslverify:
-                            parsed_uri = urlparse(pixmaps)
-                            domain = parsed_uri.hostname
-                            sniFactory = SNIFactory(domain)
-                            # if six.PY3:
-                                # pixmaps = pixmaps.encode()
-                            downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                        else:
-                            downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                    except Exception as e:
-                        print(str(e))
-                        print("Error: can't find file or read data")
+        # if idx and (idx != '' or idx > -1):
+        pixmaps = self.pics[idx]
+        if pixmaps != "" or pixmaps != "n/A" or pixmaps != None or pixmaps != "null" :
+            if pixmaps.find('http') == -1:
+                self.poster_resize(no_cover)
                 return
+            else:
+                try:
+                    if six.PY3:
+                        pixmaps = six.ensure_binary(self.pics[idx])
+                    # print("debug: pixmaps:",pixmaps)
+                    # print("debug: pixmaps:",type(pixmaps))
+                    if pixmaps.startswith(b"https") and sslverify:
+                        parsed_uri = urlparse(pixmaps)
+                        domain = parsed_uri.hostname
+                        sniFactory = SNIFactory(domain)
+                        # if six.PY3:
+                            # pixmaps = pixmaps.encode()
+                        downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                    else:
+                        downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                except Exception as e:
+                    print(str(e))
+                    print("Error: can't find file or read data")
+            return
 
     def downloadPic(self, data, pictmp):
         if os.path.exists(pictmp):
@@ -1113,6 +1137,10 @@ class video3(Screen):
         self.load_poster()
 
     def load_infos(self):
+        i = len(self.infos)
+        print('iiiiii= ',i)
+        if i < 1:
+            return    
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
         if idx and (idx != '' or idx > -1):
@@ -1141,20 +1169,23 @@ class video3(Screen):
         showlist(self.names, self['text'])
 
     def okRun(self):
+        i = len(self.names)
+        print('iiiiii= ',i)
+        if i < 1:
+            return    
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
-        if idx and (idx != '' or idx > -1):
-            name = self.names[idx]
-            url = self.urls[idx]
-            pic = self.pics[idx]
-            info = self.infos[idx]
-            nextmodule = "Player"
-            # print('name: ', name)
-            # print('url: ', url)
-            # print('png: ', pic)
-            # print('info: ', info)
-            print('Videos3 nextmodule - is: ', nextmodule)
-            self.session.open(Playstream1, name, url, info)
+        name = self.names[idx]
+        url = self.urls[idx]
+        pic = self.pics[idx]
+        info = self.infos[idx]
+        nextmodule = "Player"
+        # print('name: ', name)
+        # print('url: ', url)
+        # print('png: ', pic)
+        # print('info: ', info)
+        print('Videos3 nextmodule - is: ', nextmodule)
+        self.session.open(Playstream1, name, url, info)
         return
 
 
@@ -1186,34 +1217,36 @@ class video3(Screen):
         self.load_poster()
 
     def load_poster(self):
+        i = len(self.pics)
+        print('iiiiii= ',i)
+        if i < 1:
+            return    
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
-        if idx and (idx != '' or idx > -1):
-            pixmaps = self.pics[idx]
-            if pixmaps != "" or pixmaps != "n/A" or pixmaps != None or pixmaps != "null" :
-                                                  
-                if pixmaps.find('http') == -1:
-                    self.poster_resize(no_cover)
-                    return
-                else:
-                    try:
-                        if six.PY3:
-                            pixmaps = six.ensure_binary(self.pics[idx])
-                        # print("debug: pixmaps:",pixmaps)
-                        # print("debug: pixmaps:",type(pixmaps))
-                        if pixmaps.startswith(b"https") and sslverify:
-                            parsed_uri = urlparse(pixmaps)
-                            domain = parsed_uri.hostname
-                            sniFactory = SNIFactory(domain)
-                            # if six.PY3:
-                                # pixmaps = pixmaps.encode()
-                            downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                        else:
-                            downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                    except Exception as e:
-                        print(str(e))
-                        print("Error: can't find file or read data")
+        pixmaps = self.pics[idx]
+        if pixmaps != "" or pixmaps != "n/A" or pixmaps != None or pixmaps != "null" :
+            if pixmaps.find('http') == -1:
+                self.poster_resize(no_cover)
                 return
+            else:
+                try:
+                    if six.PY3:
+                        pixmaps = six.ensure_binary(self.pics[idx])
+                    # print("debug: pixmaps:",pixmaps)
+                    # print("debug: pixmaps:",type(pixmaps))
+                    if pixmaps.startswith(b"https") and sslverify:
+                        parsed_uri = urlparse(pixmaps)
+                        domain = parsed_uri.hostname
+                        sniFactory = SNIFactory(domain)
+                        # if six.PY3:
+                            # pixmaps = pixmaps.encode()
+                        downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                    else:
+                        downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                except Exception as e:
+                    print(str(e))
+                    print("Error: can't find file or read data")
+            return
 
     def downloadPic(self, data, pictmp):
         if os.path.exists(pictmp):
@@ -1476,76 +1509,80 @@ class Playstream1(Screen):
         showlist(self.names, self['list'])
 
     def okClicked(self):
+        i = len(self.names)
+        print('iiiiii= ',i)
+        if i < 1:
+            return    
         idx = self['list'].getSelectionIndex()
-        if idx and (idx != '' or idx > -1):
+        # if idx and (idx != '' or idx > -1):
+        self.name = self.names[idx]
+        self.url = self.urls[idx]
+        if "youtube" in str(self.url):
+            # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
+            # return
+            info = self.info
+            try:
+                from Plugins.Extensions.revolutionx.youtube_dl import YoutubeDL
+                '''
+                ydl_opts = {'format': 'best'}
+                ydl_opts = {'format': 'bestaudio/best'}
+                '''
+                ydl_opts = {'format': 'best'}
+                ydl = YoutubeDL(ydl_opts)
+                ydl.add_default_info_extractors()
+                result = ydl.extract_info(self.url, download=False)
+                self.url = result["url"]
+            except:
+                pass
+            self.session.open(Playstream2, self.name, self.url, info)
+
+        if idx == 0:
             self.name = self.names[idx]
             self.url = self.urls[idx]
-            if "youtube" in str(self.url):
-                # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
-                # return
-                info = self.info
-                try:
-                    from Plugins.Extensions.revolutionx.youtube_dl import YoutubeDL
-                    '''
-                    ydl_opts = {'format': 'best'}
-                    ydl_opts = {'format': 'bestaudio/best'}
-                    '''
-                    ydl_opts = {'format': 'best'}
-                    ydl = YoutubeDL(ydl_opts)
-                    ydl.add_default_info_extractors()
-                    result = ydl.extract_info(self.url, download=False)
-                    self.url = result["url"]
-                except:
-                    pass
-                self.session.open(Playstream2, self.name, self.url, info)
+            print('In playVideo url D=', self.url)
+            self.play()
+        elif idx == 1:
+            print('In playVideo url B=', self.url)
+            self.name = self.names[idx]
+            self.url = self.urls[idx]
+            try:
+                os.remove('/tmp/hls.avi')
+            except:
+                pass
+            header = ''
+            cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/resolver/hlsclient.py" "' + self.url + '" "1" "' + header + '" + &'
+            print('In playVideo cmd =', cmd)
+            os.system(cmd)
+            os.system('sleep 3')
+            self.url = '/tmp/hls.avi'
+            self.play()
+        elif idx == 2:
+            print('In playVideo url A=', self.url)
+            url = self.url
+            try:
+                os.remove('/tmp/hls.avi')
+            except:
+                pass
+            cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/resolver/tsclient.py" "' + url + '" "1" + &'
+            print('hls cmd = ', cmd)
+            os.system(cmd)
+            os.system('sleep 3')
+            self.url = '/tmp/hls.avi'
+            self.name = self.names[idx]
+            self.play()
 
-            if idx == 0:
-                self.name = self.names[idx]
-                self.url = self.urls[idx]
-                print('In playVideo url D=', self.url)
-                self.play()
-            elif idx == 1:
-                print('In playVideo url B=', self.url)
-                self.name = self.names[idx]
-                self.url = self.urls[idx]
-                try:
-                    os.remove('/tmp/hls.avi')
-                except:
-                    pass
-                header = ''
-                cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/Exodus/resolver/hlsclient.py" "' + self.url + '" "1" "' + header + '" + &'
-                print('In playVideo cmd =', cmd)
-                os.system(cmd)
-                os.system('sleep 3')
-                self.url = '/tmp/hls.avi'
-                self.play()
-            elif idx == 2:
-                print('In playVideo url A=', self.url)
-                url = self.url
-                try:
-                    os.remove('/tmp/hls.avi')
-                except:
-                    pass
-                cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/resolver/tsclient.py" "' + url + '" "1" + &'
-                print('hls cmd = ', cmd)
-                os.system(cmd)
-                os.system('sleep 3')
-                self.url = '/tmp/hls.avi'
-                self.name = self.names[idx]
-                self.play()
-
-            elif idx == 3:
-                self.name = self.names[idx]
-                self.url = self.urls[idx]
-                print('In playVideo url D=', self.url)
-                self.play2()
-            else:
-                self.name = self.names[idx]
-                self.url = self.urls[idx]
-                print('In playVideo url D=', self.url)
-                self.play()
-            return
+        elif idx == 3:
+            self.name = self.names[idx]
+            self.url = self.urls[idx]
+            print('In playVideo url D=', self.url)
+            self.play2()
+        else:
+            self.name = self.names[idx]
+            self.url = self.urls[idx]
+            print('In playVideo url D=', self.url)
+            self.play()
         return
+        # return
 
     def playfile(self, serverint):
         self.serverList[serverint].play(self.session, self.url, self.name)
@@ -2009,12 +2046,12 @@ class plgnstrt(Screen):
         self.icount = 0
         self['text'].setText(_('\n\n\nCheck Connection wait please...'))
         self.timer = eTimer()
-        self.timer.start(2000, 1)
         if DreamOS():
             self.timer_conn = self.timer.timeout.connect(self.OpenCheck)
         else:
             self.timer.callback.append(self.OpenCheck)
-
+        self.timer.start(2000, 1)
+        
     def getinfo(self):
         continfo = _("==========       WELCOME     ============\n")
         continfo += _("=========     SUPPORT ON:   ============\n")
@@ -2051,18 +2088,17 @@ class plgnstrt(Screen):
         self.session.openWithCallback(self.close, Revolmain)
 
 def checks():
-    from Plugins.Extensions.revolution.Utils import checkInternet
-    checkInternet()  
+    from . import Utils
     chekin= False
-    if checkInternet():
+    if Utils.checkInternet():
         chekin = True
     return chekin
 
 def main(session, **kwargs):
     if checks:
         try:
-            from Plugins.Extensions.revolutionx.Update import upd_done
-            upd_done()
+            from . import Update
+            Update.upd_done()
         except:
             pass
         if os.path.exists('/var/lib/dpkg/status'):
@@ -2078,7 +2114,8 @@ def menu(menuid, **kwargs):
           main,
           title_plug,
           44)]
-    return []
+    else:
+        return []
 
 def mainmenu(session, **kwargs):
     main(session, **kwargs)
@@ -2086,7 +2123,7 @@ def mainmenu(session, **kwargs):
 def Plugins(**kwargs):
     ico_path = 'logo.png'
     if not os.path.exists('/var/lib/dpkg/status'):
-        ico_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/logo.png".format('tvDream'))
+        ico_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/logo.png".format('revolutionx'))
         # ico_path = res_plugin_path + 'pics/logo.png'
     result = [PluginDescriptor(name =desc_plug, description =title_plug, where =[PluginDescriptor.WHERE_PLUGINMENU], icon =ico_path, fnc =main)]
     return result

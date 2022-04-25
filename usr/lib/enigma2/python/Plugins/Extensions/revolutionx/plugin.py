@@ -72,7 +72,7 @@ import json
 import hashlib
 import random
 import six
-
+from . import Utils
 PY3 = sys.version_info.major >= 3
 if PY3:
         import http.client
@@ -91,10 +91,7 @@ else:
         from htmlentitydefs import name2codepoint as n2cp
 
 
-try:
-    from Plugins.Extensions.revolutionx.Utils import *
-except:
-    from . import Utils
+
     
 
 if six.PY3:
@@ -107,7 +104,7 @@ global skin_path, revol, pngs, pngl, pngx, file_json, nextmodule, search, pngori
 search = False
 _session = None
 streamlink = False
-if isStreamlinkAvailable:
+if Utils.isStreamlinkAvailable:
     streamlink = True
 
 def trace_error():
@@ -210,9 +207,9 @@ if not os.path.exists(revol):
         print(('Error creating directory %s:\n%s') % (revol, str(e)))
 logdata("path picons: ", str(revol))
 skin_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/skins/hd/".format('revolutionx'))
-if isFHD():
+if Utils.isFHD():
     skin_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/skins/fhd/".format('revolutionx'))
-if DreamOS():
+if Utils.DreamOS():
     skin_path = skin_path + 'dreamOs/'
 
 REGEX = re.compile(
@@ -242,7 +239,7 @@ REGEX = re.compile(
 class rvList(MenuList):
     def __init__(self, list):
         MenuList.__init__(self, list, True, eListboxPythonMultiContent)
-        if isFHD():
+        if Utils.isFHD():
             self.l.setItemHeight(50)
             textfont = int(34)
             self.l.setFont(0, gFont('Regular', textfont))
@@ -254,7 +251,7 @@ class rvList(MenuList):
 def rvListEntry(name, idx):
     pngs = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/plugins.png".format('revolutionx'))
     res = [name]
-    if isFHD():
+    if Utils.isFHD():
         res.append(MultiContentEntryPixmapAlphaTest(pos =(10, 12), size =(34, 25), png =loadPNG(pngs)))
         res.append(MultiContentEntryText(pos=(60, 0), size =(1900, 50), font =0, text=name, color = 0xa6d1fe, flags =RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:    
@@ -265,7 +262,7 @@ def rvListEntry(name, idx):
 def rvoneListEntry(name):
     pngx = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/plugin.png".format('revolutionx'))
     res = [name]
-    if isFHD():
+    if Utils.isFHD():
         res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
         res.append(MultiContentEntryText(pos=(60, 0), size=(1900, 50), font=0, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:    
@@ -345,17 +342,17 @@ class Revolmain(Screen):
         itype = idx
         name = self.names[itype]
         text_clear = name
-        if is_tmdb:
+        if Utils.is_tmdb:
             try:
                 from Plugins.Extensions.tmdb import tmdb
-                text = charRemove(text_clear)
+                text = Utils.charRemove(text_clear)
                 _session.open(tmdb.tmdbScreen, text, 0)
             except Exception as e:
                 print("[XCF] Tmdb: ", str(e))
-        elif is_imdb:
+        elif Utils.is_imdb:
             try:
                 from Plugins.Extensions.IMDb.plugin import main as imdb
-                text = charRemove(text_clear)
+                text = Utils.charRemove(text_clear)
                 imdb(_session, text)
             except Exception as e:
                 print("[XCF] imdb: ", str(e))
@@ -373,7 +370,7 @@ class Revolmain(Screen):
         self.load_poster()
 
     def cancel(self):
-        deletetmp()
+        Utils.deletetmp()
         self.close()
 
     def updateMenuList(self):
@@ -453,7 +450,7 @@ class Revolmain(Screen):
             else:
                 pixmaps = piconinter
             size = self['poster'].instance.size()
-            if DreamOS():
+            if Utils.DreamOS():
                 self['poster'].instance.setPixmap(gPixmapPtr())
             else:
                 self['poster'].instance.setPixmap(None)
@@ -467,7 +464,7 @@ class Revolmain(Screen):
              1,
              '#FF000000'))
             ptr = self.picload.getData()
-            if DreamOS():
+            if Utils.DreamOS():
                 if self.picload.startDecode(pixmaps, False) == 0:
                     ptr = self.picload.getData()
             else:
@@ -543,17 +540,17 @@ class live_stream(Screen):
         idx = self["text"].getSelectionIndex()
         name = self.names[idx]
         text_clear = name
-        if is_tmdb:
+        if Utils.is_tmdb:
             try:
                 from Plugins.Extensions.tmdb import tmdb
-                text = charRemove(text_clear)
+                text = Utils.charRemove(text_clear)
                 _session.open(tmdb.tmdbScreen, text, 0)
             except Exception as e:
                 print("[XCF] Tmdb: ", str(e))
-        elif is_imdb:
+        elif Utils.is_imdb:
             try:
                 from Plugins.Extensions.IMDb.plugin import main as imdb
-                text = charRemove(text_clear)
+                text = Utils.charRemove(text_clear)
                 imdb(_session, text)
             except Exception as e:
                 print("[XCF] imdb: ", str(e))
@@ -567,7 +564,7 @@ class live_stream(Screen):
 
     def readJsonFile(self, name, url, pic):
         global nextmodule
-        strJson = ReadUrl2(url)
+        strJson = Utils.ReadUrl2(url)
         # content = six.ensure_str(content)
         print('live_stream content B =', strJson)
         y = json.loads(strJson)
@@ -745,7 +742,7 @@ class live_stream(Screen):
             self.picload = ePicLoad()
             sc = AVSwitch().getFramebufferScale()
             self.picload.setPara([size.width(), size.height(), sc[0], sc[1], False, 1, '#00000000'])
-            if DreamOS():
+            if Utils.DreamOS():
                 self.picload.startDecode(png, False)
             else:
                 self.picload.startDecode(png, 0, 0, False)
@@ -822,17 +819,17 @@ class video1(Screen):
         idx = self["text"].getSelectionIndex()
         name = self.names[idx]
         text_clear = name
-        if is_tmdb:
+        if Utils.is_tmdb:
             try:
                 from Plugins.Extensions.tmdb import tmdb
-                text = charRemove(text_clear)
+                text = Utils.charRemove(text_clear)
                 _session.open(tmdb.tmdbScreen, text, 0)
             except Exception as e:
                 print("[XCF] Tmdb: ", str(e))
-        elif is_imdb:
+        elif Utils.is_imdb:
             try:
                 from Plugins.Extensions.IMDb.plugin import main as imdb
-                text = charRemove(text_clear)
+                text = Utils.charRemove(text_clear)
                 imdb(_session, text)
             except Exception as e:
                 print("[XCF] imdb: ", str(e))
@@ -874,7 +871,7 @@ class video1(Screen):
         self.urls = []
         self.pics = []
         self.infos = []
-        content = ReadUrl2(self.url)
+        content = Utils.ReadUrl2(self.url)
         # content = six.ensure_str(content)
         # print("content video1 =", content)
         y = json.loads(content)
@@ -979,7 +976,6 @@ class video1(Screen):
             return    
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
-        # if idx and (idx != '' or idx > -1):
         pixmaps = self.pics[idx]
         if pixmaps != "" or pixmaps != "n/A" or pixmaps != None or pixmaps != "null" :
             if pixmaps.find('http') == -1:
@@ -1031,7 +1027,7 @@ class video1(Screen):
             self.picload = ePicLoad()
             sc = AVSwitch().getFramebufferScale()
             self.picload.setPara([size.width(), size.height(), sc[0], sc[1], False, 1, '#00000000'])
-            if DreamOS():
+            if Utils.DreamOS():
                 self.picload.startDecode(png, False)
             else:
                 self.picload.startDecode(png, 0, 0, False)
@@ -1108,17 +1104,17 @@ class video3(Screen):
         idx = self["text"].getSelectionIndex()
         name = self.names[idx]
         text_clear = name
-        if is_tmdb:
+        if Utils.is_tmdb:
             try:
                 from Plugins.Extensions.tmdb import tmdb
-                text = charRemove(text_clear)
+                text = Utils.charRemove(text_clear)
                 _session.open(tmdb.tmdbScreen, text, 0)
             except Exception as e:
                 print("[XCF] Tmdb: ", str(e))
-        elif is_imdb:
+        elif Utils.is_imdb:
             try:
                 from Plugins.Extensions.IMDb.plugin import main as imdb
-                text = charRemove(text_clear)
+                text = Utils.charRemove(text_clear)
                 imdb(_session, text)
             except Exception as e:
                 print("[XCF] imdb: ", str(e))
@@ -1274,7 +1270,7 @@ class video3(Screen):
             self.picload = ePicLoad()
             sc = AVSwitch().getFramebufferScale()
             self.picload.setPara([size.width(), size.height(), sc[0], sc[1], False, 1, '#00000000'])
-            if DreamOS():
+            if Utils.DreamOS():
                 self.picload.startDecode(png, False)
             else:
                 self.picload.startDecode(png, 0, 0, False)
@@ -1300,6 +1296,7 @@ class myconfig(Screen, ConfigListScreen):
         _session = session
         self.setTitle(title_plug)
         self['description'] = Label('')
+        self["paypal"] = Label()
         info = ''
         self['info'] = Label(_('Config Revolution XXX'))
         self['key_yellow'] = Button(_('Choice'))
@@ -1335,8 +1332,16 @@ class myconfig(Screen, ConfigListScreen):
         if entry == _('Personal Password'):
             self['description'].setText(_("Set Password - ask by email to tivustream@gmail.com"))
         return
+        
+    def paypal2(self):
+        conthelp = "If you like what I do you\n"
+        conthelp += " can contribute with a coffee\n\n"
+        conthelp += "scan the qr code and donate € 1.00"
+        return conthelp
 
     def layoutFinished(self):
+        paypal = self.paypal2()
+        self["paypal"].setText(paypal)  
         self.setTitle(self.setup_title)
         if not os.path.exists('/tmp/currentip'):
             os.system('wget -qO- http://ipecho.net/plain > /tmp/currentip')
@@ -1514,7 +1519,6 @@ class Playstream1(Screen):
         if i < 1:
             return    
         idx = self['list'].getSelectionIndex()
-        # if idx and (idx != '' or idx > -1):
         self.name = self.names[idx]
         self.url = self.urls[idx]
         if "youtube" in str(self.url):
@@ -1582,7 +1586,6 @@ class Playstream1(Screen):
             print('In playVideo url D=', self.url)
             self.play()
         return
-        # return
 
     def playfile(self, serverint):
         self.serverList[serverint].play(self.session, self.url, self.name)
@@ -1595,7 +1598,7 @@ class Playstream1(Screen):
         self.close()
 
     def play2(self):
-        if isStreamlinkAvailable():
+        if Utils.isStreamlinkAvailable():
             info = self.info
             name = self.name1
             url = self.url
@@ -1850,14 +1853,13 @@ class Playstream2(
         if os.path.exists(TMDB):
             from Plugins.Extensions.TMBD.plugin import TMBD
             text_clear = self.name
-            text = charRemove(text_clear)
+            text = Utils.charRemove(text_clear)
             self.session.open(TMBD, text, False)
         elif os.path.exists(IMDb):
             from Plugins.Extensions.IMDb.plugin import IMDB
             text_clear = self.name
-            text = charRemove(text_clear)
-            HHHHH = text
-            self.session.open(IMDB, HHHHH)
+            text = Utils.charRemove(text_clear)
+            self.session.open(IMDB, text)
         else:
             text_clear = self.name
             self.session.open(MessageBox, text_clear, MessageBox.TYPE_INFO)
@@ -1877,7 +1879,6 @@ class Playstream2(
         # ref = str(servicetype) + ':0:1:0:0:0:0:0:0:0:' + str(url)
         # if streaml == True:
             # ref = str(servicetype) + ':0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + str(url)
-
         name = self.name
         ref = "{0}:0:0:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3a"), name.replace(":", "%3a"))
         print('reference:   ', ref)
@@ -1906,7 +1907,7 @@ class Playstream2(
         # if "youtube" in str(self.url):
             # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
             # return
-        if isStreamlinkAvailable():
+        if Utils.isStreamlinkAvailable():
             streamtypelist.append("5002") #ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
             streaml = True
         if os.path.exists("/usr/bin/gstplayer"):
@@ -1967,7 +1968,6 @@ class Playstream2(
         self.close()
 
 class plgnstrt(Screen):
-
     def __init__(self, session):
         self.session = session
         skin = skin_path + '/Plgnstrt.xml'
@@ -1992,7 +1992,7 @@ class plgnstrt(Screen):
 
     def poster_resize(self, pngori):
         pixmaps = pngori
-        if DreamOS():
+        if Utils.DreamOS():
             self['poster'].instance.setPixmap(gPixmapPtr())
         else:
             self['poster'].instance.setPixmap(None)
@@ -2007,7 +2007,7 @@ class plgnstrt(Screen):
          1,
          '#FF000000'))
         ptr = self.picload.getData()
-        if DreamOS():
+        if Utils.DreamOS():
             if self.picload.startDecode(pixmaps, False) == 0:
                 ptr = self.picload.getData()
         else:
@@ -2037,7 +2037,6 @@ class plgnstrt(Screen):
         print("*** failure *** %s" % failure)
         global pngori
         fldpng = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/".format('revolutionx'))
-        # fldpng = '/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/'
         npj = random.choice(imgjpg)
         pngori = fldpng + npj
         self.poster_resize(pngori)
@@ -2046,7 +2045,7 @@ class plgnstrt(Screen):
         self.icount = 0
         self['text'].setText(_('\n\n\nCheck Connection wait please...'))
         self.timer = eTimer()
-        if DreamOS():
+        if Utils.DreamOS():
             self.timer_conn = self.timer.timeout.connect(self.OpenCheck)
         else:
             self.timer.callback.append(self.OpenCheck)

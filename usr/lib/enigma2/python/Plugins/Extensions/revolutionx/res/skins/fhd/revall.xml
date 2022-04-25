@@ -10,6 +10,7 @@
 	<widget name="pth" position="219,864" size="1030,50" font="Regular;30" halign="left" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5"/>
 	<eLabel position="1340,40" size="540,320" backgroundColor="#80000000" cornerRadius="20" zPosition="1"/>
 	<widget name="poster" position="1360,60" size="500,281" backgroundColor="#30000000" transparent="1" borderWidth="3" borderColor="#00ffffff" alphatest="blend" zPosition="4"/>
+	<!-- Graph -->	
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/main2.png" position="0,0" size="1920,1080" zPosition="1"/>
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvs.png" position="220,40" size="80,60" alphatest="blend" zPosition="5"/>
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sep.png" position="220,110" size="970,8" zPosition="5"/>

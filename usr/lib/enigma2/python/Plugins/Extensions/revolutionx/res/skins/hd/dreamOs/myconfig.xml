@@ -9,10 +9,10 @@
 	<ePixmap position="146,26" size="53,40" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/hd/tvs.png" alphatest="blend" scale="1" zPosition="5" />
 	<ePixmap position="146,73" size="646,5" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/hd/sep.png" zPosition="5" />
   	<ePixmap position="146,613" size="646,5" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/hd/sep.png" zPosition="5" />	
-		<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/hd/PayPal.png" position="939,39" size="156,75" zPosition="2" alphatest="on" />
-<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/hd/qr-codetvs.png" position="911,128" size="220,220" zPosition="2" alphatest="on" />	
-	<widget name="paypal" position="831,379" size="411,286" font="Regular;24" halign="center" foregroundColor="#ffffff" backgroundColor="#101010" transparent="1" zPosition="2" />
-	<eLabel position="809,34" size="450,639" backgroundColor="#80000000" cornerRadius="20" zPosition="1" />		
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/hd/PayPal.png" position="1063,75" size="78,42" zPosition="2" alphatest="on" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/hd/qr-codetvs.png" position="996,128" size="220,220" zPosition="2" alphatest="on" />	
+	<widget name="paypal" position="911,379" size="355,286" font="Regular;24" halign="center" foregroundColor="#ffffff" backgroundColor="#101010" transparent="1" zPosition="2" />
+	<eLabel position="909,34" size="366,639" backgroundColor="#80000000" cornerRadius="20" zPosition="1" />			
 
 	<!-- Menu List -->
 	<widget name="config" position="146,153" size="646,353" font="Regular;20" itemHeight="33" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#20000000" backgroundColorSelected="#0b2049" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/hd/sliderb.png" />

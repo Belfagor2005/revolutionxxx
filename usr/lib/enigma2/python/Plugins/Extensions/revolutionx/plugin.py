@@ -4,9 +4,9 @@
 ****************************************
 *        coded by Lululla              *
 *                                      *
-*             24/04/2021               *
+*             28/04/2022               *
 ****************************************
-Info http://t.me/tivustream                           
+Info http://t.me/tivustream
 '''
 from __future__ import print_function
 from . import _
@@ -72,28 +72,30 @@ import json
 import hashlib
 import random
 import six
-from . import Utils
+
 PY3 = sys.version_info.major >= 3
 if PY3:
         import http.client
         from http.client import HTTPConnection, CannotSendRequest, BadStatusLine, HTTPException
         from urllib.error import URLError, HTTPError
-        from urllib.request import urlopen, Request 
+        from urllib.request import urlopen, Request
         from urllib.parse import urlparse
         unicode = str; unichr = chr; long = int
         PY3 = True
 else:
+# if os.path.exists('/usr/lib/python2.7'):
         from httplib import HTTPConnection, CannotSendRequest, BadStatusLine, HTTPException
         from urllib2 import urlopen, Request, URLError, HTTPError
-        from urlparse import urlparse 
+        from urlparse import urlparse
         import httplib
         import six
         from htmlentitydefs import name2codepoint as n2cp
 
 
-
-    
-
+try:
+    from Plugins.Extensions.revolutionx.Utils import *
+except:
+    from . import Utils
 if six.PY3:
     print('six.PY3: True ')
 
@@ -104,7 +106,7 @@ global skin_path, revol, pngs, pngl, pngx, file_json, nextmodule, search, pngori
 search = False
 _session = None
 streamlink = False
-if Utils.isStreamlinkAvailable:
+if isStreamlinkAvailable:
     streamlink = True
 
 def trace_error():
@@ -207,9 +209,13 @@ if not os.path.exists(revol):
         print(('Error creating directory %s:\n%s') % (revol, str(e)))
 logdata("path picons: ", str(revol))
 skin_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/skins/hd/".format('revolutionx'))
-if Utils.isFHD():
+if isFHD():
     skin_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/skins/fhd/".format('revolutionx'))
-if Utils.DreamOS():
+    # skin_path = res_plugin_path + 'skins/fhd/'
+# else:
+    # skin_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/skins/hd/".format('revolutionx'))
+    # # skin_path = res_plugin_path + 'skins/hd/'
+if DreamOS():
     skin_path = skin_path + 'dreamOs/'
 
 REGEX = re.compile(
@@ -239,35 +245,35 @@ REGEX = re.compile(
 class rvList(MenuList):
     def __init__(self, list):
         MenuList.__init__(self, list, True, eListboxPythonMultiContent)
-        if Utils.isFHD():
+        if isFHD():
             self.l.setItemHeight(50)
             textfont = int(34)
             self.l.setFont(0, gFont('Regular', textfont))
-        else:    
+        else:
             self.l.setItemHeight(50)
             textfont = int(24)
-            self.l.setFont(0, gFont('Regular', textfont))               
-            
+            self.l.setFont(0, gFont('Regular', textfont))
+
 def rvListEntry(name, idx):
     pngs = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/plugins.png".format('revolutionx'))
     res = [name]
-    if Utils.isFHD():
+    if isFHD():
         res.append(MultiContentEntryPixmapAlphaTest(pos =(10, 12), size =(34, 25), png =loadPNG(pngs)))
         res.append(MultiContentEntryText(pos=(60, 0), size =(1900, 50), font =0, text=name, color = 0xa6d1fe, flags =RT_HALIGN_LEFT | RT_VALIGN_CENTER))
-    else:    
+    else:
         res.append(MultiContentEntryPixmapAlphaTest(pos =(10, 12), size=(34, 25), png =loadPNG(pngs)))
-        res.append(MultiContentEntryText(pos=(60, 0), size =(1000, 50), font =0, text =name, color = 0xa6d1fe, flags =RT_HALIGN_LEFT))          
+        res.append(MultiContentEntryText(pos=(60, 0), size =(1000, 50), font =0, text =name, color = 0xa6d1fe, flags =RT_HALIGN_LEFT))
     return res
 
 def rvoneListEntry(name):
     pngx = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/plugin.png".format('revolutionx'))
     res = [name]
-    if Utils.isFHD():
+    if isFHD():
         res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
         res.append(MultiContentEntryText(pos=(60, 0), size=(1900, 50), font=0, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
-    else:    
+    else:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
-        res.append(MultiContentEntryText(pos=(60, 0), size=(1000, 50), font=0, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT))            
+        res.append(MultiContentEntryText(pos=(60, 0), size=(1000, 50), font=0, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT))
     return res
 
 def showlist(data, list):
@@ -342,17 +348,17 @@ class Revolmain(Screen):
         itype = idx
         name = self.names[itype]
         text_clear = name
-        if Utils.is_tmdb:
+        if is_tmdb:
             try:
                 from Plugins.Extensions.tmdb import tmdb
-                text = Utils.charRemove(text_clear)
+                text = charRemove(text_clear)
                 _session.open(tmdb.tmdbScreen, text, 0)
             except Exception as e:
                 print("[XCF] Tmdb: ", str(e))
-        elif Utils.is_imdb:
+        elif is_imdb:
             try:
                 from Plugins.Extensions.IMDb.plugin import main as imdb
-                text = Utils.charRemove(text_clear)
+                text = charRemove(text_clear)
                 imdb(_session, text)
             except Exception as e:
                 print("[XCF] imdb: ", str(e))
@@ -370,7 +376,7 @@ class Revolmain(Screen):
         self.load_poster()
 
     def cancel(self):
-        Utils.deletetmp()
+        deletetmp()
         self.close()
 
     def updateMenuList(self):
@@ -388,10 +394,6 @@ class Revolmain(Screen):
         # self.load_poster()
 
     def okRun(self):
-        i = len(self.menu_list)
-        print('iiiiii= ',i)
-        if i < 1:
-            return    
         self.keyNumberGlobalCB(self['text'].getSelectedIndex())
 
     def keyNumberGlobalCB(self, idx):
@@ -450,7 +452,7 @@ class Revolmain(Screen):
             else:
                 pixmaps = piconinter
             size = self['poster'].instance.size()
-            if Utils.DreamOS():
+            if DreamOS():
                 self['poster'].instance.setPixmap(gPixmapPtr())
             else:
                 self['poster'].instance.setPixmap(None)
@@ -464,7 +466,7 @@ class Revolmain(Screen):
              1,
              '#FF000000'))
             ptr = self.picload.getData()
-            if Utils.DreamOS():
+            if DreamOS():
                 if self.picload.startDecode(pixmaps, False) == 0:
                     ptr = self.picload.getData()
             else:
@@ -540,17 +542,17 @@ class live_stream(Screen):
         idx = self["text"].getSelectionIndex()
         name = self.names[idx]
         text_clear = name
-        if Utils.is_tmdb:
+        if is_tmdb:
             try:
                 from Plugins.Extensions.tmdb import tmdb
-                text = Utils.charRemove(text_clear)
+                text = charRemove(text_clear)
                 _session.open(tmdb.tmdbScreen, text, 0)
             except Exception as e:
                 print("[XCF] Tmdb: ", str(e))
-        elif Utils.is_imdb:
+        elif is_imdb:
             try:
                 from Plugins.Extensions.IMDb.plugin import main as imdb
-                text = Utils.charRemove(text_clear)
+                text = charRemove(text_clear)
                 imdb(_session, text)
             except Exception as e:
                 print("[XCF] imdb: ", str(e))
@@ -564,7 +566,7 @@ class live_stream(Screen):
 
     def readJsonFile(self, name, url, pic):
         global nextmodule
-        strJson = Utils.ReadUrl2(url)
+        strJson = ReadUrl2(url)
         # content = six.ensure_str(content)
         print('live_stream content B =', strJson)
         y = json.loads(strJson)
@@ -573,8 +575,10 @@ class live_stream(Screen):
         self.pics = []
         self.infos = []
         name = str(name)
-        thumb = "https://www.andreisfina.it/wp-content/uploads/2018/12/no_image.jpg"
-        fanart = "https://www.andreisfina.it/wp-content/uploads/2018/12/no_image.jpg"
+        # thumb = "https://www.andreisfina.it/wp-content/uploads/2018/12/no_image.jpg"
+        # fanart = "https://www.andreisfina.it/wp-content/uploads/2018/12/no_image.jpg"
+        thumb = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/no_image.jpg".format('revolutionx'))
+        fanart = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/no_image.jpg".format('revolutionx'))        
         genre = "adult"
         info = ""
         url = 'https://tivustream.website/php_filter/kodi19/xxxJob.php?utKodi=TVSXXX'
@@ -608,17 +612,14 @@ class live_stream(Screen):
         showlist(self.names, self['text'])
 
     def okRun(self):
-        i = len(self.names)
-        print('iiiiii= ',i)
-        if i < 1:
-            return
         idx = self["text"].getSelectionIndex()
-        name = self.names[idx]
-        url = self.urls[idx]
-        pic = self.pics[idx]
-        info = self.infos[idx]
-        if nextmodule == 'Videos1':
-            self.session.open(video1, name, url, pic, info, nextmodule)
+        if idx != '' or idx > -1:
+            name = self.names[idx]
+            url = self.urls[idx]
+            pic = self.pics[idx]
+            info = self.infos[idx]
+            if nextmodule == 'Videos1':
+                self.session.open(video1, name, url, pic, info, nextmodule)
 
     def __layoutFinished(self):
         self.setTitle(self.setup_title)
@@ -627,16 +628,12 @@ class live_stream(Screen):
         self.load_poster()
 
     def load_infos(self):
-        i = len(self.infos)
-        print('iiiiii= ',i)
-        if i < 1:
-            return    
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
-        if idx and (idx != '' or idx > -1):
+        if idx != '' or idx > -1:
             info = self.infos[idx]
             name = self.names[idx]
-            self['desc'].setText(info)
+            self['desc'].setText(str(info))
             self['space'].setText(str(name))
 
     def selectionChanged(self):
@@ -661,7 +658,7 @@ class live_stream(Screen):
     def up(self):
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
-        if idx and (idx != '' or idx > -1):
+        if idx != '' or idx > -1:
             self[self.currentList].up()
             self.load_infos()
             self.load_poster()
@@ -684,44 +681,41 @@ class live_stream(Screen):
         self.load_poster()
 
     def load_poster(self):
-        i = len(self.pics)
-        print('iiiiii= ',i)
-        if i < 1:
-            return    
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
-        pixmaps = self.pics[idx]
-        # pixmaps = six.ensure_binary(self.pics[idx])
-        if pixmaps != "" or pixmaps != "n/A" or pixmaps != None or pixmaps != "null" :
-            if pixmaps.find('http') == -1:
-                self.poster_resize(no_cover)
+        if idx != '' or idx > -1:
+            pixmaps = self.pics[idx]
+            # pixmaps = six.ensure_binary(self.pics[idx])
+            if pixmaps != "" or pixmaps != "n/A" or pixmaps != None or pixmaps != "null" :
+                if pixmaps.find('http') == -1:
+                    self.poster_resize(no_cover)
+                    return
+                else:
+                    try:
+                        if six.PY3:
+                            pixmaps = six.ensure_binary(self.pics[idx])
+                        # print("debug: pixmaps:",pixmaps)
+                        # print("debug: pixmaps:",type(pixmaps))
+                        if pixmaps.startswith(b"https") and sslverify:
+                            parsed_uri = urlparse(pixmaps)
+                            domain = parsed_uri.hostname
+                            sniFactory = SNIFactory(domain)
+                            # if six.PY3:
+                                # pixmaps = pixmaps.encode()
+                            downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                        else:
+                            downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                    except Exception as ex:
+                        print(ex)
+                        print("Error: can't find file or read data")
                 return
-            else:
-                try:
-                    if six.PY3:
-                        pixmaps = six.ensure_binary(self.pics[idx])
-                    # print("debug: pixmaps:",pixmaps)
-                    # print("debug: pixmaps:",type(pixmaps))
-                    if pixmaps.startswith(b"https") and sslverify:
-                        parsed_uri = urlparse(pixmaps)
-                        domain = parsed_uri.hostname
-                        sniFactory = SNIFactory(domain)
-                        # if six.PY3:
-                            # pixmaps = pixmaps.encode()
-                        downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                    else:
-                        downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                except Exception as e:
-                    print(str(e))
-                    print("Error: can't find file or read data")
-            return
 
     def downloadPic(self, data, pictmp):
         if os.path.exists(pictmp):
             try:
                 self.poster_resize(pictmp)
-            except Exception as e:
-                print("* error ** %s" % str(e))
+            except Exception as ex:
+                print("* error ** %s" % ex)
                 pass
             except:
                 pass
@@ -730,9 +724,9 @@ class live_stream(Screen):
         try:
             if fileExists(png):
                 self.poster_resize(no_cover)
-        except Exception as e:
+        except Exception as ex:
             self.poster_resize(no_cover)
-            print(str(e))
+            print(ex)
             print('exe downloadError')
 
     def poster_resize(self, png):
@@ -742,7 +736,7 @@ class live_stream(Screen):
             self.picload = ePicLoad()
             sc = AVSwitch().getFramebufferScale()
             self.picload.setPara([size.width(), size.height(), sc[0], sc[1], False, 1, '#00000000'])
-            if Utils.DreamOS():
+            if DreamOS():
                 self.picload.startDecode(png, False)
             else:
                 self.picload.startDecode(png, 0, 0, False)
@@ -819,17 +813,17 @@ class video1(Screen):
         idx = self["text"].getSelectionIndex()
         name = self.names[idx]
         text_clear = name
-        if Utils.is_tmdb:
+        if is_tmdb:
             try:
                 from Plugins.Extensions.tmdb import tmdb
-                text = Utils.charRemove(text_clear)
+                text = charRemove(text_clear)
                 _session.open(tmdb.tmdbScreen, text, 0)
             except Exception as e:
                 print("[XCF] Tmdb: ", str(e))
-        elif Utils.is_imdb:
+        elif is_imdb:
             try:
                 from Plugins.Extensions.IMDb.plugin import main as imdb
-                text = Utils.charRemove(text_clear)
+                text = charRemove(text_clear)
                 imdb(_session, text)
             except Exception as e:
                 print("[XCF] imdb: ", str(e))
@@ -848,16 +842,13 @@ class video1(Screen):
         self.load_infos()
 
     def load_infos(self):
-        i = len(self.infos)
-        print('iiiiii= ',i)
-        if i < 1:
-            return    
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
-        info = self.infos[idx]
-        name = self.names[idx]
-        self['desc'].setText(info)
-        self['space'].setText(str(name))
+        if idx != '' or idx > -1:
+            info = self.infos[idx]
+            name = self.names[idx]
+            self['desc'].setText(str(info))
+            self['space'].setText(str(name))
 
     def selectionChanged(self):
         if self["text"].getCurrent():
@@ -871,7 +862,7 @@ class video1(Screen):
         self.urls = []
         self.pics = []
         self.infos = []
-        content = Utils.ReadUrl2(self.url)
+        content = ReadUrl2(self.url)
         # content = six.ensure_str(content)
         # print("content video1 =", content)
         y = json.loads(content)
@@ -890,11 +881,11 @@ class video1(Screen):
             # print('In video1 y["channels"][0]["name"]=', y["channels"][0]["name"])
             # print('In video1 y["channels"][self.idx]["items"]["title"]=', y["channels"][self.idx]["items"]["title"])
         except Exception as e:
-            print(str(e))
+            print(e)
         is_enabled = True
         title = "NO TIT"
         # thumb = "https://www.andreisfina.it/wp-content/uploads/2018/12/no_image.jpg"
-        # fanart = "https://www.andreisfina.it/wp-content/uploads/2018/12/no_image.jpg"        
+        # fanart = "https://www.andreisfina.it/wp-content/uploads/2018/12/no_image.jpg"
         thumb = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/no_image.jpg".format('revolutionx'))
         fanart = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/no_image.jpg".format('revolutionx'))
         genre = "adult"
@@ -930,17 +921,14 @@ class video1(Screen):
            return
 
     def okRun(self):
-        i = len(self.names)
-        print('iiiiii= ',i)
-        if i < 1:
-            return    
         idx = self["text"].getSelectionIndex()
         print('video1 idx: ', idx)
-        name = self.names[idx]
-        url = self.urls[idx]
-        pic = self.pics[idx]
-        info = self.infos[idx]
-        self.session.open(video3, name, url, pic, info, nextmodule)
+        if idx != '' or idx > -1:
+            name = self.names[idx]
+            url = self.urls[idx]
+            pic = self.pics[idx]
+            info = self.infos[idx]
+            self.session.open(video3, name, url, pic, info, nextmodule)
 
     def cancel(self):
         global nextmodule
@@ -970,43 +958,41 @@ class video1(Screen):
         self.load_poster()
 
     def load_poster(self):
-        i = len(self.pics)
-        print('iiiiii= ',i)
-        if i < 1:
-            return    
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
-        pixmaps = self.pics[idx]
-        if pixmaps != "" or pixmaps != "n/A" or pixmaps != None or pixmaps != "null" :
-            if pixmaps.find('http') == -1:
-                self.poster_resize(no_cover)
+        if idx != '' or idx > -1:
+            pixmaps = self.pics[idx]
+            if pixmaps != "" or pixmaps != "n/A" or pixmaps != None or pixmaps != "null" :
+                if pixmaps.find('http') == -1:
+                    self.poster_resize(no_cover)
+                    return
+
+                else:
+                    try:
+                        if six.PY3:
+                            pixmaps = six.ensure_binary(self.pics[idx])
+                        # print("debug: pixmaps:",pixmaps)
+                        # print("debug: pixmaps:",type(pixmaps))
+                        if pixmaps.startswith(b"https") and sslverify:
+                            parsed_uri = urlparse(pixmaps)
+                            domain = parsed_uri.hostname
+                            sniFactory = SNIFactory(domain)
+                            # if six.PY3:
+                                # pixmaps = pixmaps.encode()
+                            downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                        else:
+                            downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                    except Exception as ex:
+                        print(ex)
+                        print("Error: can't find file or read data")
                 return
-            else:
-                try:
-                    if six.PY3:
-                        pixmaps = six.ensure_binary(self.pics[idx])
-                    # print("debug: pixmaps:",pixmaps)
-                    # print("debug: pixmaps:",type(pixmaps))
-                    if pixmaps.startswith(b"https") and sslverify:
-                        parsed_uri = urlparse(pixmaps)
-                        domain = parsed_uri.hostname
-                        sniFactory = SNIFactory(domain)
-                        # if six.PY3:
-                            # pixmaps = pixmaps.encode()
-                        downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                    else:
-                        downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                except Exception as e:
-                    print(str(e))
-                    print("Error: can't find file or read data")
-            return
 
     def downloadPic(self, data, pictmp):
         if os.path.exists(pictmp):
             try:
                 self.poster_resize(pictmp)
-            except Exception as e:
-                print("* error ** %s" % str(e))
+            except Exception as ex:
+                print("* error ** %s" % ex)
                 pass
             except:
                 pass
@@ -1015,9 +1001,9 @@ class video1(Screen):
         try:
             if fileExists(png):
                 self.poster_resize(no_cover)
-        except Exception as e:
+        except Exception as ex:
             self.poster_resize(no_cover)
-            print(str(e))
+            print(ex)
             print('exe downloadError')
 
     def poster_resize(self, png):
@@ -1027,7 +1013,7 @@ class video1(Screen):
             self.picload = ePicLoad()
             sc = AVSwitch().getFramebufferScale()
             self.picload.setPara([size.width(), size.height(), sc[0], sc[1], False, 1, '#00000000'])
-            if Utils.DreamOS():
+            if DreamOS():
                 self.picload.startDecode(png, False)
             else:
                 self.picload.startDecode(png, 0, 0, False)
@@ -1104,17 +1090,17 @@ class video3(Screen):
         idx = self["text"].getSelectionIndex()
         name = self.names[idx]
         text_clear = name
-        if Utils.is_tmdb:
+        if is_tmdb:
             try:
                 from Plugins.Extensions.tmdb import tmdb
-                text = Utils.charRemove(text_clear)
+                text = charRemove(text_clear)
                 _session.open(tmdb.tmdbScreen, text, 0)
             except Exception as e:
                 print("[XCF] Tmdb: ", str(e))
-        elif Utils.is_imdb:
+        elif is_imdb:
             try:
                 from Plugins.Extensions.IMDb.plugin import main as imdb
-                text = Utils.charRemove(text_clear)
+                text = charRemove(text_clear)
                 imdb(_session, text)
             except Exception as e:
                 print("[XCF] imdb: ", str(e))
@@ -1133,19 +1119,15 @@ class video3(Screen):
         self.load_poster()
 
     def load_infos(self):
-        i = len(self.infos)
-        print('iiiiii= ',i)
-        if i < 1:
-            return    
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
-        if idx and (idx != '' or idx > -1):
+        if idx != '' or idx > -1:
             info = self.infos[idx]
             name = self.names[idx]
         else:
             info = ''
             name = ''
-        self['desc'].setText(info)
+        self['desc'].setText(str(info))
         self['space'].setText(str(name))
 
     def selectionChanged(self):
@@ -1165,23 +1147,20 @@ class video3(Screen):
         showlist(self.names, self['text'])
 
     def okRun(self):
-        i = len(self.names)
-        print('iiiiii= ',i)
-        if i < 1:
-            return    
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
-        name = self.names[idx]
-        url = self.urls[idx]
-        pic = self.pics[idx]
-        info = self.infos[idx]
-        nextmodule = "Player"
-        # print('name: ', name)
-        # print('url: ', url)
-        # print('png: ', pic)
-        # print('info: ', info)
-        print('Videos3 nextmodule - is: ', nextmodule)
-        self.session.open(Playstream1, name, url, info)
+        if idx != '' or idx > -1:
+            name = self.names[idx]
+            url = self.urls[idx]
+            pic = self.pics[idx]
+            info = self.infos[idx]
+            nextmodule = "Player"
+            # print('name: ', name)
+            # print('url: ', url)
+            # print('png: ', pic)
+            # print('info: ', info)
+            print('Videos3 nextmodule - is: ', nextmodule)
+            self.session.open(Playstream1, name, url, info)
         return
 
 
@@ -1213,43 +1192,41 @@ class video3(Screen):
         self.load_poster()
 
     def load_poster(self):
-        i = len(self.pics)
-        print('iiiiii= ',i)
-        if i < 1:
-            return    
         idx = self["text"].getSelectionIndex()
         print('idx: ', idx)
-        pixmaps = self.pics[idx]
-        if pixmaps != "" or pixmaps != "n/A" or pixmaps != None or pixmaps != "null" :
-            if pixmaps.find('http') == -1:
-                self.poster_resize(no_cover)
+        if idx != '' or idx > -1:
+            pixmaps = self.pics[idx]
+            if pixmaps != "" or pixmaps != "n/A" or pixmaps != None or pixmaps != "null" :
+
+                if pixmaps.find('http') == -1:
+                    self.poster_resize(no_cover)
+                    return
+                else:
+                    try:
+                        if six.PY3:
+                            pixmaps = six.ensure_binary(self.pics[idx])
+                        # print("debug: pixmaps:",pixmaps)
+                        # print("debug: pixmaps:",type(pixmaps))
+                        if pixmaps.startswith(b"https") and sslverify:
+                            parsed_uri = urlparse(pixmaps)
+                            domain = parsed_uri.hostname
+                            sniFactory = SNIFactory(domain)
+                            # if six.PY3:
+                                # pixmaps = pixmaps.encode()
+                            downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                        else:
+                            downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                    except Exception as ex:
+                        print(ex)
+                        print("Error: can't find file or read data")
                 return
-            else:
-                try:
-                    if six.PY3:
-                        pixmaps = six.ensure_binary(self.pics[idx])
-                    # print("debug: pixmaps:",pixmaps)
-                    # print("debug: pixmaps:",type(pixmaps))
-                    if pixmaps.startswith(b"https") and sslverify:
-                        parsed_uri = urlparse(pixmaps)
-                        domain = parsed_uri.hostname
-                        sniFactory = SNIFactory(domain)
-                        # if six.PY3:
-                            # pixmaps = pixmaps.encode()
-                        downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                    else:
-                        downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                except Exception as e:
-                    print(str(e))
-                    print("Error: can't find file or read data")
-            return
 
     def downloadPic(self, data, pictmp):
         if os.path.exists(pictmp):
             try:
                 self.poster_resize(pictmp)
-            except Exception as e:
-                print("* error ** %s" % str(e))
+            except Exception as ex:
+                print("* error ** %s" % ex)
                 pass
             except:
                 pass
@@ -1258,9 +1235,9 @@ class video3(Screen):
         try:
             if fileExists(png):
                 self.poster_resize(no_cover)
-        except Exception as e:
+        except Exception as ex:
             self.poster_resize(no_cover)
-            print(str(e))
+            print(ex)
             print('exe downloadError')
 
     def poster_resize(self, png):
@@ -1270,7 +1247,7 @@ class video3(Screen):
             self.picload = ePicLoad()
             sc = AVSwitch().getFramebufferScale()
             self.picload.setPara([size.width(), size.height(), sc[0], sc[1], False, 1, '#00000000'])
-            if Utils.DreamOS():
+            if DreamOS():
                 self.picload.startDecode(png, False)
             else:
                 self.picload.startDecode(png, 0, 0, False)
@@ -1296,7 +1273,7 @@ class myconfig(Screen, ConfigListScreen):
         _session = session
         self.setTitle(title_plug)
         self['description'] = Label('')
-        self["paypal"] = Label()
+        self["paypal"] = Label()                                
         info = ''
         self['info'] = Label(_('Config Revolution XXX'))
         self['key_yellow'] = Button(_('Choice'))
@@ -1332,7 +1309,7 @@ class myconfig(Screen, ConfigListScreen):
         if entry == _('Personal Password'):
             self['description'].setText(_("Set Password - ask by email to tivustream@gmail.com"))
         return
-        
+
     def paypal2(self):
         conthelp = "If you like what I do you\n"
         conthelp += " can contribute with a coffee\n\n"
@@ -1341,7 +1318,7 @@ class myconfig(Screen, ConfigListScreen):
 
     def layoutFinished(self):
         paypal = self.paypal2()
-        self["paypal"].setText(paypal)  
+        self["paypal"].setText(paypal)
         self.setTitle(self.setup_title)
         if not os.path.exists('/tmp/currentip'):
             os.system('wget -qO- http://ipecho.net/plain > /tmp/currentip')
@@ -1514,78 +1491,75 @@ class Playstream1(Screen):
         showlist(self.names, self['list'])
 
     def okClicked(self):
-        i = len(self.names)
-        print('iiiiii= ',i)
-        if i < 1:
-            return    
         idx = self['list'].getSelectionIndex()
-        self.name = self.names[idx]
-        self.url = self.urls[idx]
-        if "youtube" in str(self.url):
-            # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
-            # return
-            info = self.info
-            try:
-                from Plugins.Extensions.revolutionx.youtube_dl import YoutubeDL
-                '''
-                ydl_opts = {'format': 'best'}
-                ydl_opts = {'format': 'bestaudio/best'}
-                '''
-                ydl_opts = {'format': 'best'}
-                ydl = YoutubeDL(ydl_opts)
-                ydl.add_default_info_extractors()
-                result = ydl.extract_info(self.url, download=False)
-                self.url = result["url"]
-            except:
-                pass
-            self.session.open(Playstream2, self.name, self.url, info)
+        if idx != '' or idx > -1:
+            self.name = self.names[idx]
+            self.url = self.urls[idx]
+            if "youtube" in str(self.url):
+                # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
+                # return
+                info = self.info
+                try:
+                    from Plugins.Extensions.revolutionx.youtube_dl import YoutubeDL
+                    '''
+                    ydl_opts = {'format': 'best'}
+                    ydl_opts = {'format': 'bestaudio/best'}
+                    '''
+                    ydl_opts = {'format': 'best'}
+                    ydl = YoutubeDL(ydl_opts)
+                    ydl.add_default_info_extractors()
+                    result = ydl.extract_info(self.url, download=False)
+                    self.url = result["url"]
+                except:
+                    pass
+                self.session.open(Playstream2, self.name, self.url, info)
 
-        if idx == 0:
-            self.name = self.names[idx]
-            self.url = self.urls[idx]
-            print('In playVideo url D=', self.url)
-            self.play()
-        elif idx == 1:
-            print('In playVideo url B=', self.url)
-            self.name = self.names[idx]
-            self.url = self.urls[idx]
-            try:
-                os.remove('/tmp/hls.avi')
-            except:
-                pass
-            header = ''
-            cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/resolver/hlsclient.py" "' + self.url + '" "1" "' + header + '" + &'
-            print('In playVideo cmd =', cmd)
-            os.system(cmd)
-            os.system('sleep 3')
-            self.url = '/tmp/hls.avi'
-            self.play()
-        elif idx == 2:
-            print('In playVideo url A=', self.url)
-            url = self.url
-            try:
-                os.remove('/tmp/hls.avi')
-            except:
-                pass
-            cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/resolver/tsclient.py" "' + url + '" "1" + &'
-            print('hls cmd = ', cmd)
-            os.system(cmd)
-            os.system('sleep 3')
-            self.url = '/tmp/hls.avi'
-            self.name = self.names[idx]
-            self.play()
+            if idx == 0:
+                self.name = self.names[idx]
+                self.url = self.urls[idx]
+                print('In playVideo url D=', self.url)
+                self.play()
+            elif idx == 1:
+                print('In playVideo url B=', self.url)
+                self.name = self.names[idx]
+                self.url = self.urls[idx]
+                try:
+                    os.remove('/tmp/hls.avi')
+                except:
+                    pass
+                header = ''
+                cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/resolver/hlsclient.py" "' + self.url + '" "1" "' + header + '" + &'
+                print('In playVideo cmd =', cmd)
+                os.system(cmd)
+                os.system('sleep 3')
+                self.url = '/tmp/hls.avi'
+                self.play()
+            elif idx == 2:
+                print('In playVideo url A=', self.url)
+                url = self.url
+                try:
+                    os.remove('/tmp/hls.avi')
+                except:
+                    pass
+                cmd = 'python "/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/resolver/tsclient.py" "' + url + '" "1" + &'
+                print('hls cmd = ', cmd)
+                os.system(cmd)
+                os.system('sleep 3')
+                self.url = '/tmp/hls.avi'
+                self.name = self.names[idx]
+                self.play()
 
-        elif idx == 3:
-            self.name = self.names[idx]
-            self.url = self.urls[idx]
-            print('In playVideo url D=', self.url)
-            self.play2()
-        else:
-            self.name = self.names[idx]
-            self.url = self.urls[idx]
-            print('In playVideo url D=', self.url)
-            self.play()
-        return
+            elif idx == 3:
+                self.name = self.names[idx]
+                self.url = self.urls[idx]
+                print('In playVideo url D=', self.url)
+                self.play2()
+            else:
+                self.name = self.names[idx]
+                self.url = self.urls[idx]
+                print('In playVideo url D=', self.url)
+                self.play()
+            return
 
     def playfile(self, serverint):
         self.serverList[serverint].play(self.session, self.url, self.name)
@@ -1598,7 +1572,7 @@ class Playstream1(Screen):
         self.close()
 
     def play2(self):
-        if Utils.isStreamlinkAvailable():
+        if isStreamlinkAvailable():
             info = self.info
             name = self.name1
             url = self.url
@@ -1853,12 +1827,12 @@ class Playstream2(
         if os.path.exists(TMDB):
             from Plugins.Extensions.TMBD.plugin import TMBD
             text_clear = self.name
-            text = Utils.charRemove(text_clear)
+            text = charRemove(text_clear)
             self.session.open(TMBD, text, False)
         elif os.path.exists(IMDb):
             from Plugins.Extensions.IMDb.plugin import IMDB
             text_clear = self.name
-            text = Utils.charRemove(text_clear)
+            text = charRemove(text_clear)
             self.session.open(IMDB, text)
         else:
             text_clear = self.name
@@ -1879,6 +1853,7 @@ class Playstream2(
         # ref = str(servicetype) + ':0:1:0:0:0:0:0:0:0:' + str(url)
         # if streaml == True:
             # ref = str(servicetype) + ':0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + str(url)
+
         name = self.name
         ref = "{0}:0:0:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3a"), name.replace(":", "%3a"))
         print('reference:   ', ref)
@@ -1907,7 +1882,7 @@ class Playstream2(
         # if "youtube" in str(self.url):
             # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
             # return
-        if Utils.isStreamlinkAvailable():
+        if isStreamlinkAvailable():
             streamtypelist.append("5002") #ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
             streaml = True
         if os.path.exists("/usr/bin/gstplayer"):
@@ -1968,6 +1943,7 @@ class Playstream2(
         self.close()
 
 class plgnstrt(Screen):
+
     def __init__(self, session):
         self.session = session
         skin = skin_path + '/Plgnstrt.xml'
@@ -1992,7 +1968,7 @@ class plgnstrt(Screen):
 
     def poster_resize(self, pngori):
         pixmaps = pngori
-        if Utils.DreamOS():
+        if DreamOS():
             self['poster'].instance.setPixmap(gPixmapPtr())
         else:
             self['poster'].instance.setPixmap(None)
@@ -2007,7 +1983,7 @@ class plgnstrt(Screen):
          1,
          '#FF000000'))
         ptr = self.picload.getData()
-        if Utils.DreamOS():
+        if DreamOS():
             if self.picload.startDecode(pixmaps, False) == 0:
                 ptr = self.picload.getData()
         else:
@@ -2027,8 +2003,8 @@ class plgnstrt(Screen):
             print('image pngori: ', pngori)
             try:
                 self.poster_resize(pngori)
-            except Exception as e:
-                print(str(e))
+            except Exception as ex:
+                print(ex)
                 pass
             except:
                 pass
@@ -2037,6 +2013,7 @@ class plgnstrt(Screen):
         print("*** failure *** %s" % failure)
         global pngori
         fldpng = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/".format('revolutionx'))
+        # fldpng = '/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/'
         npj = random.choice(imgjpg)
         pngori = fldpng + npj
         self.poster_resize(pngori)
@@ -2045,12 +2022,12 @@ class plgnstrt(Screen):
         self.icount = 0
         self['text'].setText(_('\n\n\nCheck Connection wait please...'))
         self.timer = eTimer()
-        if Utils.DreamOS():
+        if DreamOS():
             self.timer_conn = self.timer.timeout.connect(self.OpenCheck)
         else:
             self.timer.callback.append(self.OpenCheck)
-        self.timer.start(2000, 1)
-        
+        self.timer.start(2000, 1)                                 
+
     def getinfo(self):
         continfo = _("==========       WELCOME     ============\n")
         continfo += _("=========     SUPPORT ON:   ============\n")
@@ -2086,15 +2063,9 @@ class plgnstrt(Screen):
     def clsgo(self):
         self.session.openWithCallback(self.close, Revolmain)
 
-def checks():
-    from . import Utils
-    chekin= False
-    if Utils.checkInternet():
-        chekin = True
-    return chekin
-
 def main(session, **kwargs):
-    if checks:
+    from . import Utils
+    if Utils.checkInternet():
         try:
             from . import Update
             Update.upd_done()

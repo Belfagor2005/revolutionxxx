@@ -4,7 +4,7 @@
 ****************************************
 *        coded by Lululla              *
 *                                      *
-*             28/04/2022               *
+*             10/07/2022               *
 ****************************************
 Info http://t.me/tivustream
 '''
@@ -142,7 +142,6 @@ def getversioninfo():
     return (currversion)
 
 try:
-    from OpenSSL import SSL
     from twisted.internet import ssl
     from twisted.internet._sslverify import ClientTLSOptions
     sslverify = True
@@ -197,7 +196,7 @@ piconinter = piccons + 'inter.png'
 pixmaps = piccons + 'backg.png'
 imgjpg = ("nasa1.jpg", "nasa2.jpg", "nasa.jpg", "fulltop.jpg")
 revol = config.plugins.revolutionx.cachefold.value.strip()
-
+PanelMain = [('XXXX')]
 Path_Tmp = "/tmp"
 pictmp = Path_Tmp + "/poster.jpg"
 if revol.endswith('\/\/'):
@@ -211,10 +210,6 @@ logdata("path picons: ", str(revol))
 skin_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/skins/hd/".format('revolutionx'))
 if isFHD():
     skin_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/skins/fhd/".format('revolutionx'))
-    # skin_path = res_plugin_path + 'skins/fhd/'
-# else:
-    # skin_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/skins/hd/".format('revolutionx'))
-    # # skin_path = res_plugin_path + 'skins/hd/'
 if DreamOS():
     skin_path = skin_path + 'dreamOs/'
 
@@ -285,8 +280,7 @@ def showlist(data, list):
         icount = icount+1
         list.setList(plist)
 
-PanelMain = [
- ('XXXX')]
+
 
 class Revolmain(Screen):
     def __init__(self, session):
@@ -315,6 +309,7 @@ class Revolmain(Screen):
         self["key_blue"] = Button(_(''))
         self['key_yellow'].hide()
         self['key_blue'].hide()
+        self['key_green'].hide()        
         self['progress'] = ProgressBar()
         self['progresstext'] = StaticText()
         self["progress"].hide()
@@ -373,6 +368,7 @@ class Revolmain(Screen):
     def __layoutFinished(self):
         self.setTitle(self.setup_title)
         self['info'].setText('Select')
+        self['key_green'].show()
         self.load_poster()
 
     def cancel(self):
@@ -624,6 +620,7 @@ class live_stream(Screen):
     def __layoutFinished(self):
         self.setTitle(self.setup_title)
         self['info'].setText('Select')
+        self['key_green'].show()
         self.load_infos()
         self.load_poster()
 
@@ -838,6 +835,7 @@ class video1(Screen):
     def __layoutFinished(self):
         self.setTitle(self.setup_title)
         self['info'].setText('Select')
+        # self['key_green'].show()
         self.load_poster()
         self.load_infos()
 
@@ -1115,6 +1113,7 @@ class video3(Screen):
     def __layoutFinished(self):
         self.setTitle(self.setup_title)
         self['info'].setText('Select')
+        # self['key_green'].show()
         self.load_infos()
         self.load_poster()
 
@@ -1586,6 +1585,7 @@ class Playstream1(Screen):
             self.close()
         else:
             self.session.open(MessageBox, _('Install Streamlink first'), MessageBox.TYPE_INFO, timeout=5)
+
     def cancel(self):
         try:
             password_mgr = HTTPPasswordMgrWithDefaultRealm()
@@ -1848,12 +1848,6 @@ class Playstream2(
         self.session.nav.playService(sref)
 
     def openPlay(self, servicetype, url):
-        # url = url.replace(':', '%3a')
-        # url = url.replace(' ','%20')
-        # ref = str(servicetype) + ':0:1:0:0:0:0:0:0:0:' + str(url)
-        # if streaml == True:
-            # ref = str(servicetype) + ':0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + str(url)
-
         name = self.name
         ref = "{0}:0:0:0:0:0:0:0:0:0:{1}:{2}".format(servicetype, url.replace(":", "%3a"), name.replace(":", "%3a"))
         print('reference:   ', ref)
@@ -1883,7 +1877,7 @@ class Playstream2(
             # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
             # return
         if isStreamlinkAvailable():
-            streamtypelist.append("5002") #ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
+            streamtypelist.append("5002") 
             streaml = True
         if os.path.exists("/usr/bin/gstplayer"):
             streamtypelist.append("5001")
@@ -2063,20 +2057,47 @@ class plgnstrt(Screen):
     def clsgo(self):
         self.session.openWithCallback(self.close, Revolmain)
 
+def intCheck():
+    import socket
+    try:
+        socket.setdefaulttimeout(1)
+        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect(("8.8.8.8", 53))
+        return True
+    except:
+        return False
+
 def main(session, **kwargs):
-    from . import Utils
-    if Utils.checkInternet():
-        try:
+    try:
+        if intCheck():
             from . import Update
             Update.upd_done()
-        except:
-            pass
-        if os.path.exists('/var/lib/dpkg/status'):
-            session.open(Revolmain)
+            if os.path.exists('/var/lib/dpkg/status'):
+                session.open(Revolmain)
+            else:
+                session.open(plgnstrt)
         else:
-            session.open(plgnstrt)
-    else:
-        session.open(MessageBox, "No Internet", MessageBox.TYPE_INFO)
+            from Screens.MessageBox import MessageBox
+            from Tools.Notifications import AddPopup
+            AddPopup(_("Sorry but No Internet :("),MessageBox.TYPE_INFO, 10, 'Sorry')  
+    except:
+        import traceback
+        traceback.print_exc() 
+        pass
+
+# def main(session, **kwargs):
+    # from . import Utils
+    # if Utils.checkInternet():
+        # try:
+            # from . import Update
+            # Update.upd_done()
+        # except:
+            # pass
+        # if os.path.exists('/var/lib/dpkg/status'):
+            # session.open(Revolmain)
+        # else:
+            # session.open(plgnstrt)
+    # else:
+        # session.open(MessageBox, "No Internet", MessageBox.TYPE_INFO)
 
 def menu(menuid, **kwargs):
     if menuid == 'mainmenu':

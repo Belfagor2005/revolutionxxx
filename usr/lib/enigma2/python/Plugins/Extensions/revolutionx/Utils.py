@@ -1,5 +1,6 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
-#19.02.2021
+#01.06.20212
 #a common tips used from Lululla
 #
 import sys
@@ -32,6 +33,19 @@ else:
     from urllib2 import urlopen
     from urllib2 import Request
     from urllib2 import HTTPError, URLError
+
+if sys.version_info >= (2, 7, 9):
+    try:
+        import ssl
+        sslContext = ssl._create_unverified_context()
+    except:
+        sslContext = None
+        
+def ssl_urlopen(url):
+    if sslContext:
+        return urlopen(url, context=sslContext)
+    else:
+        return urlopen(url)
 
 def getDesktopSize():
     from enigma import getDesktop
@@ -167,15 +181,46 @@ def getLanguage():
         pass
 
 def downloadFile(url, target):
+    import socket
     try:
-        response = urlopen(url)
-        with open(target, 'wb') as output:
-            output.write(response.read())
-        return True
+        from urllib.error import HTTPError, URLError
     except:
-        print("download error")
+        from urllib2 import HTTPError, URLError
+    try:
+        response = urlopen(url, None, 5)
+        with open(target, 'w') as output:
+            print('response: ', response)
+            output.write(response.read())
+        response.close()
+        return True
+    except HTTPError:
+        print("Http error")
         return False
-
+    except URLError:
+        print("Url error")
+        return False
+    except socket.timeout:
+        print("sochet error")
+        return False
+        
+def downloadFilest(url, target):
+    try:
+        req=Request(url)
+        req.add_header('User-Agent','Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+        # context=ssl._create_unverified_context()
+        response=ssl_urlopen(req)
+        with open(target, 'w') as output:
+            if PY3:
+                output.write(response.read().decode('utf-8'))            
+            else:
+                output.write(response.read())
+            print('response: ', response)
+        return True
+    except HTTPError as e:
+        print('HTTP Error code: ',e.code)
+    except URLError as e:
+        print('URL Error: ',e.reason)
+        
 def getserviceinfo(sref):## this def returns the current playing service name and stream_url from give sref
     try:
         from ServiceReference import ServiceReference
@@ -195,6 +240,38 @@ def daterange(start_date, end_date):
     for n in range((end_date - start_date).days + 1):
         yield end_date - datetime.timedelta(n)
 
+global CountConnOk
+CountConnOk = 0
+def zCheckInternet(opt=1,server=None,port=None): # opt=5 custom server and port.
+      global CountConnOk
+      sock = False 
+      checklist = [("8.8.44.4",53),("8.8.88.8",53),("www.e2skin.blogspot.com",80),("www.e2skin.blogspot.com",443),("www.google.com",443)]
+      if opt < 5:
+          srv = checklist[opt]
+      else:
+          srv = (server,port) 
+      try:
+         import socket  
+         socket.setdefaulttimeout(0.5)         
+         socket.socket(socket.AF_INET,socket.SOCK_STREAM).connect(srv)
+         sock = True         
+         #print("[iSettingE2] - Internet OK")
+         CountConnOk = 0
+         print(_("Status Internet: %s:%s -> OK" % (srv[0],srv[1])))
+      except:
+         sock = False
+         #print("[iSettingE2] - Internet KO")         
+         print(_("Status Internet: %s:%s -> KO" % (srv[0],srv[1])))
+         if CountConnOk == 0 and opt != 2 and opt != 3:
+              CountConnOk = 1
+              print(_("Restart Check 1 Internet."))
+              return zCheckInternet(0)
+         elif CountConnOk == 1 and opt != 2 and opt != 3:
+              CountConnOk = 2
+              print(_("Restart Check 2 Internet."))
+              return zCheckInternet(4)
+      return sock
+      
 def checkInternet():
     try:
         import socket
@@ -220,7 +297,7 @@ def check(url):
         return False
     except socket.timeout:
         return False
-        
+
 def testWebConnection(host="www.google.com", port=80, timeout=3):
     import socket
     try:
@@ -261,7 +338,8 @@ def checkStr(text, encoding="utf8"):
         # if isinstance(txt, type(six.text_type())):
             # txt = txt.encode('utf-8')
     # return txt
-    #kiddac code        
+    
+#kiddac code        
 def checkRedirect(url):
     # print("*** check redirect ***")
     try:
@@ -384,7 +462,7 @@ def ReloadBouquets():
         print('bouquets reloaded...')
 
 def deletetmp():
-    os.system('rm -rf /tmp/unzipped;rm -f /tmp/*.ipk;rm -f /tmp/*.tar;rm -f /tmp/*.zip;rm -f /tmp/*.tar.gz;rm -f /tmp/*.tar.bz2;rm -f /tmp/*.tar.tbz2;rm -f /tmp/*.tar.tbz')
+    os.system('rm -rf /tmp/unzipped;rm -f /tmp/*.ipk;rm -f /tmp/*.tar;rm -f /tmp/*.zip;rm -f /tmp/*.tar.gz;rm -f /tmp/*.tar.bz2;rm -f /tmp/*.tar.tbz2;rm -f /tmp/*.tar.tbz;rm -f /tmp/*.m3u')
     return
 
 def del_jpg():
@@ -521,18 +599,10 @@ def isStreamlinkAvailable():
 
 #========================getUrl
 
-# if sys.version_info >= (2, 7, 9):
-    # try:
-        # import ssl
-        # sslContext = ssl._create_unverified_context()
-    # except:
-        # sslContext = None
-# def ssl_urlopen(url):
-    # if sslContext:
-        # return urlopen(url, context=sslContext)
-    # else:
-        # return urlopen(url)
+
+
 def AdultUrl(url):
+        import sys        
         if sys.version_info.major == 3:
              import urllib.request as urllib2
         elif sys.version_info.major == 2:

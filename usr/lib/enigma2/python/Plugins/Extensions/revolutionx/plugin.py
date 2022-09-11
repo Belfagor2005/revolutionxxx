@@ -208,7 +208,7 @@ if not os.path.exists(revol):
         print(('Error creating directory %s:\n%s') % (revol, str(e)))
 logdata("path picons: ", str(revol))
 skin_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/skins/hd/".format('revolutionx'))
-if isFHD():
+if Utils.isFHD():
     skin_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/skins/fhd/".format('revolutionx'))
 if DreamOS():
     skin_path = skin_path + 'dreamOs/'
@@ -240,7 +240,7 @@ REGEX = re.compile(
 class rvList(MenuList):
     def __init__(self, list):
         MenuList.__init__(self, list, True, eListboxPythonMultiContent)
-        if isFHD():
+        if Utils.isFHD():
             self.l.setItemHeight(50)
             textfont = int(34)
             self.l.setFont(0, gFont('Regular', textfont))
@@ -252,7 +252,7 @@ class rvList(MenuList):
 def rvListEntry(name, idx):
     pngs = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/plugins.png".format('revolutionx'))
     res = [name]
-    if isFHD():
+    if Utils.isFHD():
         res.append(MultiContentEntryPixmapAlphaTest(pos =(10, 12), size =(34, 25), png =loadPNG(pngs)))
         res.append(MultiContentEntryText(pos=(60, 0), size =(1900, 50), font =0, text=name, color = 0xa6d1fe, flags =RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
@@ -263,7 +263,7 @@ def rvListEntry(name, idx):
 def rvoneListEntry(name):
     pngx = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/plugin.png".format('revolutionx'))
     res = [name]
-    if isFHD():
+    if Utils.isFHD():
         res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
         res.append(MultiContentEntryText(pos=(60, 0), size=(1900, 50), font=0, text=name, color = 0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
@@ -2059,7 +2059,7 @@ class plgnstrt(Screen):
 
 def main(session, **kwargs):
     try:
-        if Utils.zCheckInternet(0):
+        if Utils.zCheckInternet(1):
             from . import Update
             Update.upd_done()
             if os.path.exists('/var/lib/dpkg/status'):

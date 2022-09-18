@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 '''
 ****************************************
 *        coded by Lululla              *
@@ -39,8 +40,8 @@ from Screens.Console import Console
 from Screens.InfoBar import InfoBar
 from Screens.InfoBar import MoviePlayer
 from Screens.InfoBarGenerics import InfoBarShowHide, InfoBarSubtitleSupport, InfoBarSummarySupport, \
-	InfoBarNumberZap, InfoBarMenu, InfoBarEPG, InfoBarSeek, InfoBarMoviePlayerSummarySupport, \
-	InfoBarAudioSelection, InfoBarNotifications, InfoBarServiceNotifications
+    InfoBarNumberZap, InfoBarMenu, InfoBarEPG, InfoBarSeek, InfoBarMoviePlayerSummarySupport, \
+    InfoBarAudioSelection, InfoBarNotifications, InfoBarServiceNotifications
 from Screens.LocationBox import LocationBox
 from Screens.MessageBox import MessageBox
 from Screens.PluginBrowser import PluginBrowser
@@ -214,27 +215,27 @@ if DreamOS():
     skin_path = skin_path + 'dreamOs/'
 
 REGEX = re.compile(
-		r'([\(\[]).*?([\)\]])|'
-		r'(: odc.\d+)|'
-		r'(\d+: odc.\d+)|'
-		r'(\d+ odc.\d+)|(:)|'
-		r'( -(.*?).*)|(,)|'
-		r'!|'
-		r'/.*|'
-		r'\|\s[0-9]+\+|'
-		r'[0-9]+\+|'
-		r'\s\d{4}\Z|'
-		r'([\(\[\|].*?[\)\]\|])|'
-		r'(\"|\"\.|\"\,|\.)\s.+|'
-		r'\"|:|'
-		r'Премьера\.\s|'
-		r'(х|Х|м|М|т|Т|д|Д)/ф\s|'
-		r'(х|Х|м|М|т|Т|д|Д)/с\s|'
-		r'\s(с|С)(езон|ерия|-н|-я)\s.+|'
-		r'\s\d{1,3}\s(ч|ч\.|с\.|с)\s.+|'
-		r'\.\s\d{1,3}\s(ч|ч\.|с\.|с)\s.+|'
-		r'\s(ч|ч\.|с\.|с)\s\d{1,3}.+|'
-		r'\d{1,3}(-я|-й|\sс-н).+|', re.DOTALL)
+        r'([\(\[]).*?([\)\]])|'
+        r'(: odc.\d+)|'
+        r'(\d+: odc.\d+)|'
+        r'(\d+ odc.\d+)|(:)|'
+        r'( -(.*?).*)|(,)|'
+        r'!|'
+        r'/.*|'
+        r'\|\s[0-9]+\+|'
+        r'[0-9]+\+|'
+        r'\s\d{4}\Z|'
+        r'([\(\[\|].*?[\)\]\|])|'
+        r'(\"|\"\.|\"\,|\.)\s.+|'
+        r'\"|:|'
+        r'Премьера\.\s|'
+        r'(х|Х|м|М|т|Т|д|Д)/ф\s|'
+        r'(х|Х|м|М|т|Т|д|Д)/с\s|'
+        r'\s(с|С)(езон|ерия|-н|-я)\s.+|'
+        r'\s\d{1,3}\s(ч|ч\.|с\.|с)\s.+|'
+        r'\.\s\d{1,3}\s(ч|ч\.|с\.|с)\s.+|'
+        r'\s(ч|ч\.|с\.|с)\s\d{1,3}.+|'
+        r'\d{1,3}(-я|-й|\sс-н).+|', re.DOTALL)
 
 
 class rvList(MenuList):
@@ -309,7 +310,7 @@ class Revolmain(Screen):
         self["key_blue"] = Button(_(''))
         self['key_yellow'].hide()
         self['key_blue'].hide()
-        self['key_green'].hide()        
+        self['key_green'].hide()
         self['progress'] = ProgressBar()
         self['progresstext'] = StaticText()
         self["progress"].hide()
@@ -475,7 +476,7 @@ class Revolmain(Screen):
                 print('no cover.. error')
             return
 
-#Videos1
+# Videos1
 class live_stream(Screen):
     def __init__(self, session, name, url, pic, nextmodule):
         self.session = session
@@ -574,7 +575,7 @@ class live_stream(Screen):
         # thumb = "https://www.andreisfina.it/wp-content/uploads/2018/12/no_image.jpg"
         # fanart = "https://www.andreisfina.it/wp-content/uploads/2018/12/no_image.jpg"
         thumb = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/no_image.jpg".format('revolutionx'))
-        fanart = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/no_image.jpg".format('revolutionx'))        
+        fanart = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/no_image.jpg".format('revolutionx'))
         genre = "adult"
         info = ""
         url = 'https://tivustream.website/php_filter/kodi19/xxxJob.php?utKodi=TVSXXX'
@@ -765,7 +766,7 @@ class video1(Screen):
         self['desc'] = StaticText()
         self['space'] = Label('')
         self["poster"] = Pixmap()
-        #self["poster"].hide()
+        # self["poster"].hide()
         self.picload = ePicLoad()
         self.scale = AVSwitch().getFramebufferScale()
         self['progress'] = ProgressBar()
@@ -1272,7 +1273,7 @@ class myconfig(Screen, ConfigListScreen):
         _session = session
         self.setTitle(title_plug)
         self['description'] = Label('')
-        self["paypal"] = Label()                                
+        self["paypal"] = Label()
         info = ''
         self['info'] = Label(_('Config Revolution XXX'))
         self['key_yellow'] = Button(_('Choice'))
@@ -1877,7 +1878,7 @@ class Playstream2(
             # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
             # return
         if isStreamlinkAvailable():
-            streamtypelist.append("5002") 
+            streamtypelist.append("5002")
             streaml = True
         if os.path.exists("/usr/bin/gstplayer"):
             streamtypelist.append("5001")
@@ -2020,7 +2021,7 @@ class plgnstrt(Screen):
             self.timer_conn = self.timer.timeout.connect(self.OpenCheck)
         else:
             self.timer.callback.append(self.OpenCheck)
-        self.timer.start(2000, 1)                                 
+        self.timer.start(2000, 1)
 
     def getinfo(self):
         continfo = _("==========       WELCOME     ============\n")
@@ -2069,10 +2070,10 @@ def main(session, **kwargs):
         else:
             from Screens.MessageBox import MessageBox
             from Tools.Notifications import AddPopup
-            AddPopup(_("Sorry but No Internet :("),MessageBox.TYPE_INFO, 10, 'Sorry')  
+            AddPopup(_("Sorry but No Internet :("),MessageBox.TYPE_INFO, 10, 'Sorry')
     except:
         import traceback
-        traceback.print_exc() 
+        traceback.print_exc()
         pass
 
 

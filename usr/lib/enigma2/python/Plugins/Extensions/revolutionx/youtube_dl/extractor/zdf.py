@@ -7,7 +7,6 @@ from .common import InfoExtractor
 from ..compat import compat_str
 from ..utils import (
     determine_ext,
-    ExtractorError,
     float_or_none,
     int_or_none,
     merge_dicts,
@@ -146,7 +145,6 @@ class ZDFIE(ZDFBaseIE):
             'timestamp': 1613948400,
             'upload_date': '20210221',
         },
-        'skip': 'No longer available: "Diese Seite wurde leider nicht gefunden"',
     }, {
         # Same as https://www.3sat.de/film/ab-18/10-wochen-sommer-108.html
         'url': 'https://www.zdf.de/dokumentation/ab-18/10-wochen-sommer-102.html',
@@ -160,7 +158,6 @@ class ZDFIE(ZDFBaseIE):
             'timestamp': 1608604200,
             'upload_date': '20201222',
         },
-        'skip': 'No longer available: "Diese Seite wurde leider nicht gefunden"',
     }, {
         'url': 'https://www.zdf.de/dokumentation/terra-x/die-magie-der-farben-von-koenigspurpur-und-jeansblau-100.html',
         'info_dict': {
@@ -193,17 +190,6 @@ class ZDFIE(ZDFBaseIE):
     }, {
         'url': 'https://www.zdf.de/dokumentation/planet-e/planet-e-uebersichtsseite-weitere-dokumentationen-von-planet-e-100.html',
         'only_matching': True,
-    }, {
-        'url': 'https://www.zdf.de/arte/todliche-flucht/page-video-artede-toedliche-flucht-16-100.html',
-        'info_dict': {
-            'id': 'video_artede_083871-001-A',
-            'ext': 'mp4',
-            'title': 'Tödliche Flucht (1/6)',
-            'description': 'md5:e34f96a9a5f8abd839ccfcebad3d5315',
-            'duration': 3193.0,
-            'timestamp': 1641355200,
-            'upload_date': '20220105',
-        },
     }]
 
     def _extract_entry(self, url, player, content, video_id):
@@ -211,18 +197,12 @@ class ZDFIE(ZDFBaseIE):
 
         t = content['mainVideoContent']['http://zdf.de/rels/target']
 
-        def get_ptmd_path(d):
-            return (
-                d.get('http://zdf.de/rels/streams/ptmd')
-                or d.get('http://zdf.de/rels/streams/ptmd-template',
-                         '').replace('{playerId}', 'ngplayer_2_4'))
-
-        ptmd_path = get_ptmd_path(try_get(t, lambda x: x['streams']['default'], dict) or {})
-        if not ptmd_path:
-            ptmd_path = get_ptmd_path(t)
+        ptmd_path = t.get('http://zdf.de/rels/streams/ptmd')
 
         if not ptmd_path:
-            raise ExtractorError('Could not extract ptmd_path')
+            ptmd_path = t[
+                'http://zdf.de/rels/streams/ptmd-template'].replace(
+                '{playerId}', 'ngplayer_2_4')
 
         info = self._extract_ptmd(
             urljoin(url, ptmd_path), video_id, player['apiToken'], url)

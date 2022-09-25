@@ -1,10 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os, re, sys
+import os
+import sys
 from twisted.web.client import downloadPage
 PY3 = sys.version_info.major >= 3
 print("Update.py")
+
 
 def upd_done():        
     print( "In upd_done")
@@ -17,8 +19,8 @@ def upd_done():
     # print("upd_done xfile =", xfile)
     downloadPage(xfile, fdest).addCallback(upd_last)
 
+
 def upd_last(fplug): 
     cmd = "tar -xvf /tmp/revolutionx.tar -C /"
-    print( "cmd A =", cmd)
+    print("cmd A =", cmd)
     os.system(cmd)
-

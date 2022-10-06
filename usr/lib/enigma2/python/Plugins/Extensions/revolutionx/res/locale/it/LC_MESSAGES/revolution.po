@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: revolutionx\n"
-"POT-Creation-Date: 2021-09-07 19:32+0200\n"
+"POT-Creation-Date: 2022-10-06 13:46+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -13,55 +13,55 @@ msgstr ""
 "X-Poedit-Basepath: ../../../..\n"
 "X-Poedit-SearchPath-0: plugin.py\n"
 
-#: plugin.py:198
-msgid "IPTV(4097)"
+#: plugin.py:144
+msgid "ServiceMp3(4097)"
 msgstr ""
 
-#: plugin.py:199
-msgid "Dvb(1)"
+#: plugin.py:145
+msgid "Hardware(1)"
 msgstr ""
 
-#: plugin.py:200
-msgid "eServiceUri(8193)"
-msgstr ""
-
-#: plugin.py:204
+#: plugin.py:149
 msgid "Gstreamer(5001)"
 msgstr ""
 
-#: plugin.py:206
+#: plugin.py:151
 msgid "Exteplayer3(5002)"
 msgstr ""
 
-#: plugin.py:208
+#: plugin.py:153
 msgid "Streamlink(5002)"
 msgstr ""
 
-#: plugin.py:362 plugin.py:545 plugin.py:820 plugin.py:1100
+#: plugin.py:155
+msgid "eServiceUri(8193)"
+msgstr ""
+
+#: plugin.py:285 plugin.py:476 plugin.py:742 plugin.py:1017
 msgid "Cache folder "
 msgstr ""
 
-#: plugin.py:367 plugin.py:543 plugin.py:818 plugin.py:1098
-msgid "Load selected filter list, please wait ..."
-msgstr "Carica l'elenco di filtri selezionato, attendi ..."
+#: plugin.py:290 plugin.py:474 plugin.py:740 plugin.py:1015
+msgid "Loading data... Please wait"
+msgstr ""
 
-#: plugin.py:368 plugin.py:1511
+#: plugin.py:291 plugin.py:1434
 msgid "Select"
 msgstr "Seleziona"
 
-#: plugin.py:369 plugin.py:1510
+#: plugin.py:292
 msgid "Exit"
 msgstr "Uscire"
 
-#: plugin.py:454
+#: plugin.py:381
 msgid "You are not allowed!"
 msgstr "Non sei abilitato!"
 
-#: plugin.py:463
+#: plugin.py:390
 msgid "Otherwise Use my Plugin Freearhey"
 msgstr ""
 
-#: plugin.py:466
+#: plugin.py:393
 msgid ""
 "These streams may contain Adult content\n"
 "\n"
@@ -71,59 +71,59 @@ msgstr ""
 "\n"
 "sei sicuro di volere accedere?"
 
-#: plugin.py:555 plugin.py:830 plugin.py:1110
+#: plugin.py:486 plugin.py:752 plugin.py:1027
 msgid "Download"
 msgstr ""
 
-#: plugin.py:556 plugin.py:831 plugin.py:1111 plugin.py:1341
+#: plugin.py:487 plugin.py:753 plugin.py:1028 plugin.py:1250 plugin.py:1433
 msgid "Back"
 msgstr "Indietro"
 
-#: plugin.py:1332
+#: plugin.py:1239
 msgid "Config"
 msgstr "Config"
 
-#: plugin.py:1338
+#: plugin.py:1247
 msgid "Config Revolution XXX"
 msgstr ""
 
-#: plugin.py:1339
+#: plugin.py:1248
 msgid "Choice"
 msgstr "Scegli"
 
-#: plugin.py:1340
+#: plugin.py:1249
 msgid "Save"
 msgstr "Salva"
 
-#: plugin.py:1342
+#: plugin.py:1251
 msgid "Empty Cache"
 msgstr ""
 
-#: plugin.py:1364 plugin.py:1384
+#: plugin.py:1273 plugin.py:1301
 msgid "Set the path to the Cache folder"
 msgstr "Configura percorso cartella cache"
 
-#: plugin.py:1365 plugin.py:1384
+#: plugin.py:1274 plugin.py:1301
 msgid "Press Ok to select the folder containing the picons files"
 msgstr "Premere Ok per selezionare la cartella contenente i file picons"
 
-#: plugin.py:1367 plugin.py:1385
+#: plugin.py:1276 plugin.py:1302
 msgid "Services Player Reference type"
 msgstr ""
 
-#: plugin.py:1368 plugin.py:1385
+#: plugin.py:1277 plugin.py:1302
 msgid "Configure Service Player Reference"
 msgstr ""
 
-#: plugin.py:1369 plugin.py:1386
+#: plugin.py:1278 plugin.py:1303
 msgid "Personal Password"
 msgstr ""
 
-#: plugin.py:1370 plugin.py:1386
+#: plugin.py:1279 plugin.py:1303
 msgid "Set Password - ask by email to tivustream@gmail.com"
 msgstr "Inserire Password: chiedi via email a tivustream@gmail.com"
 
-#: plugin.py:1379
+#: plugin.py:1296
 #, python-format
 msgid ""
 "Config Panel Addon\n"
@@ -132,55 +132,59 @@ msgstr ""
 "Config Panel Addon\n"
 "Il tuo IP attuale è %s"
 
-#: plugin.py:1396
-msgid "All cache fold empty!"
+#: plugin.py:1313
+msgid "All cache fold are empty!"
 msgstr ""
 
-#: plugin.py:1412
+#: plugin.py:1329
 msgid "Settings saved correctly!"
 msgstr ""
 
-#: plugin.py:1432
+#: plugin.py:1349
 msgid "Choose Directory:"
 msgstr "Scegli cartella"
 
-#: plugin.py:1433
+#: plugin.py:1350
 msgid "Choose Directory"
 msgstr "Scegli percorso"
 
-#: plugin.py:1487
+#: plugin.py:1405
 msgid "Really close without saving the settings?"
 msgstr "Uscire senza salvare le impostazioni?"
 
-#: plugin.py:1813
+#: plugin.py:1559
+msgid "Install Streamlink first"
+msgstr ""
+
+#: plugin.py:1740
 msgid "4:3 Letterbox"
 msgstr ""
 
-#: plugin.py:1814
+#: plugin.py:1741
 msgid "4:3 PanScan"
 msgstr ""
 
-#: plugin.py:1815
+#: plugin.py:1742
 msgid "16:9"
 msgstr ""
 
-#: plugin.py:1816
+#: plugin.py:1743
 msgid "16:9 always"
 msgstr ""
 
-#: plugin.py:1817
+#: plugin.py:1744
 msgid "16:10 Letterbox"
 msgstr ""
 
-#: plugin.py:1818
+#: plugin.py:1745
 msgid "16:10 PanScan"
 msgstr ""
 
-#: plugin.py:1819
+#: plugin.py:1746
 msgid "16:9 Letterbox"
 msgstr ""
 
-#: plugin.py:2035
+#: plugin.py:1983
 msgid ""
 "\n"
 "\n"
@@ -188,93 +192,100 @@ msgid ""
 "Check Connection wait please..."
 msgstr ""
 
-#: plugin.py:2044
+#: plugin.py:1992
 msgid "==========       WELCOME     ============\n"
 msgstr ""
 
-#: plugin.py:2045
+#: plugin.py:1993
 msgid "=========     SUPPORT ON:   ============\n"
 msgstr ""
 
-#: plugin.py:2046
+#: plugin.py:1994
 msgid "+WWW.TIVUSTREAM.COM - WWW.CORVOBOYS.COM+\n"
 msgstr ""
 
-#: plugin.py:2047
+#: plugin.py:1995
 msgid ""
 "http://t.me/tivustream\n"
 "\n"
 msgstr ""
 
-#: plugin.py:2048 plugin.py:2055 plugin.py:2062
+#: plugin.py:1996 plugin.py:2003 plugin.py:2010
 msgid "========================================\n"
 msgstr ""
 
-#: plugin.py:2049
+#: plugin.py:1997
 msgid "NOTA BENE:\n"
 msgstr ""
 
-#: plugin.py:2050
+#: plugin.py:1998
 msgid "Le liste create ad HOC contengono indirizzi liberamente e gratuitamente\n"
 msgstr ""
 
-#: plugin.py:2051
+#: plugin.py:1999
 msgid "trovati in rete e non protetti da sottoscrizione o abbonamento.\n"
 msgstr ""
 
-#: plugin.py:2052
+#: plugin.py:2000
 msgid "Il server di riferimento strutturale ai progetti rilasciati\n"
 msgstr ""
 
-#: plugin.py:2053
+#: plugin.py:2001
 msgid "non e' fonte di alcun stream/flusso.\n"
 msgstr ""
 
-#: plugin.py:2054
+#: plugin.py:2002
 msgid "Assolutamente VIETATO utilizzare queste liste senza autorizzazione.\n"
 msgstr ""
 
-#: plugin.py:2056
+#: plugin.py:2004
 msgid "DISCLAIMER: \n"
 msgstr ""
 
-#: plugin.py:2057
+#: plugin.py:2005
 msgid "The lists created at HOC contain addresses freely and freely found on\n"
 msgstr ""
 
-#: plugin.py:2058
+#: plugin.py:2006
 msgid "the net and not protected by subscription or subscription.\n"
 msgstr ""
 
-#: plugin.py:2059
+#: plugin.py:2007
 msgid "The structural reference server for projects released\n"
 msgstr ""
 
-#: plugin.py:2060
+#: plugin.py:2008
 msgid "is not a source of any stream/flow.\n"
 msgstr ""
 
-#: plugin.py:2061
+#: plugin.py:2009
 msgid "Absolutely PROHIBITED to use this lists without authorization\n"
 msgstr ""
 
-#: plugin.py:2069
+#: plugin.py:2017
 msgid ""
 "\n"
 "\n"
 "Error downloading News!"
 msgstr ""
 
-#: plugin.py:2072
+#: plugin.py:2020
 msgid ""
 "\n"
 "\n"
 "Server Off !"
 msgstr ""
 
-#: plugin.py:2072
+#: plugin.py:2020
 msgid "check SERVER in config"
 msgstr ""
+
+#: plugin.py:2038
+msgid "Sorry but No Internet :("
+msgstr ""
+
+#~ msgid "Load selected filter list, please wait ..."
+#~ msgstr "Carica l'elenco di filtri selezionato, attendi ..."
 
 #~ msgid "Restart"
 #~ msgstr "Riavviare"

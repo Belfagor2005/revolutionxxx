@@ -23,11 +23,7 @@
   	<ePixmap position="220,920" size="970,8" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sep.png" alphatest="blend" zPosition="5" />
   	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/key_red.png" position="220,955" size="30,30" alphatest="on" zPosition="5" />
   	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/key_green.png" position="220,1010" size="30,30" alphatest="on" zPosition="5" />
-  	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/key_yellow.png" position="1155,955" size="30,30" alphatest="on" zPosition="5" />
-  	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/key_blue.png" position="1155,1010" size="30,30" alphatest="on" zPosition="5" />
   	<widget name="key_red" position="270,950" size="300,40" font="Regular;30" halign="left" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
   	<widget name="key_green" position="270,1005" size="300,40" font="Regular;30" halign="left" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
-  	<widget name="key_yellow" position="835,950" size="300,40" font="Regular;30" halign="right" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
-  	<widget name="key_blue" position="835,1005" size="300,40" font="Regular;30" halign="right" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
   	<ePixmap position="1230,1005" size="90,40" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/menu.png" alphatest="blend" zPosition="5" />	
 </screen>

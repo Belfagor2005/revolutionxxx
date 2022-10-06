@@ -237,22 +237,22 @@ def rvListEntry(name, idx):
     pngs = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/plugins.png".format('revolutionx'))
     res = [name]
     if Utils.isFHD():
-        res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngs)))
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(50, 50), png=loadPNG(pngs)))
         res.append(MultiContentEntryText(pos=(60, 0), size=(1900, 50), font =0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
-        res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngs)))
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(50, 50), png=loadPNG(pngs)))
         res.append(MultiContentEntryText(pos=(60, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT))
     return res
 
 
 def rvoneListEntry(name):
-    pngx = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/plugin.png".format('revolutionx'))
+    pngx = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/plugins.png".format('revolutionx'))
     res = [name]
     if Utils.isFHD():
-        res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(50, 50), png=loadPNG(pngx)))
         res.append(MultiContentEntryText(pos=(60, 0), size=(1900, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
-        res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(34, 25), png=loadPNG(pngx)))
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(50, 50), png=loadPNG(pngx)))
         res.append(MultiContentEntryText(pos=(60, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT))
     return res
 
@@ -262,8 +262,8 @@ def showlist(data, list):
     plist = []
     for line in data:
         name = data[icount]
-        plist.append(rvoneListEntry(name))
         icount = icount+1
+        plist.append(rvoneListEntry(name))        
         list.setList(plist)
 
 
@@ -290,10 +290,6 @@ class Revolmain(Screen):
         self['info'].setText(_('Loading data... Please wait'))
         self['key_green'] = Button(_('Select'))
         self['key_red'] = Button(_('Exit'))
-        self['key_yellow'] = Button(_(''))
-        self["key_blue"] = Button(_(''))
-        self['key_yellow'].hide()
-        self['key_blue'].hide()
         self['key_green'].hide()
         self['progress'] = ProgressBar()
         self['progresstext'] = StaticText()
@@ -489,10 +485,6 @@ class live_stream(Screen):
         self["progress"].hide()
         self['key_green'] = Button(_('Download'))
         self['key_red'] = Button(_('Back'))
-        self['key_yellow'] = Button(_(''))
-        self["key_blue"] = Button(_(''))
-        self['key_yellow'].hide()
-        self['key_blue'].hide()
         self['key_green'].hide()
         self.name = name
         self.url = url
@@ -759,10 +751,6 @@ class video1(Screen):
         self["progress"].hide()
         self['key_green'] = Button(_('Download'))
         self['key_red'] = Button(_('Back'))
-        self['key_yellow'] = Button(_(''))
-        self["key_blue"] = Button(_(''))
-        self['key_yellow'].hide()
-        self['key_blue'].hide()
         self['key_green'].hide()
         # idx = 0
         self.name = name
@@ -1038,10 +1026,6 @@ class video3(Screen):
         self["progress"].hide()
         self['key_green'] = Button(_('Download'))
         self['key_red'] = Button(_('Back'))
-        self['key_yellow'] = Button(_(''))
-        self["key_blue"] = Button(_(''))
-        self['key_yellow'].hide()
-        self['key_blue'].hide()
         self['key_green'].hide()
         # idx = 0
         self.name = name
@@ -2042,8 +2026,11 @@ class plgnstrt(Screen):
 def main(session, **kwargs):
     try:
         if Utils.zCheckInternet(1):
-            from . import Update
-            Update.upd_done()
+            try:
+                from . import Update
+                Update.upd_done()
+            except Exception as e:
+                print('error ', str(e))
             if os.path.exists('/var/lib/dpkg/status'):
                 session.open(Revolmain)
             else:

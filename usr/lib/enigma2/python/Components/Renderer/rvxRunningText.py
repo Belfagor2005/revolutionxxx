@@ -94,8 +94,6 @@ class rvxRunningText(Renderer):
             except:
                 pass
 
-
-
     def preWidgetRemove(self, instance):
         self.mTimer.stop()
         from boxbranding import getMachineBrand, getImageDistro, getImageVersion, getOEVersion

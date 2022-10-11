@@ -20,7 +20,10 @@ def upd_done():
     downloadPage(xfile, fdest).addCallback(upd_last)
 
 
-def upd_last(fplug): 
+def upd_last(fplug):
+    import time
+    import os
+    time.sleep(5)
     cmd = "tar -xvf /tmp/revolutionx.tar -C /"
     print("cmd A =", cmd)
     os.system(cmd)

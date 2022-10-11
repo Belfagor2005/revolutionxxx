@@ -1,5 +1,5 @@
 <!-- Skin myConfig 10/10/2022 -->
-<screen name="myconfig" position="0,0" size="1280,720" title="..::CONFIG REVOLUTIONX::.." backgroundColor="transparent" flags="wfNoBorder">
+<screen name="myconfig" position="0,0" size="1280,720" title="..::SETTINGS REVOLUTION X::.." backgroundColor="transparent" flags="wfNoBorder">
 	<ePixmap position="0,0" size="1280,720" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/hd/main2.png" alphatest="blend" zPosition="1" />
 	<ePixmap position="146,26" size="53,40" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/hd/tvs.png" alphatest="blend" scale="1" zPosition="5" />
 	<widget name="title" position="200,29" size="553,33" font="Regular;22" halign="left" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="5" />

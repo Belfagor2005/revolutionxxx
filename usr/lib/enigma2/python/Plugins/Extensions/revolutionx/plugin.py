@@ -1334,7 +1334,7 @@ class myconfig(Screen, ConfigListScreen):
         self.list.append(getConfigListEntry(_('Personal Password'), config.plugins.revolutionx.code, _("Set Password - ask by email to tivustream@gmail.com")))
 
         self["config"].list = self.list
-        self["config"].setList(self.list)
+        self["config"].l.setList(self.list)
         # self.setInfo()
 
     def cachedel(self):

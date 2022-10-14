@@ -171,7 +171,7 @@ pin = 2808
 pin2 = str(config.plugins.revolutionx.code.value)
 
 currversion = getversioninfo()
-title_plug = 'Revolution XXX V. %s' % currversion
+title_plug = 'Revolution XXX V.%s' % currversion
 desc_plug = 'TivuStream Pro Revolution XXX'
 ico_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/logo.png".format('revolutionx'))
 no_cover = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/no_coverArt.png".format('revolutionx'))
@@ -190,7 +190,7 @@ Path_Tmp = "/tmp"
 pictmp = Path_Tmp + "/poster.jpg"
 imgjpg = ("nasa1.jpg", "nasa2.jpg", "nasa.jpg", "fulltop.jpg")
 revol = config.plugins.revolutionx.cachefold.value.strip()
-PanelMain = [('XXXX')]
+PanelMain = [('XXX')]
 global Path_Movies
 Path_Movies = str(config.plugins.revolutionx.movie.value)
 if Path_Movies.endswith("\/\/"):
@@ -254,24 +254,12 @@ def rvListEntry(name, idx):
     pngs = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/plugins.png".format('revolutionx'))
     res = [name]
     if Utils.isFHD():
-        res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(50, 50), png=loadPNG(pngs)))
-        res.append(MultiContentEntryText(pos=(60, 0), size=(1900, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 0), size=(50, 50), png=loadPNG(pngs)))
+        res.append(MultiContentEntryText(pos=(80, 0), size=(1900, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
-        res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(50, 50), png=loadPNG(pngs)))
-        res.append(MultiContentEntryText(pos=(60, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT))
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 0), size=(50, 50), png=loadPNG(pngs)))
+        res.append(MultiContentEntryText(pos=(80, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     return res
-
-
-# def rvoneListEntry(name):
-    # pngx = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/plugins.png".format('revolutionx'))
-    # res = [name]
-    # if Utils.isFHD():
-        # res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(50, 50), png=loadPNG(pngx)))
-        # res.append(MultiContentEntryText(pos=(60, 0), size=(1900, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
-    # else:
-        # res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 12), size=(50, 50), png=loadPNG(pngx)))
-        # res.append(MultiContentEntryText(pos=(60, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT))
-    # return res
 
 
 def showlist(data, list):
@@ -323,8 +311,8 @@ class Revolmain(Screen):
                                      'ColorActions',
                                      'MenuActions'], {'ok': self.okRun,
                                                       'green': self.okRun,
-                                                      'back': self.cancel,
-                                                      'red': self.cancel,
+                                                      'back': self.closerm,
+                                                      'red': self.closerm,
                                                       'epg': self.showIMDB,
                                                       'info': self.showIMDB,
                                                       'up': self.up,
@@ -332,7 +320,7 @@ class Revolmain(Screen):
                                                       'left': self.left,
                                                       'right': self.right,
                                                       'menu': self.goConfig,
-                                                      'cancel': self.cancel},
+                                                      'cancel': self.closerm},
                                     -1)
         self.onLayoutFinish.append(self.updateMenuList)
         self.onLayoutFinish.append(self.__layoutFinished)
@@ -370,8 +358,8 @@ class Revolmain(Screen):
         self['key_green'].show()
         self.load_poster()
 
-    def cancel(self):
-        Utils.deletetmp()
+    def closerm(self):
+        # Utils.deletetmp()
         self.close()
 
     def updateMenuList(self):
@@ -385,7 +373,7 @@ class Revolmain(Screen):
             self.menu_list.append(x)
             self.idx += 1
         self['list'].setList(list)
-        self.name = 'XXXX'
+        self.name = 'XXX'
         self.load_poster()
 
     def okRun(self):
@@ -403,15 +391,15 @@ class Revolmain(Screen):
     def keyNumberGlobalCB(self, idx):
         global nextmodule
         sel = self.menu_list[idx]
-        if sel == ('XXXX'):
+        if sel == ('XXX'):
             if str(config.plugins.revolutionx.code.value) != str(pin):
                 self.mbox = self.session.open(MessageBox, _('You are not allowed!'), MessageBox.TYPE_INFO, timeout=8)
                 return
             else:
-                self.name = 'XXXX'
+                self.name = 'XXX'
                 self.url = 'https://tivustream.website/php_filter/kodi19/xxxJob.php?utKodi=TVSXXX'
                 self.pic = pixmaps
-                nextmodule = 'xxxx'
+                nextmodule = 'xxx'
                 self.adultonly()
         else:
             self.mbox = self.session.open(MessageBox, _('Otherwise Use my Plugin Freearhey'), MessageBox.TYPE_INFO, timeout=4)
@@ -439,7 +427,7 @@ class Revolmain(Screen):
         sel = self['list'].getSelectedIndex()
         if sel is not None or sel != -1:
             if sel == 0:
-                if self.name == 'XXXX':
+                if self.name == 'XXX':
                     pixmaps = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/picons/backg.png".format('revolutionx'))
                 else:
                     pixmaps = piconlive
@@ -637,7 +625,7 @@ class live_stream(Screen):
     def cancel(self):
         global nextmodule
         if nextmodule == 'Videos1':
-            nextmodule = 'xxxx'
+            nextmodule = 'xxx'
         if nextmodule == 'Videos3':
             nextmodule = 'Videos1'
         if nextmodule == 'Player':

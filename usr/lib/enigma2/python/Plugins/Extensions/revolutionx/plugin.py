@@ -1975,7 +1975,7 @@ class plgnstrt(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
-        skin = skin_path + '/Plgnstrt.xml'
+        skin = skin_path + 'Plgnstrt.xml'
         with open(skin, 'r') as f:
             self.skin = f.read()
         print('self.skin: ', skin)

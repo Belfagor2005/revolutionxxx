@@ -1,28 +1,10 @@
 <!-- Skin revall 10/05/2021 -->
-<!-- 
-<screen name="revall" position="0,0" size="1280,720" title=".::REVOLUTION X::.." backgroundColor="transparent" flags="wfNoBorder">
-	<ePixmap position="0,0" size="1280,720" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/hd/main2.png" alphatest="blend" zPosition="1" />
-	<ePixmap position="146,26" size="53,40" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/hd/tvs.png" alphatest="blend" scale="1" zPosition="5" />
-	<widget name="title" position="200,36" size="553,26" font="Regular;22" halign="left" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="5" />
-	<ePixmap position="146,73" size="646,5" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/hd/sep.png" alphatest="blend" zPosition="5" />
-	<widget name="info" position="146,86" size="646,33" font="Regular;20" halign="center" valign="center" foregroundColor="yellow" backgroundColor="#202020" transparent="0" zPosition="5" />
-	<widget name="list" position="146,126" size="646,366" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#20000000" backgroundColorSelected="#0b2049" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/hd/sliderb.png" />
-	<eLabel position="875,243" size="393,421" backgroundColor="#80000000" cornerRadius="20" zPosition="1" />	
-	<ePixmap position="146,506" size="646,3" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/hd/sep.png" alphatest="blend" zPosition="5" />
-	<widget name="pth" position="146,578" size="686,33" font="Regular;20" halign="left" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5" />
-	<eLabel position="890,25" size="370,220" backgroundColor="#80000000" cornerRadius="20" zPosition="1" />	
-	<widget name="poster" position="906,40" size="333,187" backgroundColor="#30000000" transparent="1" borderWidth="2" borderColor="#00ffffff" alphatest="blend" zPosition="4" />
-  	<ePixmap position="146,613" size="646,5" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/hd/sep.png" alphatest="blend" zPosition="5" />
-  	<ePixmap position="820,670" size="60,26" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/hd/menu.png" alphatest="blend" zPosition="5" />
-</screen>
- -->
  <screen name="revall" position="0,0" size="1280,720" title="::REVOLUTION::.." backgroundColor="#20000000" flags="wfNoBorder">
 	<widget name="title" position="300,29" size="372,33" font="Regular;22" halign="left" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="5" />
 	<widget name="info" position="146,86" size="646,33" font="Regular;20" halign="center" valign="center" foregroundColor="yellow" backgroundColor="#202020" transparent="0" zPosition="5" />
 	<widget name="pth" position="386,662" size="413,33" font="Regular;20" halign="left" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5" />
 	<widget source="desc" render="rvRunningText" position="145,499" size="649,155" font="Regular;20" foregroundColor="#ffb75b" backgroundColor="#80000000" halign="center" transparent="0" zPosition="5" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap" />
 	<eLabel position="145,499" size="649,155" backgroundColor="#30000000" zPosition="1" />
-	<!-- <eLabel position="854,162" size="226,300" backgroundColor="#30000000" zPosition="1" /> -->
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolution/res/img/tvs.png" alphatest="blend" position="864,169" size="205,282" scale="1" zPosition="3" />
 	<widget name="poster" position="864,169" size="205,282" backgroundColor="#30000000" transparent="1" borderWidth="2" borderColor="#00ffffff" alphatest="blend" zPosition="4" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolution/res/pics/hd/main2.png" position="0,0" size="1280,720" zPosition="1" />

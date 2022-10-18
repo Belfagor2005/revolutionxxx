@@ -6,8 +6,8 @@
 	<widget source="desc" render="rvRunningText" position="145,499" size="649,155" font="Regular;20" foregroundColor="#ffb75b" backgroundColor="#20000000" halign="center" transparent="0" zPosition="5" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap" />
 	<eLabel position="145,499" size="649,155" backgroundColor="#30000000" zPosition="1" />
 	<!-- <eLabel position="854,162" size="226,300" backgroundColor="#30000000" zPosition="1" /> -->
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolution/res/img/tvs.png" alphatest="blend" position="864,169" size="205,282" scale="1" zPosition="3" />
-	<widget name="poster" position="864,169" size="205,282" backgroundColor="#30000000" transparent="1" borderWidth="2" borderColor="#00ffffff" alphatest="blend" zPosition="4" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolution/res/img/tvs.png" alphatest="blend" position="992,166" size="205,282" scale="1" zPosition="3" />
+	<widget name="poster" position="989,166" size="205,282" backgroundColor="#30000000" transparent="1" borderWidth="2" borderColor="#00ffffff" alphatest="blend" zPosition="4" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolution/res/pics/main22.png" position="0,0" size="1280,720" zPosition="1" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolution/res/pics/tvs.png" alphatest="blend" position="146,21" size="143,40" scale="1" zPosition="5" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolution/res/pics/sep.png" position="146,73" size="646,5" alphatest="blend" zPosition="5" />

@@ -1,4 +1,4 @@
-<!-- Skin myConfig 10/05/2021 -->
+<!-- Skin myConfig 10/10/2022 -->
 <screen name="myConfig" position="0,0" size="1920,1080" title="..::REVOLUTION X::.." backgroundColor="#FF000000" flags="wfNoBorder">
 	<widget source="Title" render="Label" position="230,11" size="1290,110" font="Regular; 70" foregroundColor="#ffff00" backgroundColor="#000000" transparent="1" zPosition="5" />
 	<eLabel position="230,120" size="1450,3" backgroundColor="#303030" zPosition="4" />

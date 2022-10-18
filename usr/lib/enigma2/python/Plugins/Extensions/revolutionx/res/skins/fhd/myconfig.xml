@@ -11,7 +11,7 @@
 	<widget name="description" position="230,130" zPosition="4" size="1000,90" font="Regular; 30" foregroundColor="#fcc000" backgroundColor="#202020" transparent="1" halign="center" valign="center" />
 	<eLabel position="230,230" size="1000,3" backgroundColor="#202020" transparent="0" zPosition="10" />
 	<!-- Menu List -->
-	<widget name="config" position="230,240" size="1000,550" font="Regular;30" itemHeight="50" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#20000000" backgroundColorSelected="#0b2049" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolution/res/pics/sliderb.png" />
+	<widget name="config" position="230,240" size="1000,550" itemHeight="50" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#20000000" backgroundColorSelected="#0b2049" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolution/res/pics/sliderb.png" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/PayPal.png" position="1380,131" size="200,88" zPosition="2" alphatest="on" scale="1" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/qr-codetvs.png" position="1310,240" size="320,320" zPosition="2" alphatest="on" scale="1" />
 	<widget name="paypal" position="1290,600" size="350,300" font="Regular;26" halign="center" foregroundColor="yellow" backgroundColor="#101010" transparent="1" zPosition="2" />

@@ -6,6 +6,7 @@
 	<ePixmap position="1700,0" size="480,1080" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/pC.png" zPosition="-1" />
 	<eLabel position="230,960" size="1450,3" backgroundColor="#303030" zPosition="4" />
 	<widget name="title" position="1433,1023" size="245,32" font="Regular;28" halign="right" valign="center" foregroundColor="yellow" backgroundColor="black" transparent="1" zPosition="8" />
+	<widget name="desc" position="1159,765" zPosition="4" size="522,185" font="Regular; 30" foregroundColor="#fcc000" backgroundColor="#202020" transparent="1" halign="center" valign="center" />
 	<!-- Menu List -->
 	<widget name="info" position="230,140" size="890,50" font="Regular;30" halign="center" valign="center" foregroundColor="yellow" backgroundColor="#202020" transparent="0" zPosition="5" />
 	<widget name="list" position="230,200" size="890,750" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#ffffff" backgroundColor="#000000" backgroundColorSelected="barColor" />

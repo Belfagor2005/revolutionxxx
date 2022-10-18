@@ -614,7 +614,6 @@ class live_stream(Screen):
         if i > 0:
             idx = self['list'].getSelectionIndex()
             info = self.infos[idx]
-
             self['desc'].setText(info)
 
     def selectionChanged(self):
@@ -827,7 +826,6 @@ class video1(Screen):
         if i > 0:
             idx = self['list'].getSelectionIndex()
             info = self.infos[idx]
-
             self['desc'].setText(info)
 
     def selectionChanged(self):
@@ -2098,10 +2096,10 @@ def main(session, **kwargs):
                 Update.upd_done()
             except Exception as e:
                 print('error ', str(e))
-            import sys
-            PY3 = sys.version_info.major >= 3
-            if PY3:
-                session.open(Revolmain)
+            # import sys
+            # PY3 = sys.version_info.major >= 3
+            # if PY3:
+                # session.open(Revolmain)
             if os.path.exists('/var/lib/dpkg/status'):
                 session.open(Revolmain)
             else:

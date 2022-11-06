@@ -5,15 +5,15 @@
 	<ePixmap position="0,0" size="1700,1080" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/main2.png" zPosition="-2" />
 	<ePixmap position="1700,0" size="480,1080" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/pC.png" zPosition="-1" />
 	<eLabel position="230,960" size="1450,3" backgroundColor="#303030" zPosition="4" />
-	<widget name="title" position="1433,1023" size="245,32" font="Regular;28" halign="right" valign="center" foregroundColor="yellow" backgroundColor="black" transparent="1" zPosition="8" />
+	<widget name="title" position="1430,83" size="245,32" font="Regular;28" halign="right" valign="center" foregroundColor="yellow" backgroundColor="black" transparent="1" zPosition="8" />
 	<widget name="desc" position="1159,765" zPosition="4" size="522,185" font="Regular; 30" foregroundColor="#fcc000" backgroundColor="#202020" transparent="1" halign="center" valign="center" />
 	<!-- Menu List -->
 	<widget name="info" position="230,140" size="890,50" font="Regular;30" halign="center" valign="center" foregroundColor="yellow" backgroundColor="#202020" transparent="0" zPosition="5" />
 	<widget name="list" position="230,200" size="890,750" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#ffffff" backgroundColor="#000000" backgroundColorSelected="barColor" />
 	<eLabel position="1190,140" size="440,608" backgroundColor="#20101010" transparent="0" zPosition="-1" />
-	<ePixmap position="1200,150" size="420,588" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/picons/tvs.png" zPosition="2" scale="1" />
+	<ePixmap position="1200,150" size="420,588" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/picons/backg.png" alphatest="blend" zPosition="2" scale="1" />
 	<widget name="poster" position="1200,150" size="420,588" alphatest="blend" scale="1" zPosition="3" />
 	<ePixmap position="230,980" size="90,40" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/menu.png" alphatest="blend" zPosition="5" />	
-	<widget name="pth" position="230,1030" size="1030,50" font="Regular;30" halign="left" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5" />
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvs.png" position="1370,50" size="310,60" zPosition="2" alphatest="on" scale="1" />
+	<widget name="pth" position="343,975" size="777,50" font="Regular;30" halign="right" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvs.png" position="1363,18" size="310,60" zPosition="2" alphatest="on" scale="1" />
 </screen>

@@ -7,19 +7,19 @@
 	<!-- <eLabel position="854,162" size="226,300" backgroundColor="#30000000" zPosition="1" /> -->
 	<widget name="progress" position="929,611" size="300,50" foregroundColor="#2a70a4" backgroundColor="#10000000" transparent="1" zPosition="5" />
 	<widget source="progresstext" render="Label" font="Regular;20" position="927,610" size="300,50" backgroundColor="#202020" transparent="1" halign="center" zPosition="6" />
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolution/res/img/tvs.png" alphatest="blend" position="992,166" size="205,282" scale="1" zPosition="3" />
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolution/res/pics/main22.png" position="0,0" size="1280,720" zPosition="1" />
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolution/res/pics/tvs.png" alphatest="blend" position="146,21" size="143,40" scale="1" zPosition="5" />
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolution/res/pics/sep.png" position="146,73" size="646,5" alphatest="blend" zPosition="5" />
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolution/res/pics/sep.png" position="146,491" size="646,5" alphatest="blend" zPosition="5" />
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolution/res/pics/sep.png" position="146,653" size="646,5" alphatest="blend" zPosition="5" />
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolution/res/pics/menu.png" position="695,23" size="96,39" alphatest="blend" zPosition="5" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvsposter.png" alphatest="blend" position="990,166" size="205,282" scale="1" zPosition="3" />
+	<widget name="poster" position="990,166" size="205,282" backgroundColor="#30000000" transparent="1" borderWidth="2" borderColor="#00ffffff" alphatest="blend" zPosition="4" />	
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/main22.png" position="0,0" size="1280,720" zPosition="1" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvs.png" alphatest="blend" position="146,21" size="143,40" scale="1" zPosition="5" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sep.png" position="146,73" size="646,5" alphatest="blend" zPosition="5" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sep.png" position="146,491" size="646,5" alphatest="blend" zPosition="5" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sep.png" position="146,653" size="646,5" alphatest="blend" zPosition="5" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/menu.png" position="695,23" size="96,39" alphatest="blend" zPosition="5" />
 	<!-- Menu List -->
 	<widget name="list" position="145,126" size="646,360" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#20000000" backgroundColorSelected="#0b2049" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolution/res/pics/sliderb.png" />
 	<!-- Colors 1220 -->
 	<ePixmap name="red" position="147,663" zPosition="2" size="210,60" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />
-	<widget name="key_red" position="262,655" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
+	<widget name="key_red" position="262,655" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" />
 	<ePixmap name="green" position="531,661" zPosition="2" size="210,60" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />
-	<widget name="key_green" position="617,657" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2" />
-	
+	<widget name="key_green" position="617,657" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" />
 </screen>

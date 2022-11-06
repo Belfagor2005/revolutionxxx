@@ -174,21 +174,22 @@ currversion = getversioninfo()
 title_plug = 'Revolution XXX V.%s' % currversion
 desc_plug = 'TivuStream Pro Revolution XXX'
 ico_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/logo.png".format('revolutionx'))
-no_cover = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/no_coverArt.png".format('revolutionx'))
+# no_cover = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/tvsposter.png".format('revolutionx'))
 res_plugin_path = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/".format('revolutionx'))
-pngori = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/fulltop.jpg".format('revolutionx'))
+pngori = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/nasa.jpg".format('revolutionx'))
 piccons = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/picons/".format('revolutionx'))
 piconlive = piccons + 'tv.png'
-piconmovie = piccons + 'cinema.png'
-piconseries = piccons + 'series.png'
-piconsearch = piccons + 'search.png'
+# piconmovie = piccons + 'cinema.png'
+# piconseries = piccons + 'series.png'
+# piconsearch = piccons + 'search.png'
+no_cover = piccons + 'backg.png'
 piconinter = piccons + 'inter.png'
 pixmaps = piccons + 'backg.png'
 nextpng = 'next.png'
 prevpng = 'prev.png'
 Path_Tmp = "/tmp"
 pictmp = Path_Tmp + "/poster.jpg"
-imgjpg = ("nasa1.jpg", "nasa2.jpg", "nasa.jpg", "fulltop.jpg")
+imgjpg = ("nasa.jpg", "nasa1.jpg", "nasa2.jpg")
 revol = config.plugins.revolutionx.cachefold.value.strip()
 PanelMain = [('XXX')]
 global Path_Movies
@@ -255,10 +256,10 @@ def rvListEntry(name, idx):
     res = [name]
     if Utils.isFHD():
         res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 0), size=(50, 50), png=loadPNG(pngs)))
-        res.append(MultiContentEntryText(pos=(80, 0), size=(1900, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+        res.append(MultiContentEntryText(pos=(90, 0), size=(1900, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(10, 0), size=(50, 50), png=loadPNG(pngs)))
-        res.append(MultiContentEntryText(pos=(80, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+        res.append(MultiContentEntryText(pos=(90, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     return res
 
 
@@ -272,7 +273,33 @@ def showlist(data, list):
         list.setList(plist)
 
 
-class Revolmain(Screen):
+def returnIMDB(text_clear):
+    TMDB = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format('TMDB'))
+    IMDb = resolveFilename(SCOPE_PLUGINS, "Extensions/{}".format('IMDb'))
+    if TMDB:
+        try:
+            from Plugins.Extensions.TMBD.plugin import TMBD
+            text = decodeHtml(text_clear)
+            _session.open(TMBD.tmdbScreen, text, 0)
+        except Exception as ex:
+            print("[XCF] Tmdb: ", str(ex))
+        return True
+    elif IMDb:
+        try:
+            from Plugins.Extensions.IMDb.plugin import main as imdb
+            text = decodeHtml(text_clear)
+            imdb(_session, text)
+        except Exception as ex:
+            print("[XCF] imdb: ", str(ex))
+        return True
+    else:
+        text_clear = decodeHtml(text_clear)
+        _session.open(MessageBox, text_clear, MessageBox.TYPE_INFO)
+        return True
+    return
+
+
+class RevolmainX(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
@@ -282,7 +309,7 @@ class Revolmain(Screen):
         with open(skin, 'r') as f:
             self.skin = f.read()
         global nextmodule
-        nextmodule = 'revolmain'
+        nextmodule = 'RevolmainX'
         self['list'] = rvList([])
         self.setup_title = ('HOME REVOLUTION XXX')
         self['pth'] = Label('')
@@ -332,26 +359,8 @@ class Revolmain(Screen):
             return
         idx = self['list'].getSelectionIndex()
         text_clear = self.names[idx]
-        if Utils.is_tmdb:
-            try:
-                from Plugins.Extensions.TMBD.plugin import TMBD
-                text = Utils.badcar(text_clear)
-                text = Utils.charRemove(text_clear)
-                _session.open(TMBD.tmdbScreen, text, 0)
-            except Exception as ex:
-                print("[XCF] Tmdb: ", str(ex))
-        elif Utils.is_imdb:
-            try:
-                from Plugins.Extensions.IMDb.plugin import main as imdb
-                text = Utils.badcar(text_clear)
-                text = Utils.charRemove(text_clear)
-                imdb(_session, text)
-            except Exception as ex:
-                print("[XCF] imdb: ", str(ex))
-        else:
-            text = Utils.badcar(text_clear)
-            text = Utils.charRemove(text_clear)
-            self.session.open(MessageBox, text_clear, MessageBox.TYPE_INFO)
+        if returnIMDB(text_clear):
+            print('show imdb/tmdb')
 
     def __layoutFinished(self):
         self.setTitle(self.setup_title)
@@ -386,7 +395,7 @@ class Revolmain(Screen):
         if not result:
             return
         else:
-            self.session.open(live_stream, self.name, self.url, self.pic, nextmodule)
+            self.session.open(live_streamX, self.name, self.url, self.pic, nextmodule)
 
     def keyNumberGlobalCB(self, idx):
         global nextmodule
@@ -405,7 +414,7 @@ class Revolmain(Screen):
             self.mbox = self.session.open(MessageBox, _('Otherwise Use my Plugin Freearhey'), MessageBox.TYPE_INFO, timeout=4)
 
     def goConfig(self):
-        self.session.open(myconfig)
+        self.session.open(myconfigX)
 
     def up(self):
         self[self.currentList].up()
@@ -463,7 +472,7 @@ class Revolmain(Screen):
 
 
 # Videos1
-class live_stream(Screen):
+class live_streamX(Screen):
     def __init__(self, session, name, url, pic, nextmodule):
         Screen.__init__(self, session)
         self.session = session
@@ -520,33 +529,14 @@ class live_stream(Screen):
             return
         idx = self['list'].getSelectionIndex()
         text_clear = self.names[idx]
-        if Utils.is_tmdb:
-            try:
-                from Plugins.Extensions.TMBD.plugin import TMBD
-                text = Utils.badcar(text_clear)
-                text = Utils.charRemove(text_clear)
-                _session.open(TMBD.tmdbScreen, text, 0)
-            except Exception as ex:
-                print("[XCF] Tmdb: ", str(ex))
-        elif Utils.is_imdb:
-            try:
-                from Plugins.Extensions.IMDb.plugin import main as imdb
-                text = Utils.badcar(text_clear)
-                text = Utils.charRemove(text_clear)
-                imdb(_session, text)
-            except Exception as ex:
-                print("[XCF] imdb: ", str(ex))
-        else:
-            text = Utils.badcar(text_clear)
-            text = Utils.charRemove(text_clear)
-
-            self.session.open(MessageBox, text_clear, MessageBox.TYPE_INFO)
+        if returnIMDB(text_clear):
+            print('show imdb/tmdb')
 
     def readJsonFile(self, name, url, pic):
         global nextmodule
         strJson = Utils.ReadUrl2(url)
         # content = six.ensure_str(content)
-        print('live_stream content B =', strJson)
+        print('live_streamX content B =', strJson)
         y = json.loads(strJson)
         self.names = []
         self.urls = []
@@ -563,15 +553,15 @@ class live_stream(Screen):
         i = 0
         while i < 100:
             try:
-                print('In live_stream y["channels"][i]["name"] =', y["channels"][i]["name"])
+                print('In live_streamX y["channels"][i]["name"] =', y["channels"][i]["name"])
                 name = (y["channels"][i]["name"])
                 name = REGEX.sub('', name.strip())
-                # print("In live_stream name =", name)
+                # print("In live_streamX name =", name)
                 name = str(i) + "_" + name
                 pic = (y["channels"][i]["thumbnail"])
-                # print("In live_stream pic =", pic)
+                # print("In live_streamX pic =", pic)
                 info = (y["channels"][i]["info"])
-                # print("In live_stream info =", info)
+                # print("In live_streamX info =", info)
                 self.names.append(Utils.checkStr(name))
                 self.urls.append(url)
                 self.pics.append(Utils.checkStr(pic))
@@ -601,7 +591,7 @@ class live_stream(Screen):
             pic = self.pics[idx]
             info = self.infos[idx]
             if nextmodule == 'Videos1':
-                self.session.open(video1, name, url, pic, info, nextmodule)
+                self.session.open(video1X, name, url, pic, info, nextmodule)
 
     def __layoutFinished(self):
         self.setTitle(self.setup_title)
@@ -678,7 +668,7 @@ class live_stream(Screen):
                 return
         # pixmaps = six.ensure_binary(self.pics[idx])
         if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
-             try:
+            try:
                 if six.PY3:
                     pixmaps = six.ensure_binary(self.pics[idx])
                 # print("debug: pixmaps:",pixmaps)
@@ -692,7 +682,7 @@ class live_stream(Screen):
                     downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
                 else:
                     downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-             except Exception as ex:
+            except Exception as ex:
                 print(str(ex))
                 print("Error: can't find file or read data")
         return
@@ -735,7 +725,7 @@ class live_stream(Screen):
         return
 
 
-class video1(Screen):
+class video1X(Screen):
     def __init__(self, session, name, url, pic, info, nextmodule):
         Screen.__init__(self, session)
         self.session = session
@@ -794,26 +784,8 @@ class video1(Screen):
             return
         idx = self['list'].getSelectionIndex()
         text_clear = self.names[idx]
-        if Utils.is_tmdb:
-            try:
-                from Plugins.Extensions.TMBD.plugin import TMBD
-                text = Utils.badcar(text_clear)
-                text = Utils.charRemove(text_clear)
-                _session.open(TMBD.tmdbScreen, text, 0)
-            except Exception as ex:
-                print("[XCF] Tmdb: ", str(ex))
-        elif Utils.is_imdb:
-            try:
-                from Plugins.Extensions.IMDb.plugin import main as imdb
-                text = Utils.badcar(text_clear)
-                text = Utils.charRemove(text_clear)
-                imdb(_session, text)
-            except Exception as ex:
-                print("[XCF] imdb: ", str(ex))
-        else:
-            text = Utils.badcar(text_clear)
-            text = Utils.charRemove(text_clear)
-            self.session.open(MessageBox, text_clear, MessageBox.TYPE_INFO)
+        if returnIMDB(text_clear):
+            print('show imdb/tmdb')
 
     def __layoutFinished(self):
         self.setTitle(self.setup_title)
@@ -842,7 +814,7 @@ class video1(Screen):
         self.infos = []
         content = Utils.ReadUrl2(self.url)
         # content = six.ensure_str(content)
-        # print("content video1 =", content)
+        # print("content video1X =", content)
         y = json.loads(content)
         folder_path = "/tmp/tivustream/"
         if not os.path.exists(folder_path):
@@ -854,10 +826,10 @@ class video1(Screen):
         x = self.name.split("_")
         n = int(x[0])
         try:
-            print('In video1 y["channels"] =', y["channels"])
-            # print('In video1 n y["channels"][0] =', y["channels"][n]["items"])
-            # print('In video1 y["channels"][0]["name"]=', y["channels"][0]["name"])
-            # print('In video1 y["channels"][self.idx]["items"]["title"]=', y["channels"][self.idx]["items"]["title"])
+            print('In video1X y["channels"] =', y["channels"])
+            # print('In video1X n y["channels"][0] =', y["channels"][n]["items"])
+            # print('In video1X y["channels"][0]["name"]=', y["channels"][0]["name"])
+            # print('In video1X y["channels"][self.idx]["items"]["title"]=', y["channels"][self.idx]["items"]["title"])
         except Exception as e:
             print(e)
         is_enabled = True
@@ -882,13 +854,13 @@ class video1(Screen):
             for item in y["channels"][n]["items"]:
                 name = item["title"]
                 name = REGEX.sub('', name.strip())
-                # print("In live_stream title =", str(name))
+                # print("In live_streamX title =", str(name))
                 url = item["link"]
                 url = url.replace("\\", "")
-                # print("In live_stream link =", str(url))
+                # print("In live_streamX link =", str(url))
                 pic = item["thumbnail"]
                 info = item["info"]
-                # print("In live_stream info =", str(info))
+                # print("In live_streamX info =", str(info))
                 self.names.append(Utils.checkStr(name))
                 self.urls.append(url)
                 self.pics.append(Utils.checkStr(pic))
@@ -904,12 +876,12 @@ class video1(Screen):
         if i < 1:
             return
         idx = self['list'].getSelectionIndex()
-        print('video1 idx: ', idx)
+        print('video1X idx: ', idx)
         name = self.names[idx]
         url = self.urls[idx]
         pic = self.pics[idx]
         info = self.infos[idx]
-        self.session.open(video3, name, url, pic, info, nextmodule)
+        self.session.open(video3X, name, url, pic, info, nextmodule)
 
     def cancel(self):
         global nextmodule
@@ -1015,7 +987,7 @@ class video1(Screen):
         return
 
 
-class video3(Screen):
+class video3X(Screen):
     def __init__(self, session, name, url, pic, info, nextmodule):
         Screen.__init__(self, session)
         self.session = session
@@ -1075,26 +1047,8 @@ class video3(Screen):
             return
         idx = self['list'].getSelectionIndex()
         text_clear = self.names[idx]
-        if Utils.is_tmdb:
-            try:
-                from Plugins.Extensions.TMBD.plugin import TMBD
-                text = Utils.badcar(text_clear)
-                text = Utils.charRemove(text_clear)
-                _session.open(TMBD.tmdbScreen, text, 0)
-            except Exception as ex:
-                print("[XCF] Tmdb: ", str(ex))
-        elif Utils.is_imdb:
-            try:
-                from Plugins.Extensions.IMDb.plugin import main as imdb
-                text = Utils.badcar(text_clear)
-                text = Utils.charRemove(text_clear)
-                imdb(_session, text)
-            except Exception as ex:
-                print("[XCF] imdb: ", str(ex))
-        else:
-            text = Utils.badcar(text_clear)
-            text = Utils.charRemove(text_clear)
-            self.session.open(MessageBox, text_clear, MessageBox.TYPE_INFO)
+        if returnIMDB(text_clear):
+            print('show imdb/tmdb')
 
     def __layoutFinished(self):
         self.setTitle(self.setup_title)
@@ -1146,7 +1100,7 @@ class video3(Screen):
             # print('png: ', pic)
             # print('info: ', info)
             print('Videos3 nextmodule - is: ', nextmodule)
-            self.session.open(Playstream1, name, url, info)
+            self.session.open(Playstream1X, name, url, info)
         return
 
     def cancel(self):
@@ -1256,7 +1210,7 @@ class video3(Screen):
         return
 
 
-class myconfig(Screen, ConfigListScreen):
+class myconfigX(Screen, ConfigListScreen):
     def __init__(self, session):
         Screen.__init__(self, session)
         skin = skin_path + 'myconfig.xml'
@@ -1448,7 +1402,7 @@ class myconfig(Screen, ConfigListScreen):
         self.close()
 
 
-class Playstream1(Screen):
+class Playstream1X(Screen):
     def __init__(self, session, name, url, desc):
         Screen.__init__(self, session)
         self.session = session
@@ -1482,7 +1436,7 @@ class Playstream1(Screen):
         self.name1 = name
         self.url = url
         self.desc = desc
-        print('In Playstream1 self.url =', url)
+        print('In Playstream1X self.url =', url)
         self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
         self.onLayoutFinish.append(self.openTest)
         return
@@ -1577,7 +1531,7 @@ class Playstream1(Screen):
                 self.url = result["url"]
             except:
                 pass
-            self.session.open(Playstream2, self.name, self.url, desc)
+            self.session.open(Playstream2X, self.name, self.url, desc)
         if idx == 0:
             self.name = self.names[idx]
             self.url = self.urls[idx]
@@ -1638,7 +1592,7 @@ class Playstream1(Screen):
         desc = self.desc
         url = self.url
         name = self.name1
-        self.session.open(Playstream2, name, url, desc)
+        self.session.open(Playstream2X, name, url, desc)
         self.close()
 
     def play2(self):
@@ -1653,7 +1607,7 @@ class Playstream1(Screen):
             sref = eServiceReference(ref)
             print('SREF: ', sref)
             sref.setName(name)
-            self.session.open(Playstream2, name, sref, desc)
+            self.session.open(Playstream2X, name, sref, desc)
             self.close()
         else:
             self.session.open(MessageBox, _('Install Streamlink first'), MessageBox.TYPE_INFO, timeout=5)
@@ -1756,7 +1710,7 @@ class TvInfoBarShowHide():
         print(text + " %s\n" % obj)
 
 
-class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifications, InfoBarAudioSelection, TvInfoBarShowHide, InfoBarSubtitleSupport):
+class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifications, InfoBarAudioSelection, TvInfoBarShowHide, InfoBarSubtitleSupport):
     STATE_IDLE = 0
     STATE_PLAYING = 1
     STATE_PAUSED = 2
@@ -1850,26 +1804,8 @@ class Playstream2(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifica
 
     def showIMDB(self):
         text_clear = self.name
-        if Utils.is_tmdb:
-            try:
-                from Plugins.Extensions.TMBD.plugin import TMBD
-                text = Utils.badcar(text_clear)
-                text = Utils.charRemove(text_clear)
-                _session.open(TMBD.tmdbScreen, text, 0)
-            except Exception as ex:
-                print("[XCF] Tmdb: ", str(ex))
-        elif Utils.is_imdb:
-            try:
-                from Plugins.Extensions.IMDb.plugin import main as imdb
-                text = Utils.badcar(text_clear)
-                text = Utils.charRemove(text_clear)
-                imdb(_session, text)
-            except Exception as ex:
-                print("[XCF] imdb: ", str(ex))
-        else:
-            text = Utils.badcar(text_clear)
-            text = Utils.charRemove(text_clear)
-            self.session.open(MessageBox, text_clear, MessageBox.TYPE_INFO)
+        if returnIMDB(text_clear):
+            print('show imdb/tmdb')
 
     def slinkPlay(self, url):
         name = self.name
@@ -2026,7 +1962,7 @@ class plgnstrt(Screen):
         return
 
     def image_downloaded(self):
-        pngori = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/fulltop.jpg".format('revolutionx'))
+        pngori = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/pics/nasa.jpg".format('revolutionx'))
         if os.path.exists(pngori):
             print('image pngori: ', pngori)
             try:
@@ -2051,7 +1987,7 @@ class plgnstrt(Screen):
             self.timer_conn = self.timer.timeout.connect(self.OpenCheck)
         else:
             self.timer.callback.append(self.OpenCheck)
-        self.timer.start(2000, 1)
+        self.timer.start(200, 1)
 
     def getinfo(self):
         continfo = _("==========       WELCOME     ============\n")
@@ -2085,7 +2021,7 @@ class plgnstrt(Screen):
         self['list'].setText(_('\n\n' + 'Server Off !') + '\n' + _('check SERVER in config'))
 
     def clsgo(self):
-        self.session.openWithCallback(self.close, Revolmain)
+        self.session.openWithCallback(self.close, RevolmainX)
 
 
 def main(session, **kwargs):
@@ -2099,11 +2035,11 @@ def main(session, **kwargs):
             # import sys
             # PY3 = sys.version_info.major >= 3
             # if PY3:
-                # session.open(Revolmain)
-            if os.path.exists('/var/lib/dpkg/status'):
-                session.open(Revolmain)
-            else:
-                session.open(plgnstrt)
+                # session.open(RevolmainX)
+            # if os.path.exists('/var/lib/dpkg/status'):
+            session.open(RevolmainX)
+            # else:
+                # session.open(plgnstrt)
         else:
             from Screens.MessageBox import MessageBox
             from Tools.Notifications import AddPopup

@@ -332,22 +332,22 @@ class RevolmainX(Screen):
         self.idx = 0
         self.menulist = []
         self['title'] = Label(title_plug)
-        self['actions'] = ActionMap(['SetupActions',
-                                     'DirectionActions',
-                                     "EPGSelectActions",
+        self['actions'] = ActionMap(['OkCancelActions',
                                      'ColorActions',
-                                     'MenuActions'], {'ok': self.okRun,
-                                                      'green': self.okRun,
-                                                      'back': self.closerm,
-                                                      'red': self.closerm,
-                                                      'epg': self.showIMDB,
-                                                      'info': self.showIMDB,
-                                                      'up': self.up,
-                                                      'down': self.down,
-                                                      'left': self.left,
-                                                      'right': self.right,
-                                                      'menu': self.goConfig,
-                                                      'cancel': self.closerm},
+                                     'EPGSelectActions',
+                                     'MenuActions',
+                                     'DirectionActions'], {'ok': self.okRun,
+                                                           'green': self.okRun,
+                                                           'back': self.closerm,
+                                                           'red': self.closerm,
+                                                           'epg': self.showIMDB,
+                                                           'info': self.showIMDB,
+                                                           'up': self.up,
+                                                           'down': self.down,
+                                                           'left': self.left,
+                                                           'right': self.right,
+                                                           'menu': self.goConfig,
+                                                           'cancel': self.closerm},
                                     -1)
         self.onLayoutFinish.append(self.updateMenuList)
         self.onLayoutFinish.append(self.__layoutFinished)
@@ -504,18 +504,19 @@ class live_streamX(Screen):
         self.currentList = 'list'
         self.idx = 0
         self['title'] = Label(title_plug)
-        self['actions'] = ActionMap(['SetupActions',
+        self['actions'] = ActionMap(['OkCancelActions',
+                                     'ColorActions',
                                      'EPGSelectActions',
-                                     'DirectionActions',
-                                     'ColorActions'], {'ok': self.okRun,
-                                                       'red': self.cancel,
-                                                       'up': self.up,
-                                                       'down': self.down,
-                                                       'left': self.left,
-                                                       'right': self.right,
-                                                       'epg': self.showIMDB,
-                                                       'info': self.showIMDB,
-                                                       'cancel': self.cancel}, -2)
+                                     'MenuActions',
+                                     'DirectionActions'], {'ok': self.okRun,
+                                                           'red': self.cancel,
+                                                           'up': self.up,
+                                                           'down': self.down,
+                                                           'left': self.left,
+                                                           'right': self.right,
+                                                           'epg': self.showIMDB,
+                                                           'info': self.showIMDB,
+                                                           'cancel': self.cancel}, -2)
         self.readJsonFile(name, url, pic)
         self.timer = eTimer()
         self.timer.start(2000, 1)
@@ -760,18 +761,19 @@ class video1X(Screen):
         self.downloading = False
         self.currentList = 'list'
         self['title'] = Label(title_plug)
-        self['actions'] = ActionMap(['SetupActions',
+        self['actions'] = ActionMap(['OkCancelActions',
+                                     'ColorActions',
                                      'EPGSelectActions',
-                                     'DirectionActions',
-                                     'ColorActions'], {'ok': self.okRun,
-                                                       'red': self.cancel,
-                                                       'up': self.up,
-                                                       'down': self.down,
-                                                       'left': self.left,
-                                                       'right': self.right,
-                                                       'epg': self.showIMDB,
-                                                       'info': self.showIMDB,
-                                                       'cancel': self.cancel}, -2)
+                                     'MenuActions',
+                                     'DirectionActions'], {'ok': self.okRun,
+                                                           'red': self.cancel,
+                                                           'up': self.up,
+                                                           'down': self.down,
+                                                           'left': self.left,
+                                                           'right': self.right,
+                                                           'epg': self.showIMDB,
+                                                           'info': self.showIMDB,
+                                                           'cancel': self.cancel}, -2)
         self.readJsonFile(name, url, pic)
         self.timer = eTimer()
         self.timer.start(1000, 1)
@@ -1022,18 +1024,19 @@ class video3X(Screen):
         self.downloading = False
         self.currentList = 'list'
         self['title'] = Label(title_plug)
-        self['actions'] = ActionMap(['SetupActions',
+        self['actions'] = ActionMap(['OkCancelActions',
+                                     'ColorActions',
                                      'EPGSelectActions',
-                                     'DirectionActions',
-                                     'ColorActions'], {'ok': self.okRun,
-                                                       'red': self.cancel,
-                                                       'up': self.up,
-                                                       'down': self.down,
-                                                       'left': self.left,
-                                                       'right': self.right,
-                                                       'epg': self.showIMDB,
-                                                       'info': self.showIMDB,
-                                                       'cancel': self.cancel}, -2)
+                                     'MenuActions',
+                                     'DirectionActions'], {'ok': self.okRun,
+                                                           'red': self.cancel,
+                                                           'up': self.up,
+                                                           'down': self.down,
+                                                           'left': self.left,
+                                                           'right': self.right,
+                                                           'epg': self.showIMDB,
+                                                           'info': self.showIMDB,
+                                                           'cancel': self.cancel}, -2)
         self.readJsonFile(name, url, pic, info)
         self.timer = eTimer()
         self.timer.start(1000, 1)
@@ -1420,17 +1423,19 @@ class Playstream1X(Screen):
         self['progresstext'] = StaticText()
         self["progress"].hide()
         self.downloading = False
-        self['setupActions'] = ActionMap(['SetupActions',
-                                          'ColorActions',
-                                          'TimerEditActions',
-                                          'InfobarInstantRecord'], {'red': self.cancel,
-                                                                    'green': self.okClicked,
-                                                                    'back': self.cancel,
-                                                                    'cancel': self.cancel,
-                                                                    'rec': self.runRec,
-                                                                    'instantRecord': self.runRec,
-                                                                    'ShortRecord': self.runRec,
-                                                                    'ok': self.okClicked}, -2)
+        self['actions'] = ActionMap(['OkCancelActions',
+                                     'ColorActions',
+                                     'EPGSelectActions',
+                                     'MenuActions',
+                                     'InfobarInstantRecord',
+                                     'DirectionActions'], {'red': self.cancel,
+                                                           'green': self.okClicked,
+                                                           'back': self.cancel,
+                                                           'cancel': self.cancel,
+                                                           'rec': self.runRec,
+                                                           'instantRecord': self.runRec,
+                                                           'ShortRecord': self.runRec,
+                                                           'ok': self.okClicked}, -2)
         self.name1 = name
         self.url = url
         self.desc = desc
@@ -1741,7 +1746,6 @@ class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotific
                                      'MediaPlayerActions',
                                      'EPGSelectActions',
                                      'MediaPlayerSeekActions',
-                                     'SetupActions',
                                      'ColorActions',
                                      'InfobarShowHideActions',
                                      'InfobarActions',
@@ -1919,8 +1923,7 @@ class plgnstrt(Screen):
         self['list'] = StaticText()
         self['actions'] = ActionMap(['OkCancelActions',
                                      'DirectionActions',
-                                     'ColorActions',
-                                     'SetupActions'], {'ok': self.clsgo,
+                                     'ColorActions'], {'ok': self.clsgo,
                                                        'cancel': self.clsgo,
                                                        'back': self.clsgo,
                                                        'red': self.clsgo,

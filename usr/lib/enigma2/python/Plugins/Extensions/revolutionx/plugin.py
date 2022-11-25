@@ -59,6 +59,7 @@ import json
 import random
 import six
 from . import Utils
+from . import html_conv
 
 PY3 = sys.version_info.major >= 3
 if PY3:
@@ -279,7 +280,7 @@ def returnIMDB(text_clear):
     if TMDB:
         try:
             from Plugins.Extensions.TMBD.plugin import TMBD
-            text = Utils.decodeHtml(text_clear)
+            text = html_conv.html_unescape(text_clear)
             _session.open(TMBD.tmdbScreen, text, 0)
         except Exception as ex:
             print("[XCF] Tmdb: ", str(ex))
@@ -287,13 +288,13 @@ def returnIMDB(text_clear):
     elif IMDb:
         try:
             from Plugins.Extensions.IMDb.plugin import main as imdb
-            text = Utils.decodeHtml(text_clear)
+            text = html_conv.html_unescape(text_clear)
             imdb(_session, text)
         except Exception as ex:
             print("[XCF] imdb: ", str(ex))
         return True
     else:
-        text_clear = Utils.decodeHtml(text_clear)
+        text_clear = html_conv.html_unescape(text_clear)
         _session.open(MessageBox, text_clear, MessageBox.TYPE_INFO)
         return True
     return
@@ -336,6 +337,7 @@ class RevolmainX(Screen):
                                      'ColorActions',
                                      'EPGSelectActions',
                                      'MenuActions',
+                                     'ButtonSetupActions',
                                      'DirectionActions'], {'ok': self.okRun,
                                                            'green': self.okRun,
                                                            'back': self.closerm,
@@ -508,6 +510,7 @@ class live_streamX(Screen):
                                      'ColorActions',
                                      'EPGSelectActions',
                                      'MenuActions',
+                                     'ButtonSetupActions',
                                      'DirectionActions'], {'ok': self.okRun,
                                                            'red': self.cancel,
                                                            'up': self.up,
@@ -765,6 +768,7 @@ class video1X(Screen):
                                      'ColorActions',
                                      'EPGSelectActions',
                                      'MenuActions',
+                                     'ButtonSetupActions',
                                      'DirectionActions'], {'ok': self.okRun,
                                                            'red': self.cancel,
                                                            'up': self.up,
@@ -1028,6 +1032,7 @@ class video3X(Screen):
                                      'ColorActions',
                                      'EPGSelectActions',
                                      'MenuActions',
+                                     'ButtonSetupActions',
                                      'DirectionActions'], {'ok': self.okRun,
                                                            'red': self.cancel,
                                                            'up': self.up,
@@ -1427,6 +1432,7 @@ class Playstream1X(Screen):
                                      'ColorActions',
                                      'EPGSelectActions',
                                      'MenuActions',
+                                     'ButtonSetupActions',
                                      'InfobarInstantRecord',
                                      'DirectionActions'], {'red': self.cancel,
                                                            'green': self.okClicked,
@@ -1747,6 +1753,7 @@ class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotific
                                      'EPGSelectActions',
                                      'MediaPlayerSeekActions',
                                      'ColorActions',
+                                     'ButtonSetupActions',
                                      'InfobarShowHideActions',
                                      'InfobarActions',
                                      'InfobarSeekActions'], {'leavePlayer': self.cancel,
@@ -1757,7 +1764,7 @@ class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotific
                                                              'cancel': self.cancel,
                                                              'back': self.cancel}, -1)
         self.service = None
-        self.name = Utils.decodeHtml(name)
+        self.name = html_conv.html_unescape(name)
         self.icount = 0
         url = url.replace(':', '%3a')
         self.url = url

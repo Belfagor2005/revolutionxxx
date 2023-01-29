@@ -124,6 +124,13 @@ def getversioninfo():
     return (currversion)
 
 
+def paypal():
+    conthelp = "If you like what I do you\n"
+    conthelp += "can contribute with a coffee\n"
+    conthelp += "scan the qr code and donate € 1.00"
+    return conthelp
+
+
 try:
     from twisted.internet import ssl
     from twisted.internet._sslverify import ClientTLSOptions
@@ -710,7 +717,6 @@ class live_streamX(Screen):
 
     def poster_resize(self, png):
         self["poster"].hide()
-
         size = self['poster'].instance.size()
         self.picload = ePicLoad()
         self.scale = AVSwitch().getFramebufferScale()
@@ -724,8 +730,6 @@ class live_streamX(Screen):
         if ptr is not None:
             self['poster'].instance.setPixmap(ptr)
             self['poster'].show()
-        else:
-            print('no cover.. error')
         return
 
 
@@ -1268,15 +1272,9 @@ class myconfigX(Screen, ConfigListScreen):
             self['description'].setText(_("Set Password - ask by email to tivustream@gmail.com"))
         return
 
-    def paypal2(self):
-        conthelp = "If you like what I do you\n"
-        conthelp += " can contribute with a coffee\n\n"
-        conthelp += "scan the qr code and donate € 1.00"
-        return conthelp
-
     def layoutFinished(self):
-        paypal = self.paypal2()
-        self["paypal"].setText(paypal)
+        payp = paypal()
+        self["paypal"].setText(payp)
         self.setTitle(self.setup_title)
         if not os.path.exists('/tmp/currentip'):
             os.system('wget -qO- http://ipecho.net/plain > /tmp/currentip')

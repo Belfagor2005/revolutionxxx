@@ -6,8 +6,8 @@ from Tools.Directories import resolveFilename, SCOPE_PLUGINS
 import gettext
 import os
 
-PluginLanguageDomain = 'revolution'
-PluginLanguagePath = 'Extensions/revolution/res/locale'
+PluginLanguageDomain = 'revolutionx'
+PluginLanguagePath = 'Extensions/revolutionx/res/locale'
 
 isDreamOS = False
 if os.path.exists("/var/lib/dpkg/status"):

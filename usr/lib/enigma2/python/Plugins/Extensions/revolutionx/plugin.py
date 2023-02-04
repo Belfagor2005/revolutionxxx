@@ -166,7 +166,7 @@ class rvList(MenuList):
             textfont = int(30)
             self.l.setFont(0, gFont('Regular', textfont))
         else:
-            self.l.setItemHeight(30)
+            self.l.setItemHeight(45)
             textfont = int(24)
             self.l.setFont(0, gFont('Regular', textfont))
 
@@ -178,7 +178,7 @@ def rvListEntry(name, idx):
         res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(40, 40), png=loadPNG(pngs)))
         res.append(MultiContentEntryText(pos=(70, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
-        res.append(MultiContentEntryPixmapAlphaTest(pos=(3, 3), size=(30, 30), png=loadPNG(pngs)))
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(3, 10), size=(40, 40), png=loadPNG(pngs)))
         res.append(MultiContentEntryText(pos=(50, 0), size=(500, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     return res
 

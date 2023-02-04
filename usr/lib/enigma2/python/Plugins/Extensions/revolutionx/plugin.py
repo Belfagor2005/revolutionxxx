@@ -860,39 +860,37 @@ class live_streamX(Screen):
     def load_poster(self):
         try:
             i = len(self.names)
-            if i < 0:
-                return
-            idx = self['list'].getSelectionIndex()
-            name = self.names[idx]
-            pixmaps = self.pics[idx]
-            if 'next' in name.lower():
-                pixmaps = str(piccons) + nextpng
-                if os.path.exists(pixmaps):
-                    self.downloadPic(None, pixmaps)
-                    return
-            if 'prev' in name.lower():
-                pixmaps = str(piccons) + prevpng
-                if os.path.exists(pixmaps):
-                    self.downloadPic(None, pixmaps)
-                    return
-            if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
-                try:
-                    if PY3:
-                        pixmaps = six.ensure_binary(self.pics[idx])
-                    # print("debug: pixmaps:",pixmaps)
-                    # print("debug: pixmaps:",type(pixmaps))
-                    if pixmaps.startswith(b"https") and sslverify:
-                        parsed_uri = urlparse(pixmaps)
-                        domain = parsed_uri.hostname
-                        sniFactory = SNIFactory(domain)
-                        downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                    else:
-                        downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                except Exception as e:
-                    print(e)
+            if i > 0:
+                idx = self['list'].getSelectionIndex()
+                name = self.names[idx]
+                pixmaps = self.pics[idx]
+                if 'next' in name.lower():
+                    pixmaps = str(piccons) + nextpng
+                    if os.path.exists(pixmaps):
+                        self.downloadPic(None, pixmaps)
+                        return
+                if 'prev' in name.lower():
+                    pixmaps = str(piccons) + prevpng
+                    if os.path.exists(pixmaps):
+                        self.downloadPic(None, pixmaps)
+                        return
+                if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
+                    try:
+                        if PY3:
+                            pixmaps = six.ensure_binary(self.pics[idx])
+                        # print("debug: pixmaps:",pixmaps)
+                        # print("debug: pixmaps:",type(pixmaps))
+                        if pixmaps.startswith(b"https") and sslverify:
+                            parsed_uri = urlparse(pixmaps)
+                            domain = parsed_uri.hostname
+                            sniFactory = SNIFactory(domain)
+                            downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                        else:
+                            downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                    except Exception as e:
+                        print(e)
         except Exception as e:
             print(e)
-        return
 
     def downloadPic(self, data, pictmp):
         if os.path.exists(pictmp):
@@ -1158,38 +1156,36 @@ class video1X(Screen):
         self.load_poster()
 
     def load_poster(self):
-        i = len(self.names)
-        if i < 0:
-            return
-        idx = self['list'].getSelectionIndex()
-        name = self.names[idx]
-        pixmaps = self.pics[idx]
-        if 'next' in name.lower():
-            pixmaps = str(piccons) + nextpng
-            if os.path.exists(pixmaps):
-                self.downloadPic(None, pixmaps)
-                return
-        if 'prev' in name.lower():
-            pixmaps = str(piccons) + prevpng
-            if os.path.exists(pixmaps):
-                self.downloadPic(None, pixmaps)
-                return
-        if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
-            try:
-                if PY3:
-                    pixmaps = six.ensure_binary(self.pics[idx])
-                # print("debug: pixmaps:",pixmaps)
-                # print("debug: pixmaps:",type(pixmaps))
-                if pixmaps.startswith(b"https") and sslverify:
-                    parsed_uri = urlparse(pixmaps)
-                    domain = parsed_uri.hostname
-                    sniFactory = SNIFactory(domain)
-                    downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                else:
-                    downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-            except Exception as e:
-                print(e)
-        return
+        try:    
+            i = len(self.names)
+            if i > 0:
+                idx = self['list'].getSelectionIndex()
+                name = self.names[idx]
+                pixmaps = self.pics[idx]
+                if 'next' in name.lower():
+                    pixmaps = str(piccons) + nextpng
+                    if os.path.exists(pixmaps):
+                        self.downloadPic(None, pixmaps)
+                        return
+                if 'prev' in name.lower():
+                    pixmaps = str(piccons) + prevpng
+                    if os.path.exists(pixmaps):
+                        self.downloadPic(None, pixmaps)
+                        return
+                if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
+                        if PY3:
+                            pixmaps = six.ensure_binary(self.pics[idx])
+                        # print("debug: pixmaps:",pixmaps)
+                        # print("debug: pixmaps:",type(pixmaps))
+                        if pixmaps.startswith(b"https") and sslverify:
+                            parsed_uri = urlparse(pixmaps)
+                            domain = parsed_uri.hostname
+                            sniFactory = SNIFactory(domain)
+                            downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                        else:
+                            downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+        except Exception as e:
+            print(e)
 
     def downloadPic(self, data, pictmp):
         if os.path.exists(pictmp):
@@ -1236,6 +1232,10 @@ class video3X(Screen):
             self.skin = f.read()
         self.setup_title = ('HOME REVOLUTION XXX')
         self.list = []
+        self.names = []
+        self.urls = []
+        self.pics = []
+        self.infos = []
         self['list'] = self.list
         self['list'] = rvList([])
         self['info'] = Label(name)
@@ -1276,7 +1276,7 @@ class video3X(Screen):
             self.readJsonTimer_conn = self.readJsonTimer.timeout.connect(self.readJsonFile)
         except:
             self.readJsonTimer.callback.append(self.readJsonFile)
-        self.readJsonTimer.start(200, True)
+        self.readJsonTimer.start(500, True)
 
         self.onLayoutFinish.append(self.__layoutFinished)
 
@@ -1355,38 +1355,36 @@ class video3X(Screen):
         self.load_poster()
 
     def load_poster(self):
-        i = len(self.names)
-        if i < 0:
-            return
-        idx = self['list'].getSelectionIndex()
-        name = self.names[idx]
-        pixmaps = self.pics[idx]
-        if 'next' in name.lower():
-            pixmaps = str(piccons) + nextpng
-            if os.path.exists(pixmaps):
-                self.downloadPic(None, pixmaps)
-                return
-        if 'prev' in name.lower():
-            pixmaps = str(piccons) + prevpng
-            if os.path.exists(pixmaps):
-                self.downloadPic(None, pixmaps)
-                return
-        if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
-            try:
-                if PY3:
-                    pixmaps = six.ensure_binary(self.pics[idx])
-                # print("debug: pixmaps:",pixmaps)
-                # print("debug: pixmaps:",type(pixmaps))
-                if pixmaps.startswith(b"https") and sslverify:
-                    parsed_uri = urlparse(pixmaps)
-                    domain = parsed_uri.hostname
-                    sniFactory = SNIFactory(domain)
-                    downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                else:
-                    downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-            except Exception as e:
-                print(e)
-        return
+        try:    
+            i = len(self.names)
+            if i > 0:
+                idx = self['list'].getSelectionIndex()
+                name = self.names[idx]
+                pixmaps = self.pics[idx]
+                if 'next' in name.lower():
+                    pixmaps = str(piccons) + nextpng
+                    if os.path.exists(pixmaps):
+                        self.downloadPic(None, pixmaps)
+                        return
+                if 'prev' in name.lower():
+                    pixmaps = str(piccons) + prevpng
+                    if os.path.exists(pixmaps):
+                        self.downloadPic(None, pixmaps)
+                        return
+                if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
+                        if PY3:
+                            pixmaps = six.ensure_binary(self.pics[idx])
+                        # print("debug: pixmaps:",pixmaps)
+                        # print("debug: pixmaps:",type(pixmaps))
+                        if pixmaps.startswith(b"https") and sslverify:
+                            parsed_uri = urlparse(pixmaps)
+                            domain = parsed_uri.hostname
+                            sniFactory = SNIFactory(domain)
+                            downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                        else:
+                            downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+        except Exception as e:
+            print(e)
 
     def downloadPic(self, data, pictmp):
         if os.path.exists(pictmp):

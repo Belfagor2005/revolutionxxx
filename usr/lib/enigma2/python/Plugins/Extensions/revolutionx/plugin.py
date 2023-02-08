@@ -57,7 +57,6 @@ import six
 import sys
 import ssl
 import json
-import random
 
 PY3 = False
 PY3 = sys.version_info.major >= 3
@@ -77,7 +76,6 @@ if PY3:
     print('six.PY3: True ')
 
 THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/revolutionx'
-# THISPLUG = os.path.dirname(sys.modules[__name__].__file__)
 global skin_path, revol, pngs, pngl, pngx, file_json, nextmodule, search, pngori, pictmp, piconlive, piconinter
 
 search = False
@@ -232,9 +230,6 @@ res_plugin_path = os.path.join(THISPLUG, 'res/')
 pngori = os.path.join(THISPLUG, 'res/pics/nasa.jpg')
 piccons = os.path.join(THISPLUG, 'res/picons/')
 piconlive = piccons + 'tv.png'
-# piconmovie = piccons + 'cinema.png'
-# piconseries = piccons + 'series.png'
-# piconsearch = piccons + 'search.png'
 no_cover = piccons + 'backg.png'
 piconinter = piccons + 'inter.png'
 pixmaps = piccons + 'backg.png'
@@ -252,8 +247,6 @@ Path_Movies = str(cfg.movie.value)
 
 
 def cleanName(name):
-    # name = name.strip()
-    # filter out non-allowed characters
     non_allowed_characters = "/.\\:*?<>|\""
     name = name.replace('\xc2\x86', '').replace('\xc2\x87', '')
     name = name.replace(' ', '-').replace("'", '').replace('&', 'e')
@@ -294,7 +287,6 @@ def returnIMDB(text_clear):
         text_clear = html_conv.html_unescape(text_clear)
         _session.open(MessageBox, text_clear, MessageBox.TYPE_INFO)
         return True
-    # return
 
 
 PanelMain = [('XXX')]
@@ -317,20 +309,16 @@ class RevolmainX(Screen):
         self['pth'].setText(_('Cache folder ') + revol)
         self['poster'] = Pixmap()
         self['desc'] = StaticText()
-        # self['space'] = Label('')
         self['info'] = Label('')
         self['info'].setText('Select')
         self['key_green'] = Button(_('Select'))
         self['key_red'] = Button(_('Exit'))
         self['key_green'].hide()
         self.currentList = 'list'
-        self.picload = ePicLoad()
-        self.scale = AVSwitch().getFramebufferScale()
         self.names = []
         self.urls = []
         self.pics = []
         self.infos = []
-        self.idx = 0
         self.menulist = []
         self['title'] = Label(title_plug)
         self['actions'] = ActionMap(['OkCancelActions',
@@ -665,9 +653,6 @@ class live_streamX(Screen):
         self['pth'].setText(_('Cache folder ') + revol)
         self['desc'] = StaticText()
         self["poster"] = Pixmap()
-        # self["poster"].hide()
-        self.picload = ePicLoad()
-        self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
         self.names = []
         self.urls = []
@@ -679,7 +664,6 @@ class live_streamX(Screen):
         self.type = self.name
         self.downloading = False
         self.currentList = 'list'
-        self.idx = 0
         self['title'] = Label(title_plug)
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ColorActions',
@@ -875,20 +859,18 @@ class live_streamX(Screen):
                         self.downloadPic(None, pixmaps)
                         return
                 if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
-                    try:
-                        if PY3:
-                            pixmaps = six.ensure_binary(self.pics[idx])
-                        # print("debug: pixmaps:",pixmaps)
-                        # print("debug: pixmaps:",type(pixmaps))
-                        if pixmaps.startswith(b"https") and sslverify:
-                            parsed_uri = urlparse(pixmaps)
-                            domain = parsed_uri.hostname
-                            sniFactory = SNIFactory(domain)
-                            downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                        else:
-                            downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                    except Exception as e:
-                        print(e)
+                    # if PY3:
+                        # pixmaps = six.ensure_binary(self.pics[idx])
+                    # print("debug: pixmaps:",pixmaps)
+                    # print("debug: pixmaps:",type(pixmaps))
+                    pixmaps = Utils.checkRedirect(pixmaps)
+                    if pixmaps.startswith(b"https") and sslverify:
+                        parsed_uri = urlparse(pixmaps)
+                        domain = parsed_uri.hostname
+                        sniFactory = SNIFactory(domain)
+                        downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                    else:
+                        downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
         except Exception as e:
             print(e)
 
@@ -944,11 +926,7 @@ class video1X(Screen):
         self['pth'].setText(_('Cache folder ') + revol)
         self['desc'] = StaticText()
         self["poster"] = Pixmap()
-        # self["poster"].hide()
-        self.picload = ePicLoad()
-        self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
-        # self.idx = 0
         self.names = []
         self.urls = []
         self.pics = []
@@ -1065,7 +1043,6 @@ class video1X(Screen):
                             "info": "By @tivustream"
                         },
                 '''
-
                 # print('item = ', item)
                 name = item["title"]
                 name = re.sub('\[.*?\]', "", name)
@@ -1156,7 +1133,7 @@ class video1X(Screen):
         self.load_poster()
 
     def load_poster(self):
-        try:    
+        try:
             i = len(self.names)
             if i > 0:
                 idx = self['list'].getSelectionIndex()
@@ -1173,17 +1150,18 @@ class video1X(Screen):
                         self.downloadPic(None, pixmaps)
                         return
                 if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
-                        if PY3:
-                            pixmaps = six.ensure_binary(self.pics[idx])
-                        # print("debug: pixmaps:",pixmaps)
-                        # print("debug: pixmaps:",type(pixmaps))
-                        if pixmaps.startswith(b"https") and sslverify:
-                            parsed_uri = urlparse(pixmaps)
-                            domain = parsed_uri.hostname
-                            sniFactory = SNIFactory(domain)
-                            downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                        else:
-                            downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                    # if PY3:
+                        # pixmaps = six.ensure_binary(self.pics[idx])
+                    # print("debug: pixmaps:",pixmaps)
+                    # print("debug: pixmaps:",type(pixmaps))
+                    pixmaps = Utils.checkRedirect(pixmaps)
+                    if pixmaps.startswith(b"https") and sslverify:
+                        parsed_uri = urlparse(pixmaps)
+                        domain = parsed_uri.hostname
+                        sniFactory = SNIFactory(domain)
+                        downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                    else:
+                        downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
         except Exception as e:
             print(e)
 
@@ -1243,12 +1221,7 @@ class video3X(Screen):
         self['pth'].setText(_('Cache folder ') + revol)
         self["poster"] = Pixmap()
         self['desc'] = StaticText()
-        # self['space'] = Label('')
-        # self["poster"].hide()
-        self.picload = ePicLoad()
-        self.scale = AVSwitch().getFramebufferScale()
         self['key_red'] = Button(_('Back'))
-        # self.idx = 0
         self.name = name
         self.url = url
         self.pic = pic
@@ -1355,7 +1328,7 @@ class video3X(Screen):
         self.load_poster()
 
     def load_poster(self):
-        try:    
+        try:
             i = len(self.names)
             if i > 0:
                 idx = self['list'].getSelectionIndex()
@@ -1372,17 +1345,18 @@ class video3X(Screen):
                         self.downloadPic(None, pixmaps)
                         return
                 if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
-                        if PY3:
-                            pixmaps = six.ensure_binary(self.pics[idx])
-                        # print("debug: pixmaps:",pixmaps)
-                        # print("debug: pixmaps:",type(pixmaps))
-                        if pixmaps.startswith(b"https") and sslverify:
-                            parsed_uri = urlparse(pixmaps)
-                            domain = parsed_uri.hostname
-                            sniFactory = SNIFactory(domain)
-                            downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                        else:
-                            downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                    # if PY3:
+                        # pixmaps = six.ensure_binary(self.pics[idx])
+                    # print("debug: pixmaps:",pixmaps)
+                    # print("debug: pixmaps:",type(pixmaps))
+                    pixmaps = Utils.checkRedirect(pixmaps)
+                    if pixmaps.startswith(b"https") and sslverify:
+                        parsed_uri = urlparse(pixmaps)
+                        domain = parsed_uri.hostname
+                        sniFactory = SNIFactory(domain)
+                        downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                    else:
+                        downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
         except Exception as e:
             print(e)
 
@@ -1525,7 +1499,6 @@ class Playstream1X(Screen):
         skin = os.path.join(skin_path, 'Playstream1.xml')
         with open(skin, 'r') as f:
             self.skin = f.read()
-
         self.setup_title = ('Select Player Stream')
         self.list = []
         self['list'] = rvList([])
@@ -1648,22 +1621,20 @@ class Playstream1X(Screen):
         if idx is not None or idx != -1:
             self.name = self.names[idx]
             self.url = self.urls[idx]
-            if "youtube" in str(self.url):
-                desc = self.desc
-                try:
-                    from Plugins.Extensions.revolution.youtube_dl import YoutubeDL
-                    '''
-                    ydl_opts = {'format': 'best'}
-                    ydl_opts = {'format': 'bestaudio/best'}
-                    '''
-                    ydl_opts = {'format': 'best'}
-                    ydl = YoutubeDL(ydl_opts)
-                    ydl.add_default_info_extractors()
-                    result = ydl.extract_info(self.url, download=False)
-                    self.url = result["url"]
-                except:
-                    pass
-                self.session.open(Playstream2X, self.name, self.url, desc)
+            '''
+            # if "youtube" in str(self.url):
+                # desc = self.desc
+                # try:
+                    # from Plugins.Extensions.revolution.youtube_dl import YoutubeDL
+                    # ydl_opts = {'format': 'best'}
+                    # ydl = YoutubeDL(ydl_opts)
+                    # ydl.add_default_info_extractors()
+                    # result = ydl.extract_info(self.url, download=False)
+                    # self.url = result["url"]
+                # except:
+                    # pass
+                # self.session.open(Playstream2X, self.name, self.url, desc)
+            '''
             if idx == 0:
                 print('In playVideo url D=', self.url)
                 self.play()
@@ -1883,15 +1854,6 @@ class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotific
         print('servicetype2: ', self.servicetype)
         self.openPlay(self.servicetype, url)
 
-    # def keyNumberGlobal(self, number):
-        # self['text'].number(number)
-
-    # def keyLeft(self):
-        # self['text'].left()
-
-    # def keyRight(self):
-        # self['text'].right()
-
     def showVideoInfo(self):
         if self.shown:
             self.hideInfobar()
@@ -1929,8 +1891,6 @@ class plgnstrt(Screen):
             self.skin = f.read()
         self["poster"] = Pixmap()
         self["poster"].hide()
-        self.picload = ePicLoad()
-        self.scale = AVSwitch().getFramebufferScale()
         self['list'] = StaticText()
         self['actions'] = ActionMap(['OkCancelActions',
                                      'DirectionActions',

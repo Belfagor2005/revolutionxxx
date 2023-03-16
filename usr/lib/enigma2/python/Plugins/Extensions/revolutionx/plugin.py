@@ -4,7 +4,7 @@
 '''
 ****************************************
 *        coded by Lululla              *
-*             03/02/2023               *
+*             16/03/2023               *
 *       skin by MMark                  *
 ****************************************
 Info http://t.me/tivustream
@@ -512,16 +512,16 @@ class myconfigX(Screen, ConfigListScreen):
         # self.setInfo()
 
     def setInfo(self):
-        entry = str(self.getCurrentEntry())
-        if entry == _('Set the path to the Cache folder'):
-            self['description'].setText(_("Press Ok to select the folder containing the picons files"))
-        if entry == _('Set the path Movie folder'):
-            self['description'].setText(_("Folder Movie Path (eg.: /media/hdd/movie), Press OK - Enigma restart required"))
-        if entry == _('Services Player Reference type'):
-            self['description'].setText(_("Configure Service Player Reference"))
-        if entry == _('Personal Password'):
-            self['description'].setText(_("Set Password - ask by email to tivustream@gmail.com"))
-        return
+        try:
+            sel = self['config'].getCurrent()[2]
+            if sel:
+                # print('sel =: ', sel)
+                self['description'].setText(str(sel))
+            else:
+                self['description'].setText(_('SELECT YOUR CHOICE'))
+            return
+        except Exception as e:
+            print("Error ", e)
 
     def keyLeft(self):
         ConfigListScreen.keyLeft(self)
@@ -2010,7 +2010,7 @@ def main(session, **kwargs):
 
 def menu(menuid, **kwargs):
     if menuid == 'mainmenu':
-        return [(desc_plug, main, title_plug, 44)]
+        return [(desc_plug, main, 'TiVuStream', 44)]
     else:
         return []
 

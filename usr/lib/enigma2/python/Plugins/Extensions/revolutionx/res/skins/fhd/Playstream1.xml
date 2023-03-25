@@ -1,10 +1,9 @@
 <!-- Skin FullHD1 10/05/2021 -->
 <screen name="Playstream1" position="0,0" size="1920,1080" title=".::REVOLUTION X::.." backgroundColor="#FF000000" flags="wfNoBorder">
-	<widget source="Title" render="Label" position="230,7" size="809,110" font="Regular; 70" foregroundColor="#ffff00" backgroundColor="#000000" transparent="1" zPosition="5" halign="center" />
 	<eLabel position="230,120" size="810,3" backgroundColor="#303030" zPosition="4" />
 	<ePixmap position="0,0" size="1920,1080" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/main1.png" zPosition="-1" />
 	<eLabel position="230,960" size="810,3" backgroundColor="#303030" zPosition="4" />
-	<widget name="title" position="749,918" size="289,32" font="Regular;28" halign="right" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="8" />
+    <widget name="title" position="517,46" size="522,50" font="Regular;34" halign="left" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="5" />
 	<!-- Menu List -->
 	<widget name="info" position="230,130" size="810,50" font="Regular;30" halign="center" valign="center" foregroundColor="yellow" backgroundColor="#202020" transparent="0" zPosition="5" />
 	<widget name="list" position="230,190" size="810,750" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#ffffff" backgroundColor="#000000" backgroundColorSelected="barColor" />

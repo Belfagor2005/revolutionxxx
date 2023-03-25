@@ -16,10 +16,10 @@
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sep.png" position="146,653" size="646,5" alphatest="blend" zPosition="5" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/menu.png" position="695,23" size="96,39" alphatest="blend" zPosition="5" />
 	<!-- Menu List -->
-	<widget name="list" position="145,126" size="646,360" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#20000000" backgroundColorSelected="#0b2049" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolution/res/pics/sliderb.png" />
+	<widget name="list" position="145,126" size="646,360" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#20000000" backgroundColorSelected="#0b2049" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sliderb.png" />
 	<!-- Colors 1220 -->
 	<ePixmap name="red" position="147,663" zPosition="2" size="210,60" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />
-	<widget name="key_red" position="262,655" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" />
+	<widget name="key_red" position="262,655" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular; 24" transparent="1" />
 	<ePixmap name="green" position="531,661" zPosition="2" size="210,60" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />
-	<widget name="key_green" position="617,657" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;30" transparent="1" />
+	<widget name="key_green" position="617,657" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular; 24" transparent="1" />
 </screen>

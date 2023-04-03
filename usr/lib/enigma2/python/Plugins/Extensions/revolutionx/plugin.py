@@ -4,7 +4,7 @@
 '''
 ****************************************
 *        coded by Lululla              *
-*             16/03/2023               *
+*             03/04/2023               *
 *       skin by MMark                  *
 ****************************************
 Info http://t.me/tivustream
@@ -84,6 +84,18 @@ _firstStarttvspro = True
 streamlink = False
 if Utils.isStreamlinkAvailable:
     streamlink = True
+
+try:
+    from Plugins.Extensions.SubsSupport import SubsSupport, SubsSupportStatus
+except ImportError:
+    class SubsSupport(object):
+        def __init__(self, *args, **kwargs):
+            pass
+
+
+class SubsSupportStatus(object):
+    def __init__(self, *args, **kwargs):
+        pass
 
 
 def trace_error():
@@ -169,7 +181,7 @@ def rvListEntry(name, idx):
         res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(40, 40), png=loadPNG(pngs)))
         res.append(MultiContentEntryText(pos=(70, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
-        res.append(MultiContentEntryPixmapAlphaTest(pos=(3, 10), size=(40, 40), png=loadPNG(pngs)))
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(3, 3), size=(30, 30), png=loadPNG(pngs)))
         res.append(MultiContentEntryText(pos=(50, 0), size=(500, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     return res
 
@@ -222,14 +234,14 @@ ico_path = os.path.join(THISPLUG, 'logo.png')
 res_plugin_path = os.path.join(THISPLUG, 'res/')
 pngori = os.path.join(THISPLUG, 'res/pics/nasa.jpg')
 piccons = os.path.join(THISPLUG, 'res/picons/')
-piconlive = piccons + 'tv.png'
-no_cover = piccons + 'backg.png'
-piconinter = piccons + 'inter.png'
-pixmaps = piccons + 'backg.png'
+piconlive = os.path.join(piccons, 'tv.png')
+no_cover = os.path.join(piccons, 'backg.png')
+piconinter = os.path.join(piccons, 'inter.png')
+pixmaps = os.path.join(piccons, 'backg.png')
 nextpng = 'next.png'
 prevpng = 'prev.png'
 Path_Tmp = "/tmp"
-pictmp = Path_Tmp + "/poster.jpg"
+pictmp = os.path.join(Path_Tmp, "poster.jpg")
 imgjpg = ("nasa.jpg", "nasa1.jpg", "nasa2.jpg")
 
 revol = cfg.cachefold.value.strip()
@@ -301,9 +313,7 @@ class RevolmainX(Screen):
         self['desc'] = StaticText()
         self['info'] = Label('')
         self['info'].setText('Select')
-        # self['key_green'] = Button(_('Select'))
         self['key_red'] = Button(_('Exit'))
-        # self['key_green'].hide()
         self.currentList = 'list'
         self.names = []
         self.urls = []
@@ -333,11 +343,9 @@ class RevolmainX(Screen):
 
     def __layoutFinished(self):
         self.setTitle(self.setup_title)
-        # self['key_green'].show()
         self.load_poster()
 
     def closerm(self):
-        # Utils.deletetmp()
         self.close()
 
     def updateMenuList(self):
@@ -405,7 +413,7 @@ class RevolmainX(Screen):
         try:
             sel = self['list'].getSelectedIndex()
             if sel is not None or sel != -1:
-                pixmaps = resolveFilename(SCOPE_PLUGINS, "Extensions/{}/res/picons/backg.png".format('revolutionx'))
+                pixmaps = os.path.join(THISPLUG, 'res/picons/backg.png')
                 size = self['poster'].instance.size()
                 if Utils.DreamOS():
                     self['poster'].instance.setPixmap(gPixmapPtr())
@@ -509,7 +517,7 @@ class myconfigX(Screen, ConfigListScreen):
         self.list.append(getConfigListEntry(_('Personal Password'), cfg.code, _("Set Password - ask by email to tivustream@gmail.com")))
         self['config'].list = self.list
         self["config"].l.setList(self.list)
-        # self.setInfo()
+        self.setInfo()
 
     def setInfo(self):
         try:
@@ -784,10 +792,11 @@ class live_streamX(Screen):
     def load_infos(self):
         try:
             i = len(self.names)
-            if i > -1:
-                idx = self['list'].getSelectionIndex()
-                info = self.infos[idx]
-                self['desc'].setText(info)
+            if i < 0:
+                return
+            idx = self['list'].getSelectionIndex()
+            info = self.infos[idx]
+            self['desc'].setText(info)
         except Exception as e:
             print(e)
 
@@ -833,34 +842,33 @@ class live_streamX(Screen):
     def load_poster(self):
         try:
             i = len(self.names)
-            if i > -1:
-                idx = self['list'].getSelectionIndex()
-                name = self.names[idx]
-                pixmaps = self.pics[idx]
-                if 'next' in name.lower():
-                    pixmaps = str(piccons) + nextpng
-                    if os.path.exists(pixmaps):
-                        self.downloadPic(None, pixmaps)
-                        return
-                if 'prev' in name.lower():
-                    pixmaps = str(piccons) + prevpng
-                    if os.path.exists(pixmaps):
-                        self.downloadPic(None, pixmaps)
-                        return
-                if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
-                    try:
-                        parsed = urlparse(pixmaps)
-                        domain = parsed.hostname
-                        scheme = parsed.scheme
-                        if PY3:
-                            pixmaps = pixmaps.encode()
-                        if scheme == "https" and sslverify:
-                            sniFactory = SNIFactory(domain)
-                            downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                        else:
-                            downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                    except Exception as e:
-                        print(e)
+            if i < 0:
+                return
+            idx = self['list'].getSelectionIndex()
+            name = self.names[idx]
+            pixmaps = self.pics[idx]
+            if 'next' in name.lower():
+                pixmaps = str(piccons) + nextpng
+                if os.path.exists(pixmaps):
+                    self.downloadPic(None, pixmaps)
+                    return
+            if 'prev' in name.lower():
+                pixmaps = str(piccons) + prevpng
+                if os.path.exists(pixmaps):
+                    self.downloadPic(None, pixmaps)
+                    return
+            if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
+                try:
+                    parsed = urlparse(pixmaps)
+                    domain = parsed.hostname
+                    scheme = parsed.scheme
+                    if scheme == "https" and sslverify:
+                        sniFactory = SNIFactory(domain)
+                        downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                    else:
+                        downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                except Exception as e:
+                    print(e)
         except Exception as e:
             print(e)
 
@@ -885,7 +893,6 @@ class live_streamX(Screen):
         size = self['poster'].instance.size()
         self.picload = ePicLoad()
         self.scale = AVSwitch().getFramebufferScale()
-        # if self.picload:
         self.picload.setPara([size.width(), size.height(), self.scale[0], self.scale[1], 0, 1, '#00000000'])
         if Utils.DreamOS():
             self.picload.startDecode(png, False)
@@ -964,10 +971,11 @@ class video1X(Screen):
     def load_infos(self):
         try:
             i = len(self.names)
-            if i > -1:
-                idx = self['list'].getSelectionIndex()
-                info = self.infos[idx]
-                self['desc'].setText(info)
+            if i < 0:
+                return
+            idx = self['list'].getSelectionIndex()
+            info = self.infos[idx]
+            self['desc'].setText(info)
         except Exception as e:
             print(e)
 
@@ -1018,6 +1026,7 @@ class video1X(Screen):
         # is_regex = False
         # is_m3u = False
         try:
+            i = 0
             for item in y["channels"][n]["items"]:
                 '''
                 {
@@ -1060,6 +1069,7 @@ class video1X(Screen):
                     info = str(y["channels"][n]["items"][n]["info"])
                     info = re.sub(r'\r\n', '', info)
                 '''
+                i += 1
                 self.names.append(name)
                 self.urls.append(url)
                 self.pics.append(pic)
@@ -1111,34 +1121,33 @@ class video1X(Screen):
     def load_poster(self):
         try:
             i = len(self.names)
-            if i > -1:
-                idx = self['list'].getSelectionIndex()
-                name = self.names[idx]
-                pixmaps = self.pics[idx]
-                if 'next' in name.lower():
-                    pixmaps = str(piccons) + nextpng
-                    if os.path.exists(pixmaps):
-                        self.downloadPic(None, pixmaps)
-                        return
-                if 'prev' in name.lower():
-                    pixmaps = str(piccons) + prevpng
-                    if os.path.exists(pixmaps):
-                        self.downloadPic(None, pixmaps)
-                        return
-                if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
-                    try:
-                        parsed = urlparse(pixmaps)
-                        domain = parsed.hostname
-                        scheme = parsed.scheme
-                        if PY3:
-                            pixmaps = pixmaps.encode()
-                        if scheme == "https" and sslverify:
-                            sniFactory = SNIFactory(domain)
-                            downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                        else:
-                            downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
-                    except Exception as e:
-                        print(e)
+            if i < 0:
+                return
+            idx = self['list'].getSelectionIndex()
+            name = self.names[idx]
+            pixmaps = self.pics[idx]
+            if 'next' in name.lower():
+                pixmaps = str(piccons) + nextpng
+                if os.path.exists(pixmaps):
+                    self.downloadPic(None, pixmaps)
+                    return
+            if 'prev' in name.lower():
+                pixmaps = str(piccons) + prevpng
+                if os.path.exists(pixmaps):
+                    self.downloadPic(None, pixmaps)
+                    return
+            if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
+                try:
+                    parsed = urlparse(pixmaps)
+                    domain = parsed.hostname
+                    scheme = parsed.scheme
+                    if scheme == "https" and sslverify:
+                        sniFactory = SNIFactory(domain)
+                        downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                    else:
+                        downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                except Exception as e:
+                    print(e)
         except Exception as e:
             print(e)
 
@@ -1186,19 +1195,19 @@ class video3X(Screen):
         with open(skin, 'r') as f:
             self.skin = f.read()
         self.setup_title = ('HOME REVOLUTION XXX')
-        self.list = []
         self.names = []
         self.urls = []
         self.pics = []
         self.infos = []
+        self.list = []
         self['list'] = self.list
         self['list'] = rvList([])
         self['info'] = Label(name)
         self['pth'] = Label('')
         self['pth'].setText(_('Cache folder ') + revol)
-        
+
         self['desc'] = StaticText()
-        self["poster"] = Pixmap()                         
+        self["poster"] = Pixmap()
         self['key_red'] = Button(_('Back'))
         self.name = name
         self.url = url
@@ -1266,15 +1275,16 @@ class video3X(Screen):
 
     def okRun(self):
         idx = self['list'].getSelectionIndex()
-        if idx != '' or idx > -1:
-            name = self.names[idx]
-            url = self.urls[idx]
-            # pic = self.pics[idx]
-            info = self.infos[idx]
-            nextmodule = "Player"
-            print('Videos3 nextmodule - is: ', nextmodule)
-            self.session.open(Playstream1X, name, url, info)
-        return
+        i = len(self.names)
+        if i < 0:
+            return
+        name = self.names[idx]
+        url = self.urls[idx]
+        # pic = self.pics[idx]
+        info = self.infos[idx]
+        nextmodule = "Player"
+        # print('Videos3 nextmodule - is: ', nextmodule)
+        self.session.open(Playstream1X, name, url, info)
 
     def cancel(self):
         global nextmodule
@@ -1311,6 +1321,7 @@ class video3X(Screen):
             idx = self['list'].getSelectionIndex()
             name = self.names[idx]
             pixmaps = self.pics[idx]
+            pixmaps = six.ensure_binary(self.pics[idx])
             if 'next' in name.lower():
                 pixmaps = str(piccons) + nextpng
                 if os.path.exists(pixmaps):
@@ -1326,8 +1337,6 @@ class video3X(Screen):
                     parsed = urlparse(pixmaps)
                     domain = parsed.hostname
                     scheme = parsed.scheme
-                    if PY3:
-                        pixmaps = pixmaps.encode()
                     if scheme == "https" and sslverify:
                         sniFactory = SNIFactory(domain)
                         downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
@@ -1531,29 +1540,29 @@ class Playstream1X(Screen):
 
     def download_m3u(self, result):
         if result:
-            if 'm3u8' not in self.urlm3u:
-                path = urlparse(self.urlm3u).path
-                ext = splitext(path)[1]
-                if ext != '.mp4' or ext != '.mkv' or ext != '.avi' or ext != '.flv':  # or ext != 'm3u8':
-                    ext = '.mp4'
-                fileTitle = re.sub(r'[\<\>\:\"\/\\\|\?\*\[\]]', '_', self.namem3u)
-                fileTitle = re.sub(r' ', '_', fileTitle)
-                fileTitle = re.sub(r'_+', '_', fileTitle)
-                fileTitle = fileTitle.replace("(", "_").replace(")", "_").replace("#", "").replace("+", "_").replace("\'", "_").replace("'", "_").replace("!", "_").replace("&", "_")
-                fileTitle = fileTitle.replace(" ", "_").replace(":", "").replace("[", "").replace("]", "").replace("!", "_").replace("&", "_")
-                fileTitle = fileTitle.lower() + ext
-                self.in_tmp = os.path.join(Path_Movies, fileTitle)
-                self.downloading = True
-                try:
-                    self.download = downloadWithProgress(self.urlm3u, self.in_tmp)
-                    self.download.addProgress(self.downloadProgress)
-                    self.download.start().addCallback(self.check).addErrback(self.showError)
-                except URLError as e:
-                    self.session.openWithCallback(self.ImageDownloadCB, MessageBox, _("Download Failed !!") + "\n%s" % e, type=MessageBox.TYPE_ERROR)
-                    self.downloading = False
-                else:
-                    self.downloading = False
-                    self.session.open(MessageBox, _('Download Failed!!!'), MessageBox.TYPE_INFO, timeout=5)
+            # if 'm3u8' not in self.urlm3u:
+            path = urlparse(self.urlm3u).path
+            ext = splitext(path)[1]
+            if ext != '.mp4' or ext != '.mkv' or ext != '.avi' or ext != '.flv':  # or ext != 'm3u8':
+                ext = '.mp4'
+            fileTitle = re.sub(r'[\<\>\:\"\/\\\|\?\*\[\]]', '_', self.namem3u)
+            fileTitle = re.sub(r' ', '_', fileTitle)
+            fileTitle = re.sub(r'_+', '_', fileTitle)
+            fileTitle = fileTitle.replace("(", "_").replace(")", "_").replace("#", "").replace("+", "_").replace("\'", "_").replace("'", "_").replace("!", "_").replace("&", "_")
+            fileTitle = fileTitle.replace(" ", "_").replace(":", "").replace("[", "").replace("]", "").replace("!", "_").replace("&", "_")
+            fileTitle = fileTitle.lower() + ext
+            self.in_tmp = os.path.join(Path_Movies, fileTitle)
+            self.downloading = True
+            try:
+                self.download = downloadWithProgress(self.urlm3u, self.in_tmp)
+                self.download.addProgress(self.downloadProgress)
+                self.download.start().addCallback(self.check).addErrback(self.showError)
+            except URLError as e:
+                self.session.openWithCallback(self.ImageDownloadCB, MessageBox, _("Download Failed !!") + "\n%s" % e, type=MessageBox.TYPE_ERROR)
+                self.downloading = False
+            else:
+                self.downloading = False
+                self.session.open(MessageBox, _('Download Failed!!!'), MessageBox.TYPE_INFO, timeout=5)
 
         else:
             self.downloading = False
@@ -1617,7 +1626,7 @@ class Playstream1X(Screen):
                 print('In playVideo url D=', self.url)
                 self.play()
             elif idx == 1:
-                print('In playVideo url D=', self.url)
+                print('In playVideo runRec url D=', self.url)
                 self.runRec()
             elif idx == 2:
                 try:
@@ -1667,7 +1676,6 @@ class Playstream1X(Screen):
             url = url.replace(':', '%3a')
             ref = '5002:0:1:0:0:0:0:0:0:0:' + 'http%3a//127.0.0.1%3a8088/' + str(url)
             sref = eServiceReference(ref)
-            print('SREF: ', sref)
             sref.setName(name)
             self.session.open(Playstream2X, name, sref, desc)
             self.close()
@@ -1683,7 +1691,7 @@ class Playstream1X(Screen):
             pass
 
 
-class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifications, InfoBarAudioSelection, TvInfoBarShowHide, InfoBarSubtitleSupport):
+class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifications, InfoBarAudioSelection, TvInfoBarShowHide, InfoBarSubtitleSupport, SubsSupportStatus, SubsSupport):
     STATE_IDLE = 0
     STATE_PLAYING = 1
     STATE_PAUSED = 2
@@ -1692,24 +1700,36 @@ class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotific
     screen_timeout = 4000
 
     def __init__(self, session, name, url, desc):
-        global streaml
+        global streaml, _session
+        _session = session
+        streaml = False
         Screen.__init__(self, session)
         self.session = session
-        global _session
-        _session = session
         self.skinName = 'MoviePlayer'
-        streaml = False
         InfoBarMenu.__init__(self)
         InfoBarNotifications.__init__(self)
         InfoBarBase.__init__(self, steal_current_service=True)
         TvInfoBarShowHide.__init__(self)
-        InfoBarAudioSelection.__init__(self)
         InfoBarSubtitleSupport.__init__(self)
+        InfoBarAudioSelection.__init__(self)
         try:
             self.init_aspect = int(self.getAspect())
         except:
             self.init_aspect = 0
+
+        try:
+            SubsSupport.__init__(self, searchSupport=True, embeddedSupport=True)
+            SubsSupportStatus.__init__(self)
+        except:
+            pass
         self.new_aspect = self.init_aspect
+        self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
+        self.service = None
+        self.allowPiP = False
+        self.desc = desc
+        self.url = url
+        self.name = name
+        self.state = self.STATE_PLAYING
         self['actions'] = ActionMap(['WizardActions', 'MoviePlayerActions', 'MovieSelectionActions', 'MediaPlayerActions', 'EPGSelectActions', 'MediaPlayerSeekActions', 'ColorActions',
                                      'ButtonSetupActions', 'InfobarShowHideActions', 'InfobarActions', 'InfobarSeekActions'], {
             'leavePlayer': self.cancel,
@@ -1721,14 +1741,11 @@ class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotific
             'cancel': self.cancel,
             'back': self.cancel
         }, -1)
-        self.allowPiP = False
-        self.service = None
+
+
         InfoBarSeek.__init__(self, actionmap='InfobarSeekActions')
-        self.desc = desc
-        self.url = url
-        self.name = name
-        self.state = self.STATE_PLAYING
-        self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
+
+
         if '8088' in str(self.url):
             self.onFirstExecBegin.append(self.slinkPlay)
         else:
@@ -1782,6 +1799,7 @@ class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotific
         ref = str(self.url)
         ref = ref.replace(':', '%3a').replace(' ', '%20')
         print('final reference 1:   ', ref)
+        ref = "{0}:{1}".format(ref, self.name)
         sref = eServiceReference(ref)
         sref.setName(self.name)
         self.session.nav.stopService()
@@ -1789,7 +1807,7 @@ class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotific
 
     def openPlay(self, servicetype, url):
         url = url.replace(':', '%3a').replace(' ', '%20')
-        ref = str(servicetype) + ':0:1:0:0:0:0:0:0:0:' + str(url)
+        ref = str(servicetype) + ':0:1:0:0:0:0:0:0:0:' + str(url) + ':' + self.name
         if streaml is True:
             ref = str(servicetype) + ':0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + str(url)
         print('final reference 2:   ', ref)
@@ -1804,7 +1822,7 @@ class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotific
         self.servicetype = str(cfg.services.value)
         print('servicetype1: ', self.servicetype)
         url = str(self.url)
-        if str(splitext(url)[-1]) == ".m3u8":
+        if str(os.path.splitext(url)[-1]) == ".m3u8":
             if self.servicetype == "1":
                 self.servicetype = "4097"
         currentindex = 0
@@ -1832,6 +1850,17 @@ class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotific
         print('servicetype2: ', self.servicetype)
         self.openPlay(self.servicetype, url)
 
+    def up(self):
+        pass
+
+    def down(self):
+        self.up()
+
+    def doEofInternal(self, playing):
+        self.close()
+
+    def __evEOF(self):
+        self.end = True
     def showVideoInfo(self):
         if self.shown:
             self.hideInfobar()
@@ -1844,11 +1873,10 @@ class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotific
             self.doShow()
 
     def cancel(self):
-        SREF = self.srefInit
         if os.path.exists('/tmp/hls.avi'):
             os.remove('/tmp/hls.avi')
         self.session.nav.stopService()
-        self.session.nav.playService(SREF)
+        self.session.nav.playService(self.srefInit)
         if not self.new_aspect == self.init_aspect:
             try:
                 self.setAspect(self.init_aspect)

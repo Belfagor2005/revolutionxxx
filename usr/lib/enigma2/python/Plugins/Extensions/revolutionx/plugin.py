@@ -104,7 +104,7 @@ class SubsSupportStatus(object):
 def threadGetPage(url=None, file=None, key=None, success=None, fail=None, *args, **kwargs):
     print('[threadGetPage] url, file, key, args, kwargs', url, "   ", file, "   ", key, "   ", args, "   ", kwargs)
     try:
-        response = get(url, verify = False)
+        response = get(url, verify=False)
         response.raise_for_status()
         if file is None:
             success(response.content)

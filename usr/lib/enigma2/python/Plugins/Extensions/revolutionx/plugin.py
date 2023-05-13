@@ -426,7 +426,7 @@ class RevolmainX(Screen):
                 return
             else:
                 self.name = 'XXX'
-                self.url = 'https://tivustream.website/php_filter/kodi19/xxxJob.php?utKodi=TVSXXX'
+                self.url = 'http://tivustream.website/php_filter/kodi19/xxxJob.php?utKodi=TVSXXX'
                 self.pic = pixmaps
                 nextmodule = 'xxx'
                 self.adultonly()
@@ -752,7 +752,7 @@ class live_streamX(Screen):
             content = six.ensure_str(content)
         y = json.loads(content)
 
-        url2 = b'https://tivustream.website/php_filter/kodi19/xxxJob.php?utKodi=TVSXXX'
+        url2 = 'http://tivustream.website/php_filter/kodi19/xxxJob.php?utKodi=TVSXXX'
         i = 0
         while i < 100:
             try:
@@ -979,12 +979,13 @@ class video1X(Screen):
         content = Utils.ReadUrl2(self.url, referer)
         if PY3:
             content = six.ensure_str(content)
-        y = json.loads(content)
+        content = json.loads(content)                                    
+        # y = json.loads(content)
         folder_path = "/tmp/tivustream/"
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
         with open("/tmp/tivustream/channels", "w") as f:
-            json.dump(y, f)
+            json.dump(content, f)
         with open('/tmp/tivustream/channels') as json_file:
             y = json.load(json_file)
         x = self.name.split("_")

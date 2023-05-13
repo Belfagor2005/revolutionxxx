@@ -2,14 +2,16 @@
 <screen name="Revolmain" position="0,0" size="1920,1080" title=".::REVOLUTION X::.." backgroundColor="#FF000000" flags="wfNoBorder">
     <widget name="title" position="506,42" size="552,40" font="Regular;30" halign="left" valign="center" foregroundColor="#002a79b8" backgroundColor="black" transparent="1" zPosition="5"/>
     <widget name="info" position="226,95" size="820,50" font="Regular;30" halign="left" foregroundColor="yellow" backgroundColor="#000000" transparent="1" zPosition="5"/>
-    <widget name="pth" position="467,1011" size="584,44" font="Regular;30" halign="right" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5" render="rvRunningText"/>
+    <widget name="pth" position="467,1011" size="584,44" font="Regular;30" halign="right" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5" />
     <widget name="poster" position="1380,150" size="420,588" alphatest="blend" scale="1" zPosition="3"/>
     <!--     
     <ePixmap position="1385,150" size="420,588" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvposter.png" zPosition="2" scale="1"/>
     -->
     <eLabel position="226,766" size="826,220" backgroundColor="#30000000" zPosition="1"/>	
-    <widget source="desc" render="rvRunningText" position="228,766" size="826,220" font="Regular;30" foregroundColor="#ffb75b" backgroundColor="#101010" halign="center" transparent="1" zPosition="2" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap=1"/>
-    
+    <!-- <widget source="desc" render="rvxRunningText" position="228,766" size="826,220" font="Regular;30" foregroundColor="#ffb75b" backgroundColor="#101010" halign="center" transparent="1" zPosition="2" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap=1"/> -->
+
+	<widget name="desc" position="228,766" size="826,220" font="Regular;30" halign="center" valign="center" foregroundColor="#ffb75b" backgroundColor="101010" transparent="1" zPosition="5" />
+
     <!-- Graph -->
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/main1.png" position="0,0" size="1920,1080" zPosition="1"/>
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvs.png" alphatest="blend" position="220,40" size="279,50" zPosition="5"/>

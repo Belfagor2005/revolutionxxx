@@ -4,7 +4,7 @@
 '''
 ****************************************
 *        coded by Lululla              *
-*             29/04/2023               *
+*             04/07/2023               *
 *       skin by MMark                  *
 ****************************************
 Info http://t.me/tivustream
@@ -23,7 +23,8 @@ from Components.config import config, ConfigEnableDisable
 from Components.ConfigList import ConfigListScreen
 from Components.Label import Label
 from Components.MenuList import MenuList
-from Components.MultiContent import MultiContentEntryPixmapAlphaTest, MultiContentEntryText
+from Components.MultiContent import MultiContentEntryPixmapAlphaTest
+from Components.MultiContent import MultiContentEntryText
 from Components.Pixmap import Pixmap
 from Components.ProgressBar import ProgressBar
 from Components.ServiceEventTracker import ServiceEventTracker, InfoBarBase
@@ -48,18 +49,19 @@ from enigma import ePicLoad, loadPNG, gFont, gPixmapPtr
 from enigma import eServiceReference
 from enigma import eTimer
 from enigma import iPlayableService
+from enigma import getDesktop
 from os.path import splitext
-# from twisted.web.client import downloadPage
+from twisted.web.client import downloadPage
 # import base64
 from requests import get, exceptions
 from requests.exceptions import HTTPError
 from twisted.internet.reactor import callInThread
+import json
 import os
 import re
 import six
 import sys
 import ssl
-import json
 
 PY3 = False
 PY3 = sys.version_info.major >= 3
@@ -79,7 +81,7 @@ if PY3:
     print('six.PY3: True ')
 
 THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/revolutionx'
-global skin_path, revol, pngs, pngl, pngx, file_json, nextmodule, search, pngori, pictmp, piconlive, piconinter
+global skin_path, nextmodule, search, pngori
 
 search = False
 _session = None
@@ -104,6 +106,7 @@ class SubsSupportStatus(object):
 def threadGetPage(url=None, file=None, key=None, success=None, fail=None, *args, **kwargs):
     print('[threadGetPage] url, file, key, args, kwargs', url, "   ", file, "   ", key, "   ", args, "   ", kwargs)
     try:
+        url = url.replace('https', 'http')
         response = get(url, verify=False)
         response.raise_for_status()
         if file is None:
@@ -114,7 +117,7 @@ def threadGetPage(url=None, file=None, key=None, success=None, fail=None, *args,
             success(response.content, file)
     except HTTPError as httperror:
         print('[threadGetPage] Http error: ', httperror)
-        fail(error)  # E0602 undefined name 'error'
+        # fail(error)  # E0602 undefined name 'error'
     except exceptions.RequestException as error:
         print(error)
 
@@ -155,10 +158,14 @@ def getversioninfo():
     return (currversion)
 
 
-if Utils.isFHD():
-    skin_path = os.path.join(THISPLUG, 'res/skins/fhd/')
+screenwidth = getDesktop(0).size()
+if screenwidth.width() == 2560:
+    skin_path = THISPLUG + '/res/skins/uhd/'
+elif screenwidth.width() == 1920:
+    skin_path = THISPLUG + '/res/skins/fhd/'
 else:
-    skin_path = os.path.join(THISPLUG, 'res/skins/hd/')
+    skin_path = THISPLUG + '/res/skins/hd/'
+
 if Utils.DreamOS():
     skin_path = skin_path + 'dreamOs/'
 try:
@@ -183,7 +190,11 @@ if sslverify:
 class rvList(MenuList):
     def __init__(self, list):
         MenuList.__init__(self, list, True, eListboxPythonMultiContent)
-        if Utils.isFHD():
+        if screenwidth.width() == 2560:
+            self.l.setItemHeight(60)
+            textfont = int(42)
+            self.l.setFont(0, gFont('Regular', textfont))
+        elif screenwidth.width() == 1920:
             self.l.setItemHeight(50)
             textfont = int(30)
             self.l.setFont(0, gFont('Regular', textfont))
@@ -196,7 +207,10 @@ class rvList(MenuList):
 def rvListEntry(name, idx):
     res = [name]
     pngs = os.path.join(THISPLUG, 'res/pics/plugins.png')
-    if Utils.isFHD():
+    if screenwidth.width() == 2560:
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(50, 50), png=loadPNG(pngs)))
+        res.append(MultiContentEntryText(pos=(100, 0), size=(1200, 60), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+    elif screenwidth.width() == 1920:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(40, 40), png=loadPNG(pngs)))
         res.append(MultiContentEntryText(pos=(70, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
@@ -246,6 +260,8 @@ cfg.code = ConfigText(default="1234")
 pin = 2808
 pin2 = str(cfg.code.value)
 
+
+global Path_Movies
 currversion = getversioninfo()
 title_plug = 'Revolution XXX V.%s' % currversion
 desc_plug = 'TivuStream Pro Revolution XXX'
@@ -262,11 +278,7 @@ prevpng = 'prev.png'
 Path_Tmp = "/tmp"
 pictmp = os.path.join(Path_Tmp, "poster.jpg")
 imgjpg = ("nasa.jpg", "nasa1.jpg", "nasa2.jpg")
-
 revol = cfg.cachefold.value.strip()
-
-
-global Path_Movies
 Path_Movies = str(cfg.movie.value)
 
 
@@ -367,7 +379,7 @@ class RevolmainX(Screen):
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ColorActions',
                                      'EPGSelectActions',
-                                     'ButtonSetupActions',
+                                     # 'ButtonSetupActions',
                                      'MenuActions',
                                      'DirectionActions'], {'ok': self.okRun,
                                                            'green': self.okRun,
@@ -497,7 +509,10 @@ class myconfigX(Screen, ConfigListScreen):
         self.setTitle(title_plug)
         self.onChangedEntry = []
         self.list = []
-        ConfigListScreen.__init__(self, self.list, session=self.session, on_change=self.changedEntry)
+        ConfigListScreen.__init__(self,
+                                  self.list,
+                                  session=self.session,
+                                  on_change=self.changedEntry)
         self['key_red'] = Button(_('Back'))
         self['key_green'] = Button(_('Save'))
         self['key_yellow'] = Button(_('Choice'))
@@ -509,7 +524,7 @@ class myconfigX(Screen, ConfigListScreen):
         self["setupActions"] = ActionMap(['OkCancelActions',
                                           'DirectionActions',
                                           'ColorActions',
-                                          'ButtonSetupActions',
+                                          # 'ButtonSetupActions',
                                           'VirtualKeyboardActions'], {'cancel': self.extnok,
                                                                       'red': self.extnok,
                                                                       'back': self.close,
@@ -547,8 +562,7 @@ class myconfigX(Screen, ConfigListScreen):
 
     def cachedel(self):
         fold = os.path.join(str(cfg.cachefold.value), "revolutionx/pic")
-        cmd = "rm " + fold + "/*"
-        os.system(cmd)
+        Utils.cachedel(fold)
         self.mbox = self.session.open(MessageBox, _('All cache fold are empty!'), MessageBox.TYPE_INFO, timeout=5)
 
     def createSetup(self):
@@ -676,7 +690,6 @@ class myconfigX(Screen, ConfigListScreen):
         return
 
 
-# Videos1
 class live_streamX(Screen):
     def __init__(self, session, name, url, pic, nextmodule):
         Screen.__init__(self, session)
@@ -698,10 +711,6 @@ class live_streamX(Screen):
         self["poster"] = Pixmap()
         self["poster"].hide()
         self['key_red'] = Button(_('Back'))
-        # self.names = []
-        # self.urls = []
-        # self.pics = []
-        # self.infos = []
         self.name = name
         self.url = url
         self.pic = pic
@@ -713,7 +722,7 @@ class live_streamX(Screen):
                                      'ColorActions',
                                      'EPGSelectActions',
                                      'MenuActions',
-                                     'ButtonSetupActions',
+                                     # 'ButtonSetupActions',
                                      'DirectionActions'], {'ok': self.okRun,
                                                            'red': self.cancel,
                                                            'up': self.up,
@@ -754,29 +763,52 @@ class live_streamX(Screen):
 
         url2 = 'http://tivustream.website/php_filter/kodi19/xxxJob.php?utKodi=TVSXXX'
         i = 0
-        while i < 100:
+        while i < 50:
+
             try:
-                print('In live_streamX y["channels"][i]["name"] =', y["channels"][i]["name"])
-                name = str(y["channels"][i]["name"])
-                name = re.sub('\[.*?\]', "", name)
-                name = Utils.cleanName(name)
+                print('In live_stream y["channels"][i]["name"] =', y["channels"][i]["name"])
+                name = (y["channels"][i]["name"])
+                name = REGEX.sub('', name.strip())
+                # print("In live_stream name =", name)
                 name = str(i) + "_" + name
-                try:
-                    pic = str(y["channels"][i]["thumbnail"])
-                except:
-                    pic = str(self.pic)
+                pic = y["channels"][i]["thumbnail"]
+                # print("In live_stream pic =", pic)
                 info = y["channels"][i]["info"]
                 info = re.sub(r'\r\n', '', info)
                 info = info.replace('---', ' ')
-                # print('live_stream load json name = ', name)
-                # print('live_stream load json url = ', url2)
-                # print('live_stream load json pic = ', pic)
-                # print('live_stream load json info = ', info)
-                self.names.append(str(name))
-                self.urls.append(str(url2))
-                self.pics.append(pic)
-                self.infos.append(html_conv.html_unescape(info))
+
+                self.names.append(Utils.checkStr(name))
+                self.urls.append(url2)
+                self.pics.append(Utils.checkStr(pic))
+                self.infos.append(Utils.checkStr(info))
                 i += 1
+
+            # # try:
+                # # print('In live_streamX y["channels"][i]["name"] =', y["channels"][i]["name"])
+                # # name = str(y["channels"][i]["name"])
+                # # name = re.sub('\[.*?\]', "", name)
+                # # name = Utils.cleanName(name)
+                # # name = str(i) + "_" + name
+                # # try:
+                    # # pic = str(y["channels"][i]["thumbnail"])
+                # # except:
+                    # # pic = str(self.pic)
+
+                # name = str(y["channels"][i]["name"])
+                # name = re.sub('\[.*?\]', "", name)
+                # name = Utils.cleanName(name)
+                # # url = str(y["channels"][i]["link"])
+                # pic = str(y["channels"][i]["thumbnail"])
+
+                # info = y["channels"][i]["info"]
+                # info = re.sub(r'\r\n', '', info)
+                # info = info.replace('---', ' ')
+                # self.names.append(name)
+                # self.urls.append(url2)
+                # self.pics.append(pic)
+                # self.infos.append(html_conv.html_unescape(info))
+                # i += 1
+
             except Exception as e:
                 print(e)
                 break
@@ -867,25 +899,60 @@ class live_streamX(Screen):
 
     def load_poster(self):
         try:
+            i = len(self.names)
+            if i < 0:
+                return
             idx = self['list'].getSelectionIndex()
-            # name = self.names[idx]
-            # url = self.urls[idx]
+            name = self.names[idx]
             pixmaps = self.pics[idx]
+            if 'next' in name.lower():
+                pixmaps = str(piccons) + nextpng
+                if os.path.exists(pixmaps):
+                    self.downloadPic(None, pixmaps)
+                    return
+            if 'prev' in name.lower():
+                pixmaps = str(piccons) + prevpng
+                if os.path.exists(pixmaps):
+                    self.downloadPic(None, pixmaps)
+                    return
             if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
                 try:
-                    self.download(pixmaps, self.getPoster1)
+                    parsed = urlparse(pixmaps)
+                    domain = parsed.hostname
+                    scheme = parsed.scheme
+                    if scheme == "https" and sslverify:
+                        sniFactory = SNIFactory(domain)
+                        downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                    else:
+                        downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
                 except Exception as e:
                     print(e)
         except Exception as e:
             print(e)
 
-    def downloadPic(self, data, pixmaps):
-        if os.path.exists(pixmaps):
+    def downloadPic(self, data, pictmp):
+        if os.path.exists(pictmp):
             try:
-                self.showPoster1(pixmaps)
+                self.poster_resize(pictmp)
             except Exception as ex:
+                self.showPoster1(no_cover)
                 print("* error ** %s" % ex)
-                pass
+
+    def poster_resize(self, png):
+        self["poster"].hide()
+        size = self['poster'].instance.size()
+        self.picload = ePicLoad()
+        self.scale = AVSwitch().getFramebufferScale()
+        self.picload.setPara([size.width(), size.height(), self.scale[0], self.scale[1], 0, 1, '#00000000'])
+        if Utils.DreamOS():
+            self.picload.startDecode(png, False)
+        else:
+            self.picload.startDecode(png, 0, 0, False)
+        ptr = self.picload.getData()
+        if ptr is not None:
+            self['poster'].instance.setPixmap(ptr)
+            self['poster'].show()
+        return
 
     def downloadError(self, png):
         try:
@@ -893,6 +960,31 @@ class live_streamX(Screen):
                 self.showPoster1(no_cover)
         except Exception as e:
             print(e)
+
+    '''
+    # def load_poster(self):
+        # try:
+            # i = len(self.pics)
+            # if i < 0:
+                # return
+            # idx = self['list'].getSelectionIndex()
+            # pixmaps = self.pics[idx]
+            # if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
+                # try:
+                    # self.download(pixmaps, self.getPoster1)
+                # except Exception as e:
+                    # print(e)
+        # except Exception as e:
+            # print(e)
+
+    # def downloadPic(self, data, pixmaps):
+        # if os.path.exists(pixmaps):
+            # try:
+                # self.showPoster1(pixmaps)
+            # except Exception as ex:
+                # print("* error ** %s" % ex)
+                # pass
+    '''
 
 
 class video1X(Screen):
@@ -914,10 +1006,6 @@ class video1X(Screen):
         self['desc'] = StaticText()
         self["poster"] = Pixmap()
         self['key_red'] = Button(_('Back'))
-        # self.names = []
-        # self.urls = []
-        # self.pics = []
-        # self.infos = []
         self.name = name
         self.url = url
         self.pic = pic
@@ -929,7 +1017,7 @@ class video1X(Screen):
                                      'ColorActions',
                                      'EPGSelectActions',
                                      'MenuActions',
-                                     'ButtonSetupActions',
+                                     # 'ButtonSetupActions',
                                      'DirectionActions'], {'ok': self.okRun,
                                                            'red': self.cancel,
                                                            'up': self.up,
@@ -973,13 +1061,10 @@ class video1X(Screen):
         self.pics = []
         self.infos = []
         referer = 'https://tivustream.website'
-        # name = self.name
-        # url = self.url
-        # pic = self.pic
         content = Utils.ReadUrl2(self.url, referer)
         if PY3:
             content = six.ensure_str(content)
-        content = json.loads(content)                                    
+        content = json.loads(content)
         # y = json.loads(content)
         folder_path = "/tmp/tivustream/"
         if not os.path.exists(folder_path):
@@ -996,32 +1081,33 @@ class video1X(Screen):
         except Exception as e:
             print(e)
         try:
+            # i = 0
+            # while i < 50:
+            #
             for item in y["channels"][n]["items"]:
-                # name = item["title"]
-                # name = REGEX.sub('', name.strip())
-                # # print("In live_stream title =", str(name))
                 name = str(item["title"])
                 name = re.sub('\[.*?\]', "", name)
                 name = Utils.cleanName(name)
-
                 url = item["link"]
                 url = url.replace("\\", "").replace('https', 'http')
-                # print("In live_stream link =", str(url))
+
+                # pic = item["thumbnail"]
+
                 try:
                     pic = str(item["thumbnail"])
                 except:
                     pic = str(self.pic)
                 info = item["info"]
-                # print("In live_stream info =", str(info))
-                # self.names.append(Utils.checkStr(name))
-                # self.urls.append(url)
-                # self.pics.append(Utils.checkStr(pic))
-                # self.infos.append(Utils.checkStr(info))
 
-                self.names.append(str(name))
-                self.urls.append(str(url))
-                self.pics.append(pic)
+                self.names.append(Utils.checkStr(name))
+                self.urls.append(url)
+                self.pics.append(Utils.checkStr(pic))
+
+                # self.names.append(str(name))
+                # self.urls.append(str(url))
+                # self.pics.append(pic)
                 self.infos.append(html_conv.html_unescape(info))
+                # i += 1
             nextmodule = "Videos3"
             showlist(self.names, self['list'])
             self.__layoutFinished()
@@ -1066,12 +1152,6 @@ class video1X(Screen):
             link = link.encode()
         callInThread(threadGetPage, url=link, file=None, success=name, fail=self.downloadError)
 
-    def getPoster1(self, output):
-        f = open(pictmp, 'wb')
-        f.write(output)
-        f.close()
-        self.showPoster1(pictmp)
-
     def showPoster1(self, poster1):
         if fileExists(poster1):
             self["poster"].instance.setPixmapFromFile(poster1)
@@ -1080,25 +1160,62 @@ class video1X(Screen):
 
     def load_poster(self):
         try:
+            i = len(self.names)
+            if i < 0:
+                return
             idx = self['list'].getSelectionIndex()
-            # name = self.names[idx]
-            # url = self.urls[idx]
+            name = self.names[idx]
             pixmaps = self.pics[idx]
+            if 'next' in name.lower():
+                pixmaps = str(piccons) + nextpng
+                if os.path.exists(pixmaps):
+                    self.downloadPic(None, pixmaps)
+                    return
+            if 'prev' in name.lower():
+                pixmaps = str(piccons) + prevpng
+                if os.path.exists(pixmaps):
+                    self.downloadPic(None, pixmaps)
+                    return
             if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
                 try:
-                    self.download(pixmaps, self.getPoster1)
+                    parsed = urlparse(pixmaps)
+                    domain = parsed.hostname
+                    scheme = parsed.scheme
+                    if scheme == "https" and sslverify:
+                        sniFactory = SNIFactory(domain)
+                        downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                    else:
+                        downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
                 except Exception as e:
                     print(e)
         except Exception as e:
             print(e)
 
-    def downloadPic(self, data, pixmaps):
-        if os.path.exists(pixmaps):
+    def downloadPic(self, data, pictmp):
+        if os.path.exists(pictmp):
             try:
-                self.showPoster1(pixmaps)
+                self.poster_resize(pictmp)
             except Exception as ex:
                 print("* error ** %s" % ex)
+                self.showPoster1(no_cover)
                 pass
+
+    def poster_resize(self, png):
+        self["poster"].hide()
+        size = self['poster'].instance.size()
+        self.picload = ePicLoad()
+        self.scale = AVSwitch().getFramebufferScale()
+        # if self.picload:
+        self.picload.setPara([size.width(), size.height(), self.scale[0], self.scale[1], 0, 1, '#00000000'])
+        if Utils.DreamOS():
+            self.picload.startDecode(png, False)
+        else:
+            self.picload.startDecode(png, 0, 0, False)
+        ptr = self.picload.getData()
+        if ptr is not None:
+            self['poster'].instance.setPixmap(ptr)
+            self['poster'].show()
+        return
 
     def downloadError(self, png):
         try:
@@ -1106,6 +1223,37 @@ class video1X(Screen):
                 self.showPoster1(no_cover)
         except Exception as e:
             print(e)
+
+    '''
+    # def load_poster(self):
+        # try:
+            # i = len(self.pics)
+            # if i < 0:
+                # return
+            # idx = self['list'].getSelectionIndex()
+            # pixmaps = self.pics[idx]
+            # if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
+                # try:
+                    # self.download(pixmaps, self.getPoster1)
+                # except Exception as e:
+                    # print(e)
+        # except Exception as e:
+            # print(e)
+
+    # def downloadPic(self, data, pixmaps):
+        # if os.path.exists(pixmaps):
+            # try:
+                # self.showPoster1(pixmaps)
+            # except Exception as ex:
+                # print("* error ** %s" % ex)
+                # pass
+
+    def getPoster1(self, output):
+        f = open(pictmp, 'wb')
+        f.write(output)
+        f.close()
+        self.showPoster1(pictmp)
+        '''
 
 
 class video3X(Screen):
@@ -1142,7 +1290,7 @@ class video3X(Screen):
                                      'ColorActions',
                                      'EPGSelectActions',
                                      'MenuActions',
-                                     'ButtonSetupActions',
+                                     # 'ButtonSetupActions',
                                      'DirectionActions'], {'ok': self.okRun,
                                                            'red': self.cancel,
                                                            'up': self.up,
@@ -1234,12 +1382,6 @@ class video3X(Screen):
             link = link.encode()
         callInThread(threadGetPage, url=link, file=None, success=name, fail=self.downloadError)
 
-    def getPoster1(self, output):
-        f = open(pictmp, 'wb')
-        f.write(output)
-        f.close()
-        self.showPoster1(pictmp)
-
     def showPoster1(self, poster1):
         if fileExists(poster1):
             self["poster"].instance.setPixmapFromFile(poster1)
@@ -1248,25 +1390,64 @@ class video3X(Screen):
 
     def load_poster(self):
         try:
+            i = len(self.pics)
+            if i < 0:
+                return
             idx = self['list'].getSelectionIndex()
-            # name = self.names[idx]
-            # url = self.urls[idx]
+            name = self.names[idx]
+
             pixmaps = self.pics[idx]
+            pixmaps = six.ensure_binary(self.pics[idx])
+            if 'next' in name.lower():
+                pixmaps = str(piccons) + nextpng
+                if os.path.exists(pixmaps):
+                    self.downloadPic(None, pixmaps)
+                    return
+            if 'prev' in name.lower():
+                pixmaps = str(piccons) + prevpng
+                if os.path.exists(pixmaps):
+                    self.downloadPic(None, pixmaps)
+                    return
             if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
                 try:
-                    self.download(pixmaps, self.getPoster1)
+                    parsed = urlparse(pixmaps)
+                    domain = parsed.hostname
+                    scheme = parsed.scheme
+                    if scheme == "https" and sslverify:
+                        sniFactory = SNIFactory(domain)
+                        downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                    else:
+                        downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
                 except Exception as e:
                     print(e)
         except Exception as e:
             print(e)
 
-    def downloadPic(self, data, pixmaps):
-        if os.path.exists(pixmaps):
+    def downloadPic(self, data, pictmp):
+        if os.path.exists(pictmp):
             try:
-                self.showPoster1(pixmaps)
+                self.poster_resize(pictmp)
             except Exception as ex:
                 print("* error ** %s" % ex)
+                self.showPoster1(no_cover)
                 pass
+
+    def poster_resize(self, png):
+        self["poster"].hide()
+        size = self['poster'].instance.size()
+        self.picload = ePicLoad()
+        self.scale = AVSwitch().getFramebufferScale()
+        # if self.picload:
+        self.picload.setPara([size.width(), size.height(), self.scale[0], self.scale[1], 0, 1, '#00000000'])
+        if Utils.DreamOS():
+            self.picload.startDecode(png, False)
+        else:
+            self.picload.startDecode(png, 0, 0, False)
+        ptr = self.picload.getData()
+        if ptr is not None:
+            self['poster'].instance.setPixmap(ptr)
+            self['poster'].show()
+        return
 
     def downloadError(self, png):
         try:
@@ -1274,6 +1455,39 @@ class video3X(Screen):
                 self.showPoster1(no_cover)
         except Exception as e:
             print(e)
+
+    '''
+    # def load_poster(self):
+        # try:
+            # i = len(self.pics)
+            # if i < 0:
+                # return
+            # idx = self['list'].getSelectionIndex()
+            # # name = self.names[idx]
+            # # url = self.urls[idx]
+            # pixmaps = self.pics[idx]
+            # if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
+                # try:
+                    # self.download(pixmaps, self.getPoster1)
+                # except Exception as e:
+                    # print(e)
+        # except Exception as e:
+            # print(e)
+
+    # def downloadPic(self, data, pixmaps):
+        # if os.path.exists(pixmaps):
+            # try:
+                # self.showPoster1(pixmaps)
+            # except Exception as ex:
+                # print("* error ** %s" % ex)
+                # pass
+
+    def getPoster1(self, output):
+        f = open(pictmp, 'wb')
+        f.write(output)
+        f.close()
+        self.showPoster1(pictmp)
+    '''
 
 
 class TvInfoBarShowHide():
@@ -1399,7 +1613,7 @@ class Playstream1X(Screen):
                                      'EPGSelectActions',
                                      'MediaPlayerSeekActions',
                                      'DirectionActions',
-                                     'ButtonSetupActions',
+                                     # 'ButtonSetupActions',
                                      'OkCancelActions',
                                      'InfobarShowHideActions',
                                      'InfobarActions',
@@ -1627,7 +1841,7 @@ class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotific
         self.name = name
         self.state = self.STATE_PLAYING
         self['actions'] = ActionMap(['WizardActions', 'MoviePlayerActions', 'MovieSelectionActions', 'MediaPlayerActions', 'EPGSelectActions', 'MediaPlayerSeekActions', 'ColorActions',
-                                     'ButtonSetupActions', 'InfobarShowHideActions', 'InfobarActions', 'InfobarSeekActions'], {
+                                     'InfobarShowHideActions', 'InfobarActions', 'InfobarSeekActions'], {
             'leavePlayer': self.cancel,
             'epg': self.showIMDB,
             'info': self.showIMDB,

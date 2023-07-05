@@ -1,5 +1,5 @@
 <!-- Skin FullHD1 10/05/2021 -->
-<screen name="Playstream1" position="0,0" size="2560,1440" title=".::REVOLUTION X::.." backgroundColor="#FF000000" flags="wfNoBorder">
+<screen name="Playstream1" position="0,0" size="2560,1440" title=".::REVOLUTION X::.." backgroundColor="#ff000000" flags="wfNoBorder">
 	<eLabel position="307,160" size="1080,4" backgroundColor="#303030" zPosition="4" />
 	<ePixmap position="0,0" size="2560,1440" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/main1.png" zPosition="-1" />
 	<eLabel position="307,1280" size="1080,4" backgroundColor="#303030" zPosition="4" />

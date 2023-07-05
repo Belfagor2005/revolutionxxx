@@ -1,5 +1,5 @@
 <!-- Skin revall 10/10/2022 -->
-<screen name="Revolmain" position="0,0" size="2560,1440" title=".::REVOLUTION X::.." backgroundColor="#FF000000" flags="wfNoBorder">
+<screen name="Revolmain" position="0,0" size="2560,1440" title=".::REVOLUTION X::.." backgroundColor="#ff000000" flags="wfNoBorder">
     <widget name="title" position="675,56" size="736,54" font="Regular;40" halign="left" valign="center" foregroundColor="#002a79b8" backgroundColor="black" transparent="1" zPosition="5"/>
     <widget name="info" position="302,127" size="1094,67" font="Regular;40" halign="left" foregroundColor="yellow" backgroundColor="#000000" transparent="1" zPosition="5"/>
     <widget name="pth" position="623,1348" size="779,59" font="Regular;40" halign="right" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5" />

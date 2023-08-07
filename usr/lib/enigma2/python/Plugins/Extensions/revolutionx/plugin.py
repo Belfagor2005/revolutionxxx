@@ -13,7 +13,10 @@ from __future__ import print_function
 from . import Utils
 from . import _
 from . import html_conv
-from Components.AVSwitch import AVSwitch
+try:
+    from Components.AVSwitch import eAVSwitch
+except Exception:
+    from Components.AVSwitch import iAVSwitch as eAVSwitch
 from Components.ActionMap import ActionMap
 from Components.Button import Button
 from Components.config import ConfigDirectory, ConfigSubsection

@@ -11,7 +11,7 @@ Info http://t.me/tivustream
 '''
 from __future__ import print_function
 from . import Utils
-from . import _
+from . import _, logdata, getversioninfo, paypal
 from . import html_conv
 try:
     from Components.AVSwitch import eAVSwitch
@@ -63,7 +63,6 @@ import re
 import six
 import sys
 import ssl
-
 PY3 = False
 PY3 = sys.version_info.major >= 3
 
@@ -80,17 +79,14 @@ except ImportError:
 
 if PY3:
     print('six.PY3: True ')
-
 THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/revolutionx'
 global skin_path, nextmodule, search, pngori
-
 search = False
 _session = None
 _firstStarttvspro = True
 streamlink = False
 if Utils.isStreamlinkAvailable:
     streamlink = True
-
 try:
     from Plugins.Extensions.SubsSupport import SubsSupport, SubsSupportStatus
 except ImportError:
@@ -123,40 +119,40 @@ def threadGetPage(url=None, file=None, key=None, success=None, fail=None, *args,
         print(error)
 
 
-def trace_error():
-    import traceback
-    try:
-        traceback.print_exc(file=sys.stdout)
-        traceback.print_exc(file=open('/tmp/traceback.log', 'a'))
-    except:
-        pass
+# def trace_error():
+    # import traceback
+    # try:
+        # traceback.print_exc(file=sys.stdout)
+        # traceback.print_exc(file=open('/tmp/traceback.log', 'a'))
+    # except:
+        # pass
 
 
-def logdata(name='', data=None):
-    try:
-        data = str(data)
-        fp = open('/tmp/revolutionx.log', 'a')
-        fp.write(str(name) + ': ' + data + "\n")
-        fp.close()
-    except:
-        trace_error()
-        pass
+# def logdata(name='', data=None):
+    # try:
+        # data = str(data)
+        # fp = open('/tmp/revolutionx.log', 'a')
+        # fp.write(str(name) + ': ' + data + "\n")
+        # fp.close()
+    # except:
+        # trace_error()
+        # pass
 
 
-def getversioninfo():
-    currversion = '1.4'
-    version_file = os.path.join(THISPLUG, 'version')
-    if os.path.exists(version_file):
-        try:
-            fp = open(version_file, 'r').readlines()
-            for line in fp:
-                if 'version' in line:
-                    currversion = line.split('=')[1].strip()
-        except:
-            pass
-    logdata("Plugin ", THISPLUG)
-    logdata("Version ", currversion)
-    return (currversion)
+# def getversioninfo():
+    # currversion = '1.4'
+    # version_file = os.path.join(THISPLUG, 'version')
+    # if os.path.exists(version_file):
+        # try:
+            # fp = open(version_file, 'r').readlines()
+            # for line in fp:
+                # if 'version' in line:
+                    # currversion = line.split('=')[1].strip()
+        # except:
+            # pass
+    # logdata("Plugin ", THISPLUG)
+    # logdata("Version ", currversion)
+    # return (currversion)
 
 
 screenwidth = getDesktop(0).size()
@@ -166,16 +162,14 @@ elif screenwidth.width() == 1920:
     skin_path = THISPLUG + '/res/skins/fhd/'
 else:
     skin_path = THISPLUG + '/res/skins/hd/'
-
 if Utils.DreamOS():
     skin_path = skin_path + 'dreamOs/'
 try:
-    from twisted.internet import ssl
+    # from twisted.internet import ssl
     from twisted.internet._sslverify import ClientTLSOptions
     sslverify = True
 except:
     sslverify = False
-
 if sslverify:
     class SNIFactory(ssl.ClientContextFactory):
         def __init__(self, hostname=None):
@@ -341,11 +335,11 @@ def returnIMDB(text_clear):
     return False
 
 
-def paypal():
-    conthelp = "If you like what I do you\n"
-    conthelp += "can contribute with a coffee\n"
-    conthelp += "scan the qr code and donate € 1.00"
-    return conthelp
+# def paypal():
+    # conthelp = "If you like what I do you\n"
+    # conthelp += "can contribute with a coffee\n"
+    # conthelp += "scan the qr code and donate € 1.00"
+    # return conthelp
 
 
 PanelMain = [('XXX')]
@@ -476,7 +470,7 @@ class RevolmainX(Screen):
                     self['poster'].instance.setPixmap(gPixmapPtr())
                 else:
                     self['poster'].instance.setPixmap(None)
-                self.scale = AVSwitch().getFramebufferScale()
+                self.scale = eAVSwitch().getFramebufferScale()
                 self.picload = ePicLoad()
                 self.picload.setPara((size.width(),
                                       size.height(),
@@ -944,7 +938,7 @@ class live_streamX(Screen):
         self["poster"].hide()
         size = self['poster'].instance.size()
         self.picload = ePicLoad()
-        self.scale = AVSwitch().getFramebufferScale()
+        self.scale = eAVSwitch().getFramebufferScale()
         self.picload.setPara([size.width(), size.height(), self.scale[0], self.scale[1], 0, 1, '#00000000'])
         if Utils.DreamOS():
             self.picload.startDecode(png, False)
@@ -1078,11 +1072,6 @@ class video1X(Screen):
         x = self.name.split("_")
         n = int(x[0])
         try:
-            # print('In video1X y["channels"] =', y["channels"])
-            print('are here 2')
-        except Exception as e:
-            print(e)
-        try:
             # i = 0
             # while i < 50:
             #
@@ -1104,11 +1093,10 @@ class video1X(Screen):
                 self.names.append(Utils.checkStr(name))
                 self.urls.append(url)
                 self.pics.append(Utils.checkStr(pic))
-
+                self.infos.append(html_conv.html_unescape(info))
                 # self.names.append(str(name))
                 # self.urls.append(str(url))
                 # self.pics.append(pic)
-                self.infos.append(html_conv.html_unescape(info))
                 # i += 1
             nextmodule = "Videos3"
             showlist(self.names, self['list'])
@@ -1206,7 +1194,7 @@ class video1X(Screen):
         self["poster"].hide()
         size = self['poster'].instance.size()
         self.picload = ePicLoad()
-        self.scale = AVSwitch().getFramebufferScale()
+        self.scale = eAVSwitch().getFramebufferScale()
         # if self.picload:
         self.picload.setPara([size.width(), size.height(), self.scale[0], self.scale[1], 0, 1, '#00000000'])
         if Utils.DreamOS():
@@ -1438,7 +1426,7 @@ class video3X(Screen):
         self["poster"].hide()
         size = self['poster'].instance.size()
         self.picload = ePicLoad()
-        self.scale = AVSwitch().getFramebufferScale()
+        self.scale = eAVSwitch().getFramebufferScale()
         # if self.picload:
         self.picload.setPara([size.width(), size.height(), self.scale[0], self.scale[1], 0, 1, '#00000000'])
         if Utils.DreamOS():
@@ -1863,7 +1851,7 @@ class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotific
         return
 
     def getAspect(self):
-        return AVSwitch().getAspectRatioSetting()
+        return eAVSwitch().getAspectRatioSetting()
 
     def getAspectString(self, aspectnum):
         return {
@@ -1888,7 +1876,7 @@ class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotific
         }
         config.av.aspectratio.setValue(map[aspect])
         try:
-            AVSwitch().setAspectRatio(aspect)
+            eAVSwitch().setAspectRatio(aspect)
         except:
             pass
 
@@ -2025,7 +2013,7 @@ class plgnstrt(Screen):
             self['poster'].instance.setPixmap(gPixmapPtr())
         else:
             self['poster'].instance.setPixmap(None)
-        self.scale = AVSwitch().getFramebufferScale()
+        self.scale = eAVSwitch().getFramebufferScale()
         self.picload = ePicLoad()
         size = self['poster'].instance.size()
         self.picload.setPara((size.width(),

@@ -13,10 +13,12 @@ from __future__ import print_function
 from . import Utils
 from . import _, logdata, getversioninfo, paypal
 from . import html_conv
+import codecs
+from Components.AVSwitch import AVSwitch
 try:
-    from Components.AVSwitch import eAVSwitch
-except Exception:
-    from Components.AVSwitch import iAVSwitch as eAVSwitch
+    from Components.AVSwitch import iAVSwitch
+except:
+    from enigma import eAVSwitch
 from Components.ActionMap import ActionMap
 from Components.Button import Button
 from Components.config import ConfigDirectory, ConfigSubsection
@@ -352,7 +354,7 @@ class RevolmainX(Screen):
         global _session
         _session = session
         skin = os.path.join(skin_path, 'revall.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         global nextmodule
         nextmodule = 'RevolmainX'
@@ -499,7 +501,7 @@ class myconfigX(Screen, ConfigListScreen):
         Screen.__init__(self, session)
         self.session = session
         skin = os.path.join(skin_path, 'myconfig.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.setup_title = title_plug
         self.setTitle(title_plug)
@@ -693,7 +695,7 @@ class live_streamX(Screen):
         global _session
         _session = session
         skin = os.path.join(skin_path, 'revall.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.setup_title = ('HOME REVOLUTION XXX')
         self.setTitle(title_plug)
@@ -990,7 +992,7 @@ class video1X(Screen):
         global _session
         _session = session
         skin = os.path.join(skin_path, 'revall.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.setup_title = ('HOME REVOLUTION XXX')
         self.list = []
@@ -1253,7 +1255,7 @@ class video3X(Screen):
         global _session
         _session = session
         skin = os.path.join(skin_path, 'revall.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.setup_title = ('HOME REVOLUTION XXX')
         self.list = []
@@ -1583,7 +1585,7 @@ class Playstream1X(Screen):
         global _session
         _session = session
         skin = os.path.join(skin_path, 'Playstream1.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.setup_title = ('Select Player Stream')
         self.list = []
@@ -1851,7 +1853,11 @@ class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotific
         return
 
     def getAspect(self):
-        return eAVSwitch().getAspectRatioSetting()
+        try:
+            aspect = iAVSwitch.getAspectRatioSetting()
+        except:
+            aspect = eAVSwitch.getAspectRatioSetting()
+        return aspect
 
     def getAspectString(self, aspectnum):
         return {
@@ -1865,20 +1871,18 @@ class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotific
         }[aspectnum]
 
     def setAspect(self, aspect):
-        map = {
-            0: '4_3_letterbox',
-            1: '4_3_panscan',
-            2: '16_9',
-            3: '16_9_always',
-            4: '16_10_letterbox',
-            5: '16_10_panscan',
-            6: '16_9_letterbox'
-        }
+        map = {0: '4_3_letterbox',
+               1: '4_3_panscan',
+               2: '16_9',
+               3: '16_9_always',
+               4: '16_10_letterbox',
+               5: '16_10_panscan',
+               6: '16_9_letterbox'}
         config.av.aspectratio.setValue(map[aspect])
         try:
-            eAVSwitch().setAspectRatio(aspect)
+            iAVSwitch.setAspectRatio(aspect)
         except:
-            pass
+            eAVSwitch.setAspectRatio(aspect)
 
     def av(self):
         temp = int(self.getAspect())
@@ -1992,7 +1996,7 @@ class plgnstrt(Screen):
         Screen.__init__(self, session)
         self.session = session
         skin = os.path.join(skin_path, 'Plgnstrt.xml')
-        with open(skin, 'r') as f:
+        with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self["poster"] = Pixmap()
         self["poster"].hide()

@@ -1854,9 +1854,9 @@ class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotific
 
     def getAspect(self):
         try:
-            aspect = iAVSwitch.getAspectRatioSetting()
+            aspect = iAVSwitch().getAspectRatioSetting()
         except:
-            aspect = eAVSwitch.getAspectRatioSetting()
+            aspect = eAVSwitch().getAspectRatioSetting()
         return aspect
 
     def getAspectString(self, aspectnum):

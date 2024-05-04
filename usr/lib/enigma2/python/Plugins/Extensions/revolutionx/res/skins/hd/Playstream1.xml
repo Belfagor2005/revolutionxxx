@@ -1,25 +1,32 @@
 <!-- Skin tHD1 10/05/2022 -->
 <screen name="Playstream1" position="0,0" size="1280,720" title="::REVOLUTION::.." backgroundColor="#ff000000" flags="wfNoBorder">
-	<widget name="title" position="300,29" size="372,33" font="Regular;22" halign="left" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="5" />
-	<widget name="info" position="146,86" size="646,33" font="Regular;20" halign="center" valign="center" foregroundColor="yellow" backgroundColor="#202020" transparent="0" zPosition="5" />
-	<widget source="desc" render="rvxRunningText" position="145,499" size="649,155" font="Regular;20" foregroundColor="#ffb75b" backgroundColor="#20000000" halign="center" transparent="0" zPosition="5" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap" />
-	<eLabel position="145,499" size="649,155" backgroundColor="#30000000" zPosition="1" />
+	<widget name="title" position="300,29" size="486,33" font="Regular;22" halign="left" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="5"/>
+	<widget name="info" position="146,86" size="682,33" font="Regular;20" halign="center" valign="center" foregroundColor="yellow" backgroundColor="#202020" transparent="0" zPosition="5"/>
+	<widget source="desc" render="rvxRunningText" position="146,499" size="687,155" font="Regular;20" foregroundColor="#ffb75b" backgroundColor="#20000000" halign="center" transparent="0" zPosition="5" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap"/>
+	<eLabel position="145,499" size="649,155" backgroundColor="#30000000" zPosition="1"/>
 	<!-- <eLabel position="854,162" size="226,300" backgroundColor="#30000000" zPosition="1" /> -->
-	<widget name="progress" position="929,611" size="300,50" foregroundColor="#2a70a4" backgroundColor="#10000000" transparent="1" zPosition="5" />
-	<widget source="progresstext" render="Label" font="Regular;20" position="927,610" size="300,50" backgroundColor="#202020" transparent="1" halign="center" zPosition="6" />
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvsposter.png" alphatest="blend" position="990,166" size="205,282" scale="1" zPosition="3" />
-	<widget name="poster" position="990,166" size="205,282" backgroundColor="#30000000" transparent="1" borderWidth="2" borderColor="#00ffffff" alphatest="blend" zPosition="4" />	
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/main22.png" position="0,0" size="1280,720" zPosition="1" />
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvs.png" alphatest="blend" position="146,21" size="143,40" scale="1" zPosition="5" />
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sep.png" position="146,73" size="646,5" alphatest="blend" zPosition="5" />
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sep.png" position="146,491" size="646,5" alphatest="blend" zPosition="5" />
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sep.png" position="146,653" size="646,5" alphatest="blend" zPosition="5" />
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/menu.png" position="695,23" size="96,39" alphatest="blend" zPosition="5" />
+	<widget name="progress" position="322,666" size="300,50" foregroundColor="#2a70a4" backgroundColor="#10000000" transparent="1" zPosition="5"/>
+	<widget source="progresstext" render="Label" font="Regular;20" position="320,668" size="300,50" backgroundColor="#202020" transparent="1" halign="center" zPosition="6"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvsposter.png" alphatest="blend" position="990,166" size="205,282" scale="1" zPosition="3"/>
+	<widget name="poster" position="990,166" size="205,282" backgroundColor="#30000000" transparent="1" borderWidth="2" borderColor="#00ffffff" alphatest="blend" zPosition="4"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/main22.png" position="0,2" size="1280,720" zPosition="1"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvs.png" alphatest="blend" position="146,21" size="143,40" scale="1" zPosition="5"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sep.png" position="146,73" size="690,5" alphatest="blend" zPosition="5"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sep.png" position="146,491" size="690,5" alphatest="blend" zPosition="5"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sep.png" position="146,655" size="690,5" alphatest="blend" zPosition="5"/>
 	<!-- Menu List -->
-	<widget name="list" position="145,126" size="646,360" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#20000000" backgroundColorSelected="#0b2049" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sliderb.png" />
+	<widget name="list" position="145,126" size="684,360" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#20000000" backgroundColorSelected="#0b2049" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sliderb.png"/>
+	<eLabel name="" position="851,550" size="52,52" backgroundColor="#003e4b53" halign="center" valign="center" transparent="0" cornerRadius="26" font="Regular; 17" zPosition="1" text="OK"/>
+	<eLabel name="" position="850,600" size="55,52" backgroundColor="#003e4b53" halign="center" valign="center" transparent="0" cornerRadius="26" font="Regular; 17" zPosition="1" text="MENU"/>
+	<eLabel name="" position="851,499" size="52,52" backgroundColor="#003e4b53" halign="center" valign="center" transparent="0" cornerRadius="26" font="Regular; 17" zPosition="1" text="INFO"/>
 	<!-- Colors 1220 -->
-	<ePixmap name="red" position="147,663" zPosition="2" size="210,60" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />
-	<widget name="key_red" position="262,655" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular; 24" transparent="1" />
-	<ePixmap name="green" position="531,661" zPosition="2" size="210,60" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />
-	<widget name="key_green" position="617,657" size="210,60" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular; 24" transparent="1" />
+	<eLabel backgroundColor="#00ff0000" position="152,663" size="300,6" zPosition="12"/>
+	<eLabel backgroundColor="#0000ff00" position="533,662" size="300,6" zPosition="12"/>
+	<!-- 	<eLabel backgroundColor="#00ffff00" position="307,271" size="300,6" zPosition="12" />
+	<eLabel backgroundColor="#000000ff" position="309,215" size="300,6" zPosition="12" /> -->
+	<widget name="key_red" render="Label" position="148,673" size="300,45" zPosition="11" font="Regular; 30" valign="center" halign="center" backgroundColor="background" transparent="1" foregroundColor="white"/>
+	<widget name="key_green" render="Label" position="533,672" size="300,45" zPosition="11" font="Regular; 30" valign="center" halign="center" backgroundColor="background" transparent="1" foregroundColor="white"/>
+	<!-- 	<widget name="key_yellow" render="Label" position="307,279" size="300,45" zPosition="11" font="Regular; 30" valign="center" halign="center" backgroundColor="background" transparent="1" foregroundColor="white" />
+	<widget name="key_blue" render="Label" position="307,225" size="300,45" zPosition="11" font="Regular; 30" valign="center" halign="center" backgroundColor="background" transparent="1" foregroundColor="white" />
+ -->
 </screen>

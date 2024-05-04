@@ -2,25 +2,23 @@
 <screen name="Revolmain" position="0,0" size="2560,1440" title=".::REVOLUTION X::.." backgroundColor="#ff000000" flags="wfNoBorder">
     <widget name="title" position="675,56" size="736,54" font="Regular;40" halign="left" valign="center" foregroundColor="#002a79b8" backgroundColor="black" transparent="1" zPosition="5"/>
     <widget name="info" position="302,127" size="1094,67" font="Regular;40" halign="left" foregroundColor="yellow" backgroundColor="#000000" transparent="1" zPosition="5"/>
-    <widget name="pth" position="623,1348" size="779,59" font="Regular;40" halign="right" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5" />
+    <widget name="pth" position="623,1348" size="779,59" font="Regular;40" halign="right" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5"/>
     <widget name="poster" position="1840,200" size="560,784" alphatest="blend" scale="1" zPosition="3"/>
     <!--     
     <ePixmap position="1847,200" size="560,784" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvposter.png" zPosition="2" scale="1"/>
     -->
-    <eLabel position="302,1022" size="1102,294" backgroundColor="#30000000" zPosition="1"/>	
+    <eLabel position="302,1022" size="1102,294" backgroundColor="#30000000" zPosition="1"/>
     <!-- <widget source="desc" render="rvxRunningText" position="304,1022" size="1102,294" font="Regular;40" foregroundColor="#ffb75b" backgroundColor="#101010" halign="center" transparent="1" zPosition="2" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap=1"/> -->
-
-	<widget name="desc" position="304,1022" size="1102,294" font="Regular;40" halign="center" valign="center" foregroundColor="#ffb75b" backgroundColor="101010" transparent="1" zPosition="5" />
-
+    <widget name="desc" position="304,1022" size="1102,294" font="Regular;40" halign="center" valign="center" foregroundColor="#ffb75b" backgroundColor="101010" transparent="1" zPosition="5"/>
     <!-- Graph -->
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/main1.png" position="0,0" size="2560,1440" zPosition="1"/>
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvs.png" alphatest="blend" position="294,54" size="372,67" zPosition="5"/>
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/menu.png" scale="strech" position="1300,120" size="107,47" zPosition="3"/>
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sep.png" position="294,187" size="1107,11" zPosition="5"/>
 
-    <!-- Menu List -->
+
+<!-- Menu List -->
     <widget name="list" position="292,204" size="1107,800" scrollbarMode="showOnDemand" enableWrapAround="1" transparent="1" zPosition="10" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#000b2049" backgroundColorSelected="#0b2049" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sliderb.png"/>
     <!-- Colors -->
     <ePixmap name="red" position="303,1344" zPosition="2" size="280,80" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on"/>
-    <widget name="key_red" position="430,1335" size="280,80" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;40" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2"/> 
+    <widget name="key_red" position="430,1335" size="280,80" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;40" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2"/>
 </screen>

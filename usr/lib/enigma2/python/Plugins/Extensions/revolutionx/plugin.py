@@ -16,11 +16,6 @@ from . import html_conv
 import codecs
 from Components.AVSwitch import AVSwitch
 try:
-    from Components.AVSwitch import iAVSwitch
-except Exception as e:
-    print(e)
-
-try:
     from enigma import eAVSwitch
 except Exception as e:
     print(e)
@@ -1859,7 +1854,7 @@ class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotific
 
     def getAspect(self):
         try:
-            aspect = iAVSwitch().getAspectRatioSetting()
+            aspect = AVSwitch().getAspectRatioSetting()
         except:
             aspect = eAVSwitch().getAspectRatioSetting()
         return aspect
@@ -1885,7 +1880,7 @@ class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotific
                6: '16_9_letterbox'}
         config.av.aspectratio.setValue(map[aspect])
         try:
-            iAVSwitch.setAspectRatio(aspect)
+            AVSwitch.setAspectRatio(aspect)
         except:
             eAVSwitch.setAspectRatio(aspect)
 

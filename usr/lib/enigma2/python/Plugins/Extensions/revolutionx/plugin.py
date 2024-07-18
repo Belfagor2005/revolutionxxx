@@ -322,242 +322,6 @@ def returnIMDB(text_clear):
     return False
 
 
-class RevolmainX(Screen):
-    def __init__(self, session):
-        Screen.__init__(self, session)
-        self.session = session
-        global _session
-        _session = session
-        skin = os.path.join(skin_path, 'revall.xml')
-        with codecs.open(skin, "r", encoding="utf-8") as f:
-            self.skin = f.read()
-        global nextmodule
-        nextmodule = 'RevolmainX'
-        self['list'] = rvList([])
-        self.setup_title = ('HOME REVOLUTION XXX')
-        self['pth'] = Label('')
-        self['pth'].setText(_('Cache folder ') + revol)
-        self['poster'] = Pixmap()
-        self['desc'] = StaticText()
-        self['info'] = Label('')
-        self['info'].setText('Select')
-        self['key_red'] = Button(_('Exit'))
-        self['key_yellow'] = Button(_('Update'))
-        self.currentList = 'list'
-        self.names = []
-        self.urls = []
-        self.pics = []
-        self.infos = []
-        self.menulist = []
-        self['title'] = Label(title_plug)
-        # self['actions'] = ActionMap(['OkCancelActions',
-                                     # 'ColorActions',
-                                     # 'EPGSelectActions',
-                                     # # 'ButtonSetupActions',
-                                     # 'MenuActions',
-                                     # 'DirectionActions'], {'ok': self.okRun,
-                                                           # 'green': self.okRun,
-                                                           # 'back': self.closerm,
-                                                           # 'red': self.closerm,
-                                                           # # 'epg': self.showIMDB,
-                                                           # # 'info': self.showIMDB,
-                                                           # 'up': self.up,
-                                                           # 'down': self.down,
-                                                           # 'left': self.left,
-                                                           # 'right': self.right,
-                                                           # 'menu': self.goConfig,
-                                                           # 'cancel': self.closerm}, -1)
-        # self.onLayoutFinish.append(self.updateMenuList)
-        # self.onLayoutFinish.append(self.__layoutFinished)
-        self.Update = False
-        self['actions'] = ActionMap(['OkCancelActions',
-                                     'ColorActions',
-                                     'HotkeyActions',
-                                     'InfobarEPGActions',
-                                     'MenuActions',
-                                     'ChannelSelectBaseActions',
-                                     'DirectionActions'], {'ok': self.okRun,
-                                                           'up': self.up,
-                                                           'down': self.down,
-                                                           'left': self.left,
-                                                           'right': self.right,
-                                                           'yellow': self.update_me,  # update_me,
-                                                           'yellow_long': self.update_dev,
-                                                           'info_long': self.update_dev,
-                                                           'infolong': self.update_dev,
-                                                           'showEventInfoPlugin': self.update_dev,
-                                                           'menu': self.goConfig,
-                                                           'green': self.okRun,
-                                                           'cancel': self.closerm,
-                                                           'red': self.closerm}, -1)
-        self.timer = eTimer()
-        if os.path.exists('/var/lib/dpkg/status'):
-            self.timer_conn = self.timer.timeout.connect(self.check_vers)
-        else:
-            self.timer.callback.append(self.check_vers)
-        self.timer.start(500, 1)
-        self.onLayoutFinish.append(self.updateMenuList)
-        self.onLayoutFinish.append(self.__layoutFinished)
-
-    def check_vers(self):
-        remote_version = '0.0'
-        remote_changelog = ''
-        req = Utils.Request(Utils.b64decoder(installer_url), headers={'User-Agent': 'Mozilla/5.0'})
-        page = Utils.urlopen(req).read()
-        if PY3:
-            data = page.decode("utf-8")
-        else:
-            data = page.encode("utf-8")
-        if data:
-            lines = data.split("\n")
-            for line in lines:
-                if line.startswith("version"):
-                    remote_version = line.split("=")
-                    remote_version = line.split("'")[1]
-                if line.startswith("changelog"):
-                    remote_changelog = line.split("=")
-                    remote_changelog = line.split("'")[1]
-                    break
-        self.new_version = remote_version
-        self.new_changelog = remote_changelog
-        if currversion < remote_version:
-            self.Update = True
-            self['key_yellow'].show()
-            # self['key_green'].show()
-            self.session.open(MessageBox, _('New version %s is available\n\nChangelog: %s\n\nPress info_long or yellow_long button to start force updating.') % (self.new_version, self.new_changelog), MessageBox.TYPE_INFO, timeout=5)
-        # self.update_me()
-
-    def update_me(self):
-        if self.Update is True:
-            self.session.openWithCallback(self.install_update, MessageBox, _("New version %s is available.\n\nChangelog: %s \n\nDo you want to install it now?") % (self.new_version, self.new_changelog), MessageBox.TYPE_YESNO)
-        else:
-            self.session.open(MessageBox, _("Congrats! You already have the latest version..."),  MessageBox.TYPE_INFO, timeout=4)
-
-    def update_dev(self):
-        try:
-            req = Utils.Request(Utils.b64decoder(developer_url), headers={'User-Agent': 'Mozilla/5.0'})
-            page = Utils.urlopen(req).read()
-            data = json.loads(page)
-            remote_date = data['pushed_at']
-            strp_remote_date = datetime.strptime(remote_date, '%Y-%m-%dT%H:%M:%SZ')
-            remote_date = strp_remote_date.strftime('%Y-%m-%d')
-            self.session.openWithCallback(self.install_update, MessageBox, _("Do you want to install update ( %s ) now?") % (remote_date), MessageBox.TYPE_YESNO)
-        except Exception as e:
-            print('error xcons:', e)
-
-    def install_update(self, answer=False):
-        if answer:
-            cmd1 = 'wget -q "--no-check-certificate" ' + Utils.b64decoder(installer_url) + ' -O - | /bin/sh'
-            self.session.open(xConsole, 'Upgrading...', cmdlist=[cmd1], finishedCallback=self.myCallback, closeOnSuccess=False)
-        else:
-            self.session.open(MessageBox, _("Update Aborted!"),  MessageBox.TYPE_INFO, timeout=3)
-
-    def myCallback(self, result=None):
-        print('result:', result)
-        return
-
-    def __layoutFinished(self):
-        self.setTitle(self.setup_title)
-        self.load_poster()
-
-    def closerm(self):
-        self.close()
-
-    def updateMenuList(self):
-        self.menu_list = []
-        for x in self.menu_list:
-            del self.menu_list[0]
-        list = []
-        self.idx = 0
-        for x in PanelMain:
-            list.append(rvListEntry(x, self.idx))
-            self.menu_list.append(x)
-            self.idx += 1
-        self['list'].setList(list)
-        self.name = 'XXX'
-        self.load_poster()
-
-    def okRun(self):
-        self.keyNumberGlobalCB(self['list'].getSelectionIndex())
-
-    def adultonly(self):
-        self.session.openWithCallback(self.cancelConfirm, MessageBox, _('These streams may contain Adult content\n\nare you sure you want to continue??'))
-
-    def cancelConfirm(self, result):
-        if not result:
-            return
-        else:
-            self.session.open(live_streamX, self.name, self.url, self.pic, nextmodule)
-
-    def keyNumberGlobalCB(self, idx):
-        global nextmodule
-        sel = self.menu_list[idx]
-        if sel == ('XXX'):
-            if str(cfg.code.value) != str(pin):
-                self.mbox = self.session.open(MessageBox, _('You are not allowed!'), MessageBox.TYPE_INFO, timeout=8)
-                return
-            else:
-                self.name = 'XXX'
-                self.url = 'http://tivustream.website/php_filter/kodi19/xxxJob.php?utKodi=TVSXXX'
-                self.pic = pixmaps
-                nextmodule = 'xxx'
-                self.adultonly()
-        else:
-            self.mbox = self.session.open(MessageBox, _('Otherwise Use my Plugin Freearhey'), MessageBox.TYPE_INFO, timeout=4)
-
-    def goConfig(self):
-        self.session.open(myconfigX)
-
-    def up(self):
-        self[self.currentList].up()
-        self.load_poster()
-
-    def down(self):
-        self[self.currentList].down()
-        self.load_poster()
-
-    def left(self):
-        self[self.currentList].pageUp()
-        self.load_poster()
-
-    def right(self):
-        self[self.currentList].pageDown()
-        self.load_poster()
-
-    def load_poster(self):
-        try:
-            sel = self['list'].getSelectionIndex()
-            if sel is not None or sel != -1:
-                pixmaps = os.path.join(THISPLUG, 'res/picons/backg.png')
-                size = self['poster'].instance.size()
-                if os.path.exists('/var/lib/dpkg/status'):
-                    self['poster'].instance.setPixmap(gPixmapPtr())
-                else:
-                    self['poster'].instance.setPixmap(None)
-                self.scale = AVSwitch().getFramebufferScale()
-                self.picload = ePicLoad()
-                self.picload.setPara((size.width(),
-                                      size.height(),
-                                      self.scale[0],
-                                      self.scale[1],
-                                      False,
-                                      1,
-                                      '#FF000000'))
-                ptr = self.picload.getData()
-                if os.path.exists('/var/lib/dpkg/status'):
-                    if self.picload.startDecode(pixmaps, False) == 0:
-                        ptr = self.picload.getData()
-                else:
-                    if self.picload.startDecode(pixmaps, 0, 0, False) == 0:
-                        ptr = self.picload.getData()
-                if ptr is not None:
-                    self['poster'].instance.setPixmap(ptr)
-                    self['poster'].show()
-                return
-        except Exception as e:
-            print(e)
-
-
 class myconfigX(Screen, ConfigListScreen):
     def __init__(self, session):
         Screen.__init__(self, session)
@@ -747,6 +511,223 @@ class myconfigX(Screen, ConfigListScreen):
                 x[1].cancel()
             self.close()
         return
+
+
+class RevolmainX(Screen):
+    def __init__(self, session):
+        Screen.__init__(self, session)
+        self.session = session
+        global _session
+        _session = session
+        skin = os.path.join(skin_path, 'revall.xml')
+        with codecs.open(skin, "r", encoding="utf-8") as f:
+            self.skin = f.read()
+        global nextmodule
+        nextmodule = 'RevolmainX'
+        self['list'] = rvList([])
+        self.setup_title = ('HOME REVOLUTION XXX')
+        self['pth'] = Label('')
+        self['pth'].setText(_('Cache folder ') + revol)
+        self['poster'] = Pixmap()
+        self['desc'] = StaticText()
+        self['info'] = Label('')
+        self['info'].setText('Select')
+        self['key_red'] = Button(_('Exit'))
+        self['key_yellow'] = Button(_('Update'))
+        self.currentList = 'list'
+        self.names = []
+        self.urls = []
+        self.pics = []
+        self.infos = []
+        self.menulist = []
+        self['title'] = Label(title_plug)
+        self.Update = False
+        self['actions'] = ActionMap(['OkCancelActions',
+                                     'ColorActions',
+                                     'HotkeyActions',
+                                     'InfobarEPGActions',
+                                     'MenuActions',
+                                     'ChannelSelectBaseActions',
+                                     'DirectionActions'], {'ok': self.okRun,
+                                                           'up': self.up,
+                                                           'down': self.down,
+                                                           'left': self.left,
+                                                           'right': self.right,
+                                                           'yellow': self.update_me,  # update_me,
+                                                           'yellow_long': self.update_dev,
+                                                           'info_long': self.update_dev,
+                                                           'infolong': self.update_dev,
+                                                           'showEventInfoPlugin': self.update_dev,
+                                                           'menu': self.goConfig,
+                                                           'green': self.okRun,
+                                                           'cancel': self.closerm,
+                                                           'red': self.closerm}, -1)
+        self.timer = eTimer()
+        if os.path.exists('/var/lib/dpkg/status'):
+            self.timer_conn = self.timer.timeout.connect(self.check_vers)
+        else:
+            self.timer.callback.append(self.check_vers)
+        self.timer.start(500, 1)
+        self.onLayoutFinish.append(self.updateMenuList)
+        self.onLayoutFinish.append(self.__layoutFinished)
+
+    def check_vers(self):
+        remote_version = '0.0'
+        remote_changelog = ''
+        req = Utils.Request(Utils.b64decoder(installer_url), headers={'User-Agent': 'Mozilla/5.0'})
+        page = Utils.urlopen(req).read()
+        if PY3:
+            data = page.decode("utf-8")
+        else:
+            data = page.encode("utf-8")
+        if data:
+            lines = data.split("\n")
+            for line in lines:
+                if line.startswith("version"):
+                    remote_version = line.split("=")
+                    remote_version = line.split("'")[1]
+                if line.startswith("changelog"):
+                    remote_changelog = line.split("=")
+                    remote_changelog = line.split("'")[1]
+                    break
+        self.new_version = remote_version
+        self.new_changelog = remote_changelog
+        if currversion < remote_version:
+            self.Update = True
+            self['key_yellow'].show()
+            # self['key_green'].show()
+            self.session.open(MessageBox, _('New version %s is available\n\nChangelog: %s\n\nPress info_long or yellow_long button to start force updating.') % (self.new_version, self.new_changelog), MessageBox.TYPE_INFO, timeout=5)
+        # self.update_me()
+
+    def update_me(self):
+        if self.Update is True:
+            self.session.openWithCallback(self.install_update, MessageBox, _("New version %s is available.\n\nChangelog: %s \n\nDo you want to install it now?") % (self.new_version, self.new_changelog), MessageBox.TYPE_YESNO)
+        else:
+            self.session.open(MessageBox, _("Congrats! You already have the latest version..."),  MessageBox.TYPE_INFO, timeout=4)
+
+    def update_dev(self):
+        try:
+            req = Utils.Request(Utils.b64decoder(developer_url), headers={'User-Agent': 'Mozilla/5.0'})
+            page = Utils.urlopen(req).read()
+            data = json.loads(page)
+            remote_date = data['pushed_at']
+            strp_remote_date = datetime.strptime(remote_date, '%Y-%m-%dT%H:%M:%SZ')
+            remote_date = strp_remote_date.strftime('%Y-%m-%d')
+            self.session.openWithCallback(self.install_update, MessageBox, _("Do you want to install update ( %s ) now?") % (remote_date), MessageBox.TYPE_YESNO)
+        except Exception as e:
+            print('error xcons:', e)
+
+    def install_update(self, answer=False):
+        if answer:
+            cmd1 = 'wget -q "--no-check-certificate" ' + Utils.b64decoder(installer_url) + ' -O - | /bin/sh'
+            self.session.open(xConsole, 'Upgrading...', cmdlist=[cmd1], finishedCallback=self.myCallback, closeOnSuccess=False)
+        else:
+            self.session.open(MessageBox, _("Update Aborted!"),  MessageBox.TYPE_INFO, timeout=3)
+
+    def myCallback(self, result=None):
+        print('result:', result)
+        return
+
+    def __layoutFinished(self):
+        self.setTitle(self.setup_title)
+        self.load_poster()
+
+    def closerm(self):
+        self.close()
+
+    def updateMenuList(self):
+        self.menu_list = []
+        for x in self.menu_list:
+            del self.menu_list[0]
+        list = []
+        self.idx = 0
+        for x in PanelMain:
+            list.append(rvListEntry(x, self.idx))
+            self.menu_list.append(x)
+            self.idx += 1
+        self['list'].setList(list)
+        self.name = 'XXX'
+        self.load_poster()
+
+    def okRun(self):
+        self.keyNumberGlobalCB(self['list'].getSelectionIndex())
+
+    def adultonly(self):
+        self.session.openWithCallback(self.cancelConfirm, MessageBox, _('These streams may contain Adult content\n\nare you sure you want to continue??'))
+
+    def cancelConfirm(self, result):
+        if not result:
+            return
+        else:
+            self.session.open(live_streamX, self.name, self.url, self.pic, nextmodule)
+
+    def keyNumberGlobalCB(self, idx):
+        global nextmodule
+        sel = self.menu_list[idx]
+        if sel == ('XXX'):
+            if str(cfg.code.value) != str(pin):
+                self.mbox = self.session.open(MessageBox, _('You are not allowed!'), MessageBox.TYPE_INFO, timeout=8)
+                return
+            else:
+                self.name = 'XXX'
+                self.url = 'http://tivustream.website/php_filter/kodi19/xxxJob.php?utKodi=TVSXXX'
+                self.pic = pixmaps
+                nextmodule = 'xxx'
+                self.adultonly()
+        else:
+            self.mbox = self.session.open(MessageBox, _('Otherwise Use my Plugin Freearhey'), MessageBox.TYPE_INFO, timeout=4)
+
+    def goConfig(self):
+        self.session.open(myconfigX)
+
+    def up(self):
+        self[self.currentList].up()
+        self.load_poster()
+
+    def down(self):
+        self[self.currentList].down()
+        self.load_poster()
+
+    def left(self):
+        self[self.currentList].pageUp()
+        self.load_poster()
+
+    def right(self):
+        self[self.currentList].pageDown()
+        self.load_poster()
+
+    def load_poster(self):
+        try:
+            sel = self['list'].getSelectionIndex()
+            if sel is not None or sel != -1:
+                pixmaps = os.path.join(THISPLUG, 'res/picons/backg.png')
+                size = self['poster'].instance.size()
+                if os.path.exists('/var/lib/dpkg/status'):
+                    self['poster'].instance.setPixmap(gPixmapPtr())
+                else:
+                    self['poster'].instance.setPixmap(None)
+                self.scale = AVSwitch().getFramebufferScale()
+                self.picload = ePicLoad()
+                self.picload.setPara((size.width(),
+                                      size.height(),
+                                      self.scale[0],
+                                      self.scale[1],
+                                      False,
+                                      1,
+                                      '#FF000000'))
+                ptr = self.picload.getData()
+                if os.path.exists('/var/lib/dpkg/status'):
+                    if self.picload.startDecode(pixmaps, False) == 0:
+                        ptr = self.picload.getData()
+                else:
+                    if self.picload.startDecode(pixmaps, 0, 0, False) == 0:
+                        ptr = self.picload.getData()
+                if ptr is not None:
+                    self['poster'].instance.setPixmap(ptr)
+                    self['poster'].show()
+                return
+        except Exception as e:
+            print(e)
 
 
 class live_streamX(Screen):

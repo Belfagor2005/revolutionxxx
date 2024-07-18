@@ -73,6 +73,7 @@ class Console(Screen):
             "exit": self.cancel,
             }, -1)
         self.cmdlist = isinstance(cmdlist, list) and cmdlist or [cmdlist]
+        print('self.cmdlist console:', self.cmdlist)
         self.newtitle = title == 'Console' and _('Console') or title
         self.cancel_msg = None
         self.onShown.append(self.updateTitle)

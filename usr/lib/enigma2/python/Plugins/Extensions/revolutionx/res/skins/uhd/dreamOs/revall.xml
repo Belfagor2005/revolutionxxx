@@ -1,24 +1,24 @@
 <!-- Skin revall 10/10/2022 -->
-<screen name="Revolmain" position="0,0" size="2560,1440" title=".::REVOLUTION X::.." backgroundColor="#ff000000" flags="wfNoBorder">
-    <widget name="title" position="675,56" size="736,54" font="Regular;40" halign="left" valign="center" foregroundColor="#002a79b8" backgroundColor="black" transparent="1" zPosition="5"/>
-    <widget name="info" position="302,127" size="1094,67" font="Regular;40" halign="left" foregroundColor="yellow" backgroundColor="#000000" transparent="1" zPosition="5"/>
-    <widget name="pth" position="623,1348" size="779,59" font="Regular;40" halign="right" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5"/>
-    <widget name="poster" position="1840,200" size="560,784" alphatest="blend" scale="1" zPosition="3"/>
-    <!--     
-    <ePixmap position="1847,200" size="560,784" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvposter.png" zPosition="2" scale="1"/>
-    -->
-    <eLabel position="302,1022" size="1102,294" backgroundColor="#30000000" zPosition="1"/>
-    <!-- <widget source="desc" render="rvxRunningText" position="304,1022" size="1102,294" font="Regular;40" foregroundColor="#ffb75b" backgroundColor="#101010" halign="center" transparent="1" zPosition="2" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap=1"/> -->
-    <widget name="desc" position="304,1022" size="1102,294" font="Regular;40" halign="center" valign="center" foregroundColor="#ffb75b" backgroundColor="101010" transparent="1" zPosition="5"/>
+<screen name="revall" position="0,0" size="2560,1440" title="..::Revolutionx::.." backgroundColor="#ff000000" flags="wfNoBorder">
+	<widget name="title" position="708,58" size="682,64" font="Regular; 43" halign="right" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="5" />
+    <widget name="info" position="302,127" size="1094,67" font="Regular;40" halign="left" foregroundColor="yellow" backgroundColor="#000000" transparent="1" zPosition="5" />
+    <widget name="pth" position="292,1366" size="1106,59" font="Regular;40" halign="right" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5" render="rvRunningText" />
+    <widget source="desc" render="rvRunningText" position="290,988" size="1102,294" font="Regular;40" foregroundColor="#ffb75b" backgroundColor="transparent" halign="center" transparent="1" zPosition="2" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap=1" />
+    <eLabel position="288,1002" size="1104,294" backgroundColor="#30000000" zPosition="1" />
     <!-- Graph -->
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/main1.png" position="0,0" size="2560,1440" zPosition="1"/>
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvs.png" alphatest="blend" position="294,54" size="372,67" zPosition="5"/>
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sep.png" position="294,187" size="1107,11" zPosition="5"/>
-
-
-<!-- Menu List -->
-    <widget name="list" position="292,204" size="1107,800" scrollbarMode="showOnDemand" enableWrapAround="1" transparent="1" zPosition="10" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#000b2049" backgroundColorSelected="#0b2049" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sliderb.png"/>
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/main1.png" position="0,0" scale="stretch" size="2560,1440" zPosition="1" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvs.png" alphatest="blend" position="294,54" size="372,67" zPosition="5" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sep.png" position="294,187" size="1107,11" zPosition="5" />
+    <ePixmap position="1847,200" size="560,784" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/img/tvposter.png" zPosition="2" scale="stretch" />    
+    <widget name="poster" position="1840,200" size="560,784" alphatest="blend" scale="stretch" zPosition="3" />
+    <eLabel name="" position="1167,1294" size="74,70" backgroundColor="#003e4b53" halign="center" valign="center" transparent="0" cornerRadius="26" font="Regular; 23" zPosition="3" text="OK" />
+    <eLabel name="" position="1247,1294" size="74,70" backgroundColor="#003e4b53" halign="center" valign="center" transparent="0" cornerRadius="26" font="Regular; 23" zPosition="3" text="MENU" />
+    <eLabel name="" position="1320,1294" size="74,70" backgroundColor="#003e4b53" halign="center" valign="center" transparent="0" cornerRadius="26" font="Regular; 23" zPosition="3" text="INFO" />
+    <!-- Menu List -->
+    <widget name="list" position="292,204" size="1107,774" scrollbarMode="showOnDemand" enableWrapAround="1" transparent="1" zPosition="10" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#000b2049" backgroundColorSelected="#0b2049" />
     <!-- Colors -->
-    <ePixmap name="red" position="303,1344" zPosition="2" size="280,80" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on"/>
-    <widget name="key_red" position="430,1335" size="280,80" valign="center" halign="center" zPosition="4" foregroundColor="#ffffff" font="Regular;40" transparent="1" shadowColor="#25062748" shadowOffset="-2,-2"/>
+    <eLabel position="307,1280" size="280,80" backgroundColor="#ff0033" zPosition="4" />       
+    <eLabel position="875,1280" size="280,80" backgroundColor="#ffff00" zPosition="4" />
+	<widget name="key_red" position="304,1280" size="284,84" font="Regular;40" halign="center" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
+	<widget name="key_yellow" position="874,1280" size="280,80" font="Regular;40" halign="center" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
 </screen>

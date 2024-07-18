@@ -1,34 +1,24 @@
 <!-- Skin revall 10/10/2022 -->
-<screen name="Revolmain" position="0,0" size="1920,1080" title=".::REVOLUTION X::.." backgroundColor="#ff000000" flags="wfNoBorder">
-    <widget name="title" position="506,42" size="552,45" font="Regular;30" halign="left" valign="center" foregroundColor="#002a79b8" backgroundColor="black" transparent="1" zPosition="5" />
+<screen name="revall" position="0,0" size="1920,1080" title="..::Revolutionx::.." backgroundColor="#ff000000" flags="wfNoBorder">
+	<widget name="title" position="531,43" size="511,48" font="Regular; 32" halign="right" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="5" />
     <widget name="info" position="226,95" size="820,50" font="Regular;30" halign="left" foregroundColor="yellow" backgroundColor="#000000" transparent="1" zPosition="5" />
-    <widget name="pth" position="467,1011" size="584,44" font="Regular;30" halign="right" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5" />
-    <widget name="poster" position="1380,150" size="420,588" alphatest="blend" scale="1" zPosition="3" />
-    <!--     
-    <ePixmap position="1385,150" size="420,588" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvposter.png" zPosition="2" scale="1"/>
-    -->
-    <eLabel position="225,766" size="826,180" backgroundColor="#30000000" zPosition="1" />
-    <!-- <widget source="desc" render="rvxRunningText" position="228,766" size="826,220" font="Regular;30" foregroundColor="#ffb75b" backgroundColor="#101010" halign="center" transparent="1" zPosition="2" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap=1"/> -->
-    <widget name="desc" position="221,766" size="826,182" font="Regular;30" halign="center" valign="center" foregroundColor="#ffb75b" backgroundColor="101010" transparent="1" zPosition="5" />
+    <widget name="pth" position="219,1024" size="829,44" font="Regular;30" halign="right" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5" render="rvRunningText" />
+    <widget source="desc" render="rvRunningText" position="217,741" size="826,220" font="Regular;30" foregroundColor="#ffb75b" backgroundColor="transparent" halign="center" transparent="1" zPosition="2" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap=1" />
+    <eLabel position="216,751" size="828,220" backgroundColor="#30000000" zPosition="1" />
     <!-- Graph -->
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/main1.png" position="0,0" size="1920,1080" zPosition="1" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/main1.png" position="0,0" scale="stretch" size="1920,1080" zPosition="1" />
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvs.png" alphatest="blend" position="220,40" size="279,50" zPosition="5" />
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sep.png" position="220,140" size="830,8" zPosition="5" />
-	<eLabel name="" position="141,666" size="52,52" backgroundColor="#003e4b53" halign="center" valign="center" transparent="0" cornerRadius="26" font="Regular; 17" zPosition="3" text="OK" />
-	<eLabel name="" position="196,666" size="55,52" backgroundColor="#003e4b53" halign="center" valign="center" transparent="0" cornerRadius="26" font="Regular; 17" zPosition="3" text="MENU" />
-	<eLabel name="" position="254,668" size="52,52" backgroundColor="#003e4b53" halign="center" valign="center" transparent="0" cornerRadius="26" font="Regular; 17" zPosition="3" text="INFO" />
+    <ePixmap position="1385,150" size="420,588" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/img/tvposter.png" zPosition="2" scale="stretch" />    
+    <widget name="poster" position="1380,150" size="420,588" alphatest="blend" scale="stretch" zPosition="3" />
+    <eLabel name="" position="875,970" size="55,52" backgroundColor="#003e4b53" halign="center" valign="center" transparent="0" cornerRadius="26" font="Regular; 17" zPosition="3" text="OK" />
+    <eLabel name="" position="935,970" size="55,52" backgroundColor="#003e4b53" halign="center" valign="center" transparent="0" cornerRadius="26" font="Regular; 17" zPosition="3" text="MENU" />
+    <eLabel name="" position="990,970" size="55,52" backgroundColor="#003e4b53" halign="center" valign="center" transparent="0" cornerRadius="26" font="Regular; 17" zPosition="3" text="INFO" />
     <!-- Menu List -->
-    <widget name="list" position="219,153" size="830,600" scrollbarMode="showOnDemand" enableWrapAround="1" transparent="1" zPosition="10" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#000b2049" backgroundColorSelected="#0b2049" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sliderb.png" />
+    <widget name="list" position="219,153" size="830,580" scrollbarMode="showOnDemand" enableWrapAround="1" transparent="1" zPosition="10" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#000b2049" backgroundColorSelected="#0b2049" />
     <!-- Colors -->
-	<eLabel backgroundColor="#00ff0000" position="219,954" size="300,6" zPosition="12" />
-<!--
- 	<eLabel backgroundColor="#0000ff00" position="217,1014" size="300,6" zPosition="12" />
-	<eLabel backgroundColor="#00ffff00" position="802,1014" size="300,6" zPosition="12" />
-	<eLabel backgroundColor="#000000ff" position="802,954" size="300,6" zPosition="12" /> -->
-	<widget name="key_red" render="Label" position="219,961" size="300,45" zPosition="11" font="Regular; 30" valign="center" halign="center" backgroundColor="background" transparent="1" foregroundColor="white" />
-<!--
- 	<widget name="key_green" render="Label" position="217,1021" size="300,45" zPosition="11" font="Regular; 30" valign="center" halign="center" backgroundColor="background" transparent="1" foregroundColor="white" />
-	<widget name="key_yellow" render="Label" position="802,1021" size="300,45" zPosition="11" font="Regular; 30" valign="center" halign="center" backgroundColor="background" transparent="1" foregroundColor="white" />
-	<widget name="key_blue" render="Label" position="802,961" size="300,45" zPosition="11" font="Regular; 30" valign="center" halign="center" backgroundColor="background" transparent="1" foregroundColor="white" />
- -->
- </screen>
+    <eLabel position="230,960" size="210,60" backgroundColor="#ff0033" zPosition="4" />       
+    <eLabel position="656,960" size="210,60" backgroundColor="#ffff00" zPosition="4" />
+	<widget name="key_red" position="228,960" size="213,63" font="Regular;30" halign="center" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
+	<widget name="key_yellow" position="655,960" size="210,60" font="Regular;30" halign="center" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
+</screen>

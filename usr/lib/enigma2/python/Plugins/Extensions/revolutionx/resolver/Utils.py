@@ -8,6 +8,7 @@ import sys
 import datetime
 import os
 import re
+import ssl
 import base64
 import chardet
 from random import choice
@@ -142,6 +143,25 @@ def checkGZIP(url):
         print(e)
         return None
 
+
+sslverify = False
+try:
+    from twisted.internet import ssl
+    from twisted.internet._sslverify import ClientTLSOptions
+    sslverify = True
+except ImportError:
+    pass
+
+if sslverify:
+    class SNIFactory(ssl.ClientContextFactory):
+        def __init__(self, hostname=None):
+            self.hostname = hostname
+
+        def getContext(self):
+            ctx = self._contextFactory(self.method)
+            if self.hostname:
+                ClientTLSOptions(self.hostname, ctx)
+            return ctx
 
 def ssl_urlopen(url):
     if sslContext:

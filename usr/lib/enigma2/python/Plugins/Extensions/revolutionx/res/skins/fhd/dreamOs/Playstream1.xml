@@ -1,24 +1,19 @@
 <!-- Skin FullHD1 10/05/2021 -->
-<screen name="Playstream1" position="0,0" size="1920,1080" title=".::REVOLUTION X::.." backgroundColor="#ff000000" flags="wfNoBorder">
+<screen name="Playstream1" position="0,0" size="1920,1080" title=".::REVOLUTION::.." backgroundColor="#FF000000" flags="wfNoBorder">
 	<eLabel position="230,120" size="810,3" backgroundColor="#303030" zPosition="4" />
-	<ePixmap position="0,0" size="1920,1080" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/main1.png" zPosition="-1" />
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvs.png" alphatest="blend" position="220,40" size="278,60" zPosition="5" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/main1.png" position="0,0" scale="stretch" size="1920,1080" zPosition="1" />
 	<eLabel position="230,960" size="810,3" backgroundColor="#303030" zPosition="4" />
-    <widget name="title" position="517,46" size="522,50" font="Regular;34" halign="left" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="5" />
+	<widget name="title" position="231,83" size="806,35" font="Regular;28" halign="center" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="6" />
+	<!-- <widget name="poster" position="1250,150" size="420,588" alphatest="blend" scale="1" zPosition="3" /> -->
 	<!-- Menu List -->
 	<widget name="info" position="230,130" size="810,50" font="Regular;30" halign="center" valign="center" foregroundColor="yellow" backgroundColor="#202020" transparent="0" zPosition="5" />
 	<widget name="list" position="230,190" size="810,750" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#ffffff" backgroundColor="#000000" backgroundColorSelected="#001b3c85" />
-	<widget name="progress" position="737,968" size="300,50" foregroundColor="#2a70a4" backgroundColor="#10000000" transparent="1" zPosition="5" />
-	<widget source="progresstext" render="Label" font="Regular;20" position="737,965" size="300,50" backgroundColor="#202020" transparent="1" halign="center" zPosition="6" />
-	<eLabel backgroundColor="#00ff0000" position="219,954" size="300,6" zPosition="12" />
- 	<eLabel backgroundColor="#0000ff00" position="217,1014" size="300,6" zPosition="12" />
-<!--	
-	<eLabel backgroundColor="#00ffff00" position="802,1014" size="300,6" zPosition="12" />
-	<eLabel backgroundColor="#000000ff" position="802,954" size="300,6" zPosition="12" /> -->
-	<widget name="key_red" render="Label" position="219,961" size="300,45" zPosition="11" font="Regular; 30" valign="center" halign="center" backgroundColor="background" transparent="1" foregroundColor="white" />
- 	<widget name="key_green" render="Label" position="217,1021" size="300,45" zPosition="11" font="Regular; 30" valign="center" halign="center" backgroundColor="background" transparent="1" foregroundColor="white" />
-<!--
-	<widget name="key_yellow" render="Label" position="802,1021" size="300,45" zPosition="11" font="Regular; 30" valign="center" halign="center" backgroundColor="background" transparent="1" foregroundColor="white" />
-	<widget name="key_blue" render="Label" position="802,961" size="300,45" zPosition="11" font="Regular; 30" valign="center" halign="center" backgroundColor="background" transparent="1" foregroundColor="white" />
- -->
- </screen>
+	<widget name="progress" position="228,1046" size="812,26" foregroundColor="#2a70a4" backgroundColor="#10000000" transparent="1" zPosition="5" />
+	<widget source="progresstext" render="Label" font="Regular;20" position="228,1046" size="812,26" backgroundColor="#202020" transparent="1" halign="center" zPosition="6" />
+    <eLabel position="230,980" size="210,60" backgroundColor="#ff0033" zPosition="4" />
+    <eLabel position="451,981" size="210,60" backgroundColor="#009900" zPosition="4" />
+    <!-- <eLabel position="671,983" size="210,60" backgroundColor="#ffff00" zPosition="4" /> -->
+	<widget name="key_red" position="228,980" size="213,63" font="Regular;30" halign="center" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
+	<widget name="key_green" position="452,982" size="210,64" font="Regular;30" halign="center" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
+	<!-- <widget name="key_yellow" position="672,982" size="210,60" font="Regular;30" halign="center" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" /> -->
+</screen>

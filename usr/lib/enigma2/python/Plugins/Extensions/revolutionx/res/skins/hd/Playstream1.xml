@@ -4,7 +4,7 @@
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/main1.png" position="0,0" scale="stretch" size="1280,720" zPosition="1" />
 	<eLabel position="153,640" size="540,2" backgroundColor="#303030" zPosition="4" />
 	<widget name="title" position="154,55" size="537,23" font="Regular;18" halign="center" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="6" />
-	<!-- <widget name="poster" position="833,100" size="280,392" alphatest="blend" scale="1" zPosition="3" /> -->
+	<widget name="poster" position="833,100" size="280,392" alphatest="blend" scale="1" zPosition="3" />
 	<!-- Menu List -->
 	<widget name="info" position="153,86" size="540,33" font="Regular;20" halign="center" valign="center" foregroundColor="yellow" backgroundColor="#202020" transparent="0" zPosition="5" />
 	<widget name="list" position="153,126" size="540,500" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#ffffff" backgroundColor="#000000" backgroundColorSelected="#001b3c85" />
@@ -15,5 +15,5 @@
     <!-- <eLabel position="447,655" size="140,40" backgroundColor="#ffff00" zPosition="4" /> -->
 	<widget name="key_red" position="152,653" size="142,42" font="Regular;20" halign="center" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
 	<widget name="key_green" position="301,654" size="140,42" font="Regular;20" halign="center" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
-	<!-- <widget name="key_yellow" position="448,654" size="140,40" font="Regular;20" halign="center" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" /> -->
+	<widget name="key_yellow" position="448,654" size="140,40" font="Regular;20" halign="center" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
 </screen>

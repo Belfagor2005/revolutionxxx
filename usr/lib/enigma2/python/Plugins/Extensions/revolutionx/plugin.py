@@ -14,10 +14,19 @@ from . import _, logdata, getversioninfo, paypal
 from .resolver import Utils
 from .resolver import html_conv
 from .resolver.Console import Console as xConsole
-
 from Components.AVSwitch import AVSwitch
 from Components.ActionMap import ActionMap
 from Components.Button import Button
+from Components.ConfigList import ConfigListScreen
+from Components.Label import Label
+from Components.MenuList import MenuList
+from Components.MultiContent import (MultiContentEntryPixmapAlphaTest, MultiContentEntryText)
+from Components.Pixmap import Pixmap
+from Components.ProgressBar import ProgressBar
+from Components.ServiceEventTracker import (ServiceEventTracker, InfoBarBase)
+from Components.Sources.Progress import Progress
+from Components.Sources.StaticText import StaticText
+from Components.Task import (Task, Condition, Job, job_manager)
 from Components.config import (
     ConfigEnableDisable,
     ConfigDirectory,
@@ -29,15 +38,6 @@ from Components.config import (
     ConfigSubsection,
     ConfigText,
 )
-from Components.ConfigList import ConfigListScreen
-from Components.Label import Label
-from Components.MenuList import MenuList
-from Components.MultiContent import (MultiContentEntryPixmapAlphaTest, MultiContentEntryText)
-from Components.Pixmap import Pixmap
-from Components.ProgressBar import ProgressBar
-from Components.ServiceEventTracker import ServiceEventTracker, InfoBarBase
-from Components.Sources.Progress import Progress
-from Components.Sources.StaticText import StaticText
 from Plugins.Plugin import PluginDescriptor
 from Screens.InfoBarGenerics import (
     InfoBarSubtitleSupport,
@@ -50,55 +50,54 @@ from Screens.LocationBox import LocationBox
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 from Screens.Standby import TryQuitMainloop
+from Screens.TaskView import JobView
 from Screens.VirtualKeyBoard import VirtualKeyBoard
 from Tools.Directories import fileExists, SCOPE_PLUGINS, resolveFilename
 from Tools.Downloader import downloadWithProgress
 from enigma import (
+    RT_HALIGN_LEFT,
+    RT_VALIGN_CENTER,
     eListboxPythonMultiContent,
+    ePicLoad,
     eServiceReference,
     eTimer,
     gFont,
-    iPlayableService,
-    loadPNG,
-    RT_HALIGN_LEFT,
-    RT_VALIGN_CENTER,
-    getDesktop,
     gPixmapPtr,
-    ePicLoad,
+    getDesktop,
+    iPlayableService,
+    iServiceInformation,
+    loadPNG,
 )
 from os.path import splitext
-from twisted.web.client import downloadPage
 from requests import get, exceptions
 from requests.exceptions import HTTPError
 from twisted.internet.reactor import callInThread
+from twisted.web.client import downloadPage
 from datetime import datetime
 import codecs
 import json
 import os
 import re
 import six
-import sys
 import ssl
+import sys
+import time
 
-global skin_path, nextmodule
-global Path_Movies, search, pngori
+global skin_path, nextmodule, search, pngori, Path_Movies
 
 PY3 = False
 PY3 = sys.version_info.major >= 3
-
+if PY3:
+    print('six.PY3: True ')
 try:
     from urllib.parse import urlparse
-    # from urllib.request import Request
+    from urllib.request import urlopen, Request
     from urllib.error import URLError
     PY3 = True
 except ImportError:
     from urlparse import urlparse
-    # from urllib2 import Request
+    from urllib2 import urlopen, Request
     from urllib2 import URLError
-
-if PY3:
-    print('six.PY3: True ')
-
 
 THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/revolutionx'
 search = False
@@ -138,6 +137,26 @@ def threadGetPage(url=None, file=None, key=None, success=None, fail=None, *args,
     except exceptions.RequestException as error:
         print(error)
 
+
+currversion = '1.5'  # getversioninfo()
+Path_Tmp = "/tmp"
+pictmp = os.path.join(Path_Tmp, "poster.jpg")
+title_plug = 'Revolution XXX V.%s' % currversion
+desc_plug = 'TivuStream Pro Revolution XXX'
+ico_path = os.path.join(THISPLUG, 'logo.png')
+res_plugin_path = os.path.join(THISPLUG, 'res/')
+pngori = os.path.join(THISPLUG, 'res/pics/nasa.jpg')
+piccons = os.path.join(THISPLUG, 'res/picons/')
+imgjpg = ("nasa.jpg", "nasa1.jpg", "nasa2.jpg")
+no_cover = os.path.join(piccons, 'backg.png')
+piconinter = os.path.join(piccons, 'inter.png')
+piconlive = os.path.join(piccons, 'tv.png')
+# pixmaps = os.path.join(piccons, 'backg.png')
+nextpng = 'next.png'
+prevpng = 'prev.png'
+installer_url = 'aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0JlbGZhZ29yMjAwNS9yZXZvbHV0aW9ueHh4L21haW4vaW5zdGFsbGVyLnNo'
+developer_url = 'aHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS9yZXBvcy9CZWxmYWdvcjIwMDUvcmV2b2x1dGlvbnh4eA=='
+PanelMain = [('XXX')]
 
 screenwidth = getDesktop(0).size()
 if screenwidth.width() == 2560:
@@ -183,7 +202,7 @@ class rvList(MenuList):
             textfont = int(30)
             self.l.setFont(0, gFont('Regular', textfont))
         else:
-            self.l.setItemHeight(45)
+            self.l.setItemHeight(35)
             textfont = int(24)
             self.l.setFont(0, gFont('Regular', textfont))
 
@@ -230,6 +249,9 @@ cfg = config.plugins.revolutionx
 cfg.services = ConfigSelection(default='4097', choices=modechoices)
 cfg.cachefold = ConfigDirectory(default='/media/hdd')
 cfg.movie = ConfigDirectory("/media/hdd/movie")
+cfg.code = ConfigText(default="1234")
+pin = 2808
+pin2 = str(cfg.code.value)
 
 try:
     from Components.UsageConfig import defaultMoviePath
@@ -240,36 +262,14 @@ except:
         cfg.movie = ConfigDirectory(default='/media/hdd/movie')
 
 
-currversion = '1.5'  # getversioninfo()
-title_plug = 'Revolution XXX V.%s' % currversion
-desc_plug = 'TivuStream Pro Revolution XXX'
-cfg.code = ConfigText(default="1234")
-pin = 2808
-pin2 = str(cfg.code.value)
-ico_path = os.path.join(THISPLUG, 'logo.png')
-res_plugin_path = os.path.join(THISPLUG, 'res/')
-pngori = os.path.join(THISPLUG, 'res/pics/nasa.jpg')
-piccons = os.path.join(THISPLUG, 'res/picons/')
-piconlive = os.path.join(piccons, 'tv.png')
-no_cover = os.path.join(piccons, 'backg.png')
-piconinter = os.path.join(piccons, 'inter.png')
-pixmaps = os.path.join(piccons, 'backg.png')
-nextpng = 'next.png'
-prevpng = 'prev.png'
-Path_Tmp = "/tmp"
-pictmp = os.path.join(Path_Tmp, "poster.jpg")
-imgjpg = ("nasa.jpg", "nasa1.jpg", "nasa2.jpg")
-revol = cfg.cachefold.value.strip()
 Path_Movies = str(cfg.movie.value)
-PanelMain = [('XXX')]
-installer_url = 'aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0JlbGZhZ29yMjAwNS9yZXZvbHV0aW9ueHh4L21haW4vaW5zdGFsbGVyLnNo'
-developer_url = 'aHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS9yZXBvcy9CZWxmYWdvcjIwMDUvcmV2b2x1dGlvbnh4eA=='
-if not os.path.exists(revol):
+Path_Cache = cfg.cachefold.value.strip()
+if not os.path.exists(Path_Cache):
     try:
-        os.makedirs(revol)
+        os.makedirs(Path_Cache)
     except OSError as e:
-        print(('Error creating directory %s:\n%s') % (revol, e))
-logdata("path picons: ", str(revol))
+        print(('Error creating directory %s:\n%s') % (Path_Cache, e))
+logdata("path picons: ", str(Path_Cache))
 
 
 REGEX = re.compile(
@@ -333,18 +333,15 @@ class myconfigX(Screen, ConfigListScreen):
         self.setTitle(title_plug)
         self.onChangedEntry = []
         self.list = []
-        ConfigListScreen.__init__(self,
-                                  self.list,
-                                  session=self.session,
-                                  on_change=self.changedEntry)
+        ConfigListScreen.__init__(self, self.list, session=self.session, on_change=self.changedEntry)
         self['key_red'] = Button(_('Back'))
         self['key_green'] = Button(_('Save'))
         self['key_yellow'] = Button(_('Choice'))
         self["key_blue"] = Button(_('Empty Cache'))
         self["paypal"] = Label()
-        self['info'] = Label('')
+        self['info'] = Label()
         self['title'] = Label(title_plug)
-        self['description'] = Label('')
+        self['description'] = Label()
         self["setupActions"] = ActionMap(['OkCancelActions',
                                           'DirectionActions',
                                           'ColorActions',
@@ -457,7 +454,7 @@ class myconfigX(Screen, ConfigListScreen):
         # ConfigListScreen.keyOK(self)
         sel = self['config'].getCurrent()[1]
         if sel and sel == cfg.cachefold:
-            self.setting = 'revol'
+            self.setting = 'cachefold'
             self.openDirectoryBrowser(cfg.cachefold.value)
         if sel and sel == cfg.movie:
             self.setting = 'moviefold'
@@ -484,7 +481,7 @@ class myconfigX(Screen, ConfigListScreen):
 
     def openDirectoryBrowserCB(self, path):
         if path is not None:
-            if self.setting == 'revol':
+            if self.setting == 'cachefold':
                 cfg.cachefold.setValue(path)
             if self.setting == 'moviefold':
                 cfg.movie.setValue(path)
@@ -526,14 +523,15 @@ class RevolmainX(Screen):
         nextmodule = 'RevolmainX'
         self['list'] = rvList([])
         self.setup_title = ('HOME REVOLUTION XXX')
-        self['pth'] = Label('')
-        self['pth'].setText(_('Cache folder ') + revol)
+        self['pth'] = Label()
+        self['pth'].setText(_('Cache folder ') + Path_Cache)
         self['poster'] = Pixmap()
         self['desc'] = StaticText()
-        self['info'] = Label('')
+        self['info'] = Label()
         self['info'].setText('Select')
         self['key_red'] = Button(_('Exit'))
         self['key_yellow'] = Button(_('Update'))
+        self['key_yellow'].hide()
         self.currentList = 'list'
         self.names = []
         self.urls = []
@@ -662,6 +660,9 @@ class RevolmainX(Screen):
             self.session.open(live_streamX, self.name, self.url, self.pic, nextmodule)
 
     def keyNumberGlobalCB(self, idx):
+        i = len(self.menu_list)
+        if i < 0:
+            return
         global nextmodule
         sel = self.menu_list[idx]
         if sel == ('XXX'):
@@ -671,7 +672,7 @@ class RevolmainX(Screen):
             else:
                 self.name = 'XXX'
                 self.url = 'http://tivustream.website/php_filter/kodi19/xxxJob.php?utKodi=TVSXXX'
-                self.pic = pixmaps
+                self.pic = no_cover
                 nextmodule = 'xxx'
                 self.adultonly()
         else:
@@ -700,7 +701,7 @@ class RevolmainX(Screen):
         try:
             sel = self['list'].getSelectionIndex()
             if sel is not None or sel != -1:
-                pixmaps = os.path.join(THISPLUG, 'res/picons/backg.png')
+                # pixmaps = os.path.join(THISPLUG, 'res/picons/backg.png')
                 size = self['poster'].instance.size()
                 if os.path.exists('/var/lib/dpkg/status'):
                     self['poster'].instance.setPixmap(gPixmapPtr())
@@ -717,10 +718,10 @@ class RevolmainX(Screen):
                                       '#FF000000'))
                 ptr = self.picload.getData()
                 if os.path.exists('/var/lib/dpkg/status'):
-                    if self.picload.startDecode(pixmaps, False) == 0:
+                    if self.picload.startDecode(no_cover, False) == 0:
                         ptr = self.picload.getData()
                 else:
-                    if self.picload.startDecode(pixmaps, 0, 0, False) == 0:
+                    if self.picload.startDecode(no_cover, 0, 0, False) == 0:
                         ptr = self.picload.getData()
                 if ptr is not None:
                     self['poster'].instance.setPixmap(ptr)
@@ -745,12 +746,18 @@ class live_streamX(Screen):
         self['list'] = self.list
         self['list'] = rvList([])
         self['info'] = Label(name)
-        self['pth'] = Label('')
-        self['pth'].setText(_('Cache folder ') + revol)
+        self['pth'] = Label()
+        self['pth'].setText(_('Cache folder ') + Path_Cache)
         self['desc'] = StaticText()
         self["poster"] = Pixmap()
         self["poster"].hide()
         self['key_red'] = Button(_('Back'))
+        self['key_yellow'] = Button(_('Update'))
+        self['key_yellow'].hide()
+        self.names = []
+        self.urls = []
+        self.pics = []
+        self.infos = []
         self.name = name
         self.url = url
         self.pic = pic
@@ -776,7 +783,8 @@ class live_streamX(Screen):
             self.readJsonTimer_conn = self.readJsonTimer.timeout.connect(self.readJsonFile)
         except:
             self.readJsonTimer.callback.append(self.readJsonFile)
-        self.readJsonTimer.start(100, True)
+        self.readJsonTimer.start(200, True)
+        # self.onLayoutFinish.append(self.__layoutFinished)
 
     def showIMDB(self):
         idx = self['list'].getSelectionIndex()
@@ -806,18 +814,18 @@ class live_streamX(Screen):
 
             try:
                 print('In live_stream y["channels"][i]["name"] =', y["channels"][i]["name"])
-                name = (y["channels"][i]["name"])
+                name = str(y["channels"][i]["name"])
                 name = REGEX.sub('', name.strip())
                 name = str(i) + "_" + name
-                pic = y["channels"][i]["thumbnail"]
-                info = y["channels"][i]["info"]
+                pic = str(y["channels"][i]["thumbnail"])
+                info = str(y["channels"][i]["info"])
                 info = re.sub(r'\r\n', '', info)
                 info = info.replace('---', ' ')
 
-                self.names.append(Utils.checkStr(name))
+                self.names.append(name)
                 self.urls.append(url2)
-                self.pics.append(Utils.checkStr(pic))
-                self.infos.append(Utils.checkStr(info))
+                self.pics.append(pic)
+                self.infos.append(html_conv.html_unescape(info))
                 i += 1
 
             except Exception as e:
@@ -835,6 +843,7 @@ class live_streamX(Screen):
         self.__layoutFinished()
 
     def okRun(self):
+
         idx = self['list'].getSelectionIndex()
         if idx != '' or idx > -1:
             name = self.names[idx]
@@ -853,10 +862,12 @@ class live_streamX(Screen):
 
     def load_infos(self):
         try:
+            i = len(self.names)
+            if i < 0:
+                return
             idx = self['list'].getSelectionIndex()
-            if idx != '' or idx > -1:
-                info = self.infos[idx]
-                self['desc'].setText(info)
+            info = self.infos[idx]
+            self['desc'].setText(info)
         except Exception as e:
             print(e)
 
@@ -910,12 +921,13 @@ class live_streamX(Screen):
 
     def load_poster(self):
         try:
-            i = len(self.names)
+            i = len(self.pics)
             if i < 0:
                 return
             idx = self['list'].getSelectionIndex()
             name = self.names[idx]
             pixmaps = self.pics[idx]
+            pixmaps = six.ensure_binary(self.pics[idx])
             if 'next' in name.lower():
                 pixmaps = str(piccons) + nextpng
                 if os.path.exists(pixmaps):
@@ -946,8 +958,17 @@ class live_streamX(Screen):
             try:
                 self.poster_resize(pictmp)
             except Exception as ex:
-                self.showPoster1(no_cover)
                 print("* error ** %s" % ex)
+                self.showPoster1(no_cover)
+                pass
+
+    def downloadError(self, png):
+        try:
+            if fileExists(png):
+                self.poster_resize(no_cover)
+        except Exception as ex:
+            self.poster_resize(no_cover)
+            print(ex)
 
     def poster_resize(self, png):
         self["poster"].hide()
@@ -965,13 +986,6 @@ class live_streamX(Screen):
             self['poster'].show()
         return
 
-    def downloadError(self, png):
-        try:
-            if fileExists(no_cover):
-                self.showPoster1(no_cover)
-        except Exception as e:
-            print(e)
-
 
 class video1X(Screen):
     def __init__(self, session, name, url, pic, info, nextmodule):
@@ -987,11 +1001,13 @@ class video1X(Screen):
         self['list'] = self.list
         self['list'] = rvList([])
         self['info'] = Label(name)
-        self['pth'] = Label('')
-        self['pth'].setText(_('Cache folder ') + revol)
+        self['pth'] = Label()
+        self['pth'].setText(_('Cache folder ') + Path_Cache)
         self['desc'] = StaticText()
         self["poster"] = Pixmap()
         self['key_red'] = Button(_('Back'))
+        self['key_yellow'] = Button(_('Update'))
+        self['key_yellow'].hide()
         self.name = name
         self.url = url
         self.pic = pic
@@ -1018,7 +1034,8 @@ class video1X(Screen):
             self.readJsonTimer_conn = self.readJsonTimer.timeout.connect(self.readJsonFile)
         except:
             self.readJsonTimer.callback.append(self.readJsonFile)
-        self.readJsonTimer.start(250, True)
+        self.readJsonTimer.start(200, True)
+        # self.onLayoutFinish.append(self.__layoutFinished)
 
     def showIMDB(self):
         idx = self['list'].getSelectionIndex()
@@ -1033,10 +1050,12 @@ class video1X(Screen):
 
     def load_infos(self):
         try:
+            i = len(self.names)
+            if i < 0:
+                return
             idx = self['list'].getSelectionIndex()
-            if idx != '' or idx > -1:
-                info = self.infos[idx]
-                self['desc'].setText(info)
+            info = self.infos[idx]
+            self['desc'].setText(info)
         except Exception as e:
             print(e)
 
@@ -1064,7 +1083,6 @@ class video1X(Screen):
         try:
             # i = 0
             # while i < 50:
-            #
             for item in y["channels"][n]["items"]:
                 name = str(item["title"])
                 name = re.sub('\[.*?\]', "", name)
@@ -1075,13 +1093,11 @@ class video1X(Screen):
                     pic = str(item["thumbnail"])
                 except:
                     pic = str(self.pic)
-                info = item["info"]
-
-                self.names.append(Utils.checkStr(name))
+                info = str(item["info"])
+                self.names.append(name)
                 self.urls.append(url)
-                self.pics.append(Utils.checkStr(pic))
+                self.pics.append(pic)
                 self.infos.append(html_conv.html_unescape(info))
-
             nextmodule = "Videos3"
             showlist(self.names, self['list'])
             self.__layoutFinished()
@@ -1090,6 +1106,9 @@ class video1X(Screen):
             return
 
     def okRun(self):
+        i = len(self.names)
+        if i < 0:
+            return
         idx = self['list'].getSelectionIndex()
         if idx != '' or idx > -1:
             name = self.names[idx]
@@ -1140,6 +1159,7 @@ class video1X(Screen):
             idx = self['list'].getSelectionIndex()
             name = self.names[idx]
             pixmaps = self.pics[idx]
+            pixmaps = six.ensure_binary(self.pics[idx])
             if 'next' in name.lower():
                 pixmaps = str(piccons) + nextpng
                 if os.path.exists(pixmaps):
@@ -1174,12 +1194,19 @@ class video1X(Screen):
                 self.showPoster1(no_cover)
                 pass
 
+    def downloadError(self, png):
+        try:
+            if fileExists(png):
+                self.poster_resize(no_cover)
+        except Exception as ex:
+            self.poster_resize(no_cover)
+            print(ex)
+
     def poster_resize(self, png):
         self["poster"].hide()
         size = self['poster'].instance.size()
         self.picload = ePicLoad()
         self.scale = AVSwitch().getFramebufferScale()
-        # if self.picload:
         self.picload.setPara([size.width(), size.height(), self.scale[0], self.scale[1], 0, 1, '#00000000'])
         if os.path.exists('/var/lib/dpkg/status'):
             self.picload.startDecode(png, False)
@@ -1190,13 +1217,6 @@ class video1X(Screen):
             self['poster'].instance.setPixmap(ptr)
             self['poster'].show()
         return
-
-    def downloadError(self, png):
-        try:
-            if fileExists(no_cover):
-                self.showPoster1(no_cover)
-        except Exception as e:
-            print(e)
 
 
 class video3X(Screen):
@@ -1210,18 +1230,20 @@ class video3X(Screen):
             self.skin = f.read()
         self.setup_title = ('HOME REVOLUTION XXX')
         self.list = []
-        # self.names = []
-        # self.urls = []
-        # self.pics = []
-        # self.infos = []
+        self.names = []
+        self.urls = []
+        self.pics = []
+        self.infos = []
         self['list'] = self.list
         self['list'] = rvList([])
         self['info'] = Label(name)
-        self['pth'] = Label('')
-        self['pth'].setText(_('Cache folder ') + revol)
+        self['pth'] = Label()
+        self['pth'].setText(_('Cache folder ') + Path_Cache)
         self['desc'] = StaticText()
         self["poster"] = Pixmap()
         self['key_red'] = Button(_('Back'))
+        self['key_yellow'] = Button(_('Update'))
+        self['key_yellow'].hide()
         self.name = name
         self.url = url
         self.pic = pic
@@ -1248,7 +1270,7 @@ class video3X(Screen):
             self.readJsonTimer_conn = self.readJsonTimer.timeout.connect(self.readJsonFile)
         except:
             self.readJsonTimer.callback.append(self.readJsonFile)
-        self.readJsonTimer.start(500, True)
+        self.readJsonTimer.start(200, True)
         # self.onLayoutFinish.append(self.__layoutFinished)
 
     def showIMDB(self):
@@ -1264,38 +1286,40 @@ class video3X(Screen):
 
     def load_infos(self):
         try:
-            idx = self["text"].getSelectionIndex()
-            if idx != '' or idx > -1:
-                idx = self['list'].getSelectionIndex()
-                info = self.infos[idx]
-                self['desc'].setText(info)
+            i = len(self.names)
+            if i < 0:
+                return
+            idx = self['list'].getSelectionIndex()
+            info = self.infos[idx]
+            self['desc'].setText(info)
         except Exception as e:
             print(e)
 
     def readJsonFile(self):
-        try:
-            self.names = []
-            self.urls = []
-            self.pics = []
-            self.infos = []
-            self.names.append(self.name)
-            self.urls.append(self.url)
-            self.pics.append(self.pic)
-            self.infos.append(self.info)
-        except Exception as e:
-            print(e)
+        self.names = []
+        self.urls = []
+        self.pics = []
+        self.infos = []
+        self.names.append(self.name)
+        self.urls.append(self.url)
+        self.pics.append(self.pic)
+        self.infos.append(self.info)
         showlist(self.names, self['list'])
         self.__layoutFinished()
 
     def okRun(self):
+        i = len(self.names)
+        if i < 0:
+            return
         global nextmodule
         idx = self['list'].getSelectionIndex()
         if idx != '' or idx > -1:
             name = self.names[idx]
             url = self.urls[idx]
+            pic = self.pics[idx]
             info = self.infos[idx]
             nextmodule = "Player"
-            self.session.open(Playstream1X, name, url, info)
+            self.session.open(Playstream1X, name, url, info, pic)
 
     def cancel(self):
         global nextmodule
@@ -1338,7 +1362,6 @@ class video3X(Screen):
                 return
             idx = self['list'].getSelectionIndex()
             name = self.names[idx]
-
             pixmaps = self.pics[idx]
             pixmaps = six.ensure_binary(self.pics[idx])
             if 'next' in name.lower():
@@ -1375,6 +1398,14 @@ class video3X(Screen):
                 self.showPoster1(no_cover)
                 pass
 
+    def downloadError(self, png):
+        try:
+            if fileExists(png):
+                self.poster_resize(no_cover)
+        except Exception as ex:
+            self.poster_resize(no_cover)
+            print(ex)
+
     def poster_resize(self, png):
         self["poster"].hide()
         size = self['poster'].instance.size()
@@ -1391,13 +1422,6 @@ class video3X(Screen):
             self['poster'].instance.setPixmap(ptr)
             self['poster'].show()
         return
-
-    def downloadError(self, png):
-        try:
-            if fileExists(no_cover):
-                self.showPoster1(no_cover)
-        except Exception as e:
-            print(e)
 
 
 class TvInfoBarShowHide():
@@ -1497,7 +1521,7 @@ class TvInfoBarShowHide():
 
 
 class Playstream1X(Screen):
-    def __init__(self, session, name, url, desc):
+    def __init__(self, session, name, url, desc, pic):
         Screen.__init__(self, session)
         self.session = session
         global _session
@@ -1508,11 +1532,13 @@ class Playstream1X(Screen):
         self.setup_title = ('Select Player Stream')
         self.list = []
         self['list'] = rvList([])
-        self['title'] = Label('Select Player')
         self['info'] = Label()
         self['info'].setText(name)
+        self['title'] = Label('Select Player')
+        self['poster'] = Pixmap()
         self['key_red'] = Button(_('Back'))
         self['key_green'] = Button(_('Select'))
+        self['key_yellow'] = Button(_('Movie'))
         self['progress'] = ProgressBar()
         self['progresstext'] = StaticText()
         self["progress"].hide()
@@ -1532,7 +1558,7 @@ class Playstream1X(Screen):
                                                              'back': self.cancel,
                                                              'cancel': self.cancel,
                                                              'leavePlayer': self.cancel,
-                                                             # 'yellow': self.taskManager,
+                                                             'yellow': self.taskManager,
                                                              'rec': self.runRec,
                                                              'instantRecord': self.runRec,
                                                              'ShortRecord': self.runRec,
@@ -1540,10 +1566,19 @@ class Playstream1X(Screen):
         self.name1 = Utils.cleanName(name)
         self.url = url
         self.desc = desc
-        print('In Playstream1X self.url =', url)
+        self.pic = pic
         self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
+        self.leftt = eTimer()
+        try:
+            self.leftt_conn = self.leftt.timeout.connect(self.load_poster)
+        except:
+            self.leftt.callback.append(self.load_poster)
+        self.leftt.start(200, True)
         self.onLayoutFinish.append(self.openTest)
         return
+
+    def taskManager(self):
+        self.session.open(StreamTasks)
 
     def runRec(self):
         self.namem3u = self.name1
@@ -1573,38 +1608,62 @@ class Playstream1X(Screen):
             self.in_tmp = os.path.join(Path_Movies, fileTitle)
             self.downloading = True
             try:
-                self.download = downloadWithProgress(self.urlm3u, self.in_tmp)
-                self.download.addProgress(self.downloadProgress)
-                self.download.start().addCallback(self.check).addErrback(self.showError)
+                f = open(self.in_tmp, 'wb')
+                f.close()
+                cmd = "wget -U 'Enigma2 - Revolution Plugin' -c '%s' -O '%s'" % (self.urlm3u, self.in_tmp)
+                if "https" in str(self.urlm3u):
+                    cmd = "wget --no-check-certificate -U 'Enigma2 - Revolution Plugin' -c '%s' -O '%s'" % (self.urlm3u, self.in_tmp)
+                job_manager.AddJob(downloadJob(self, cmd, self.in_tmp, fileTitle))
+
             except URLError as e:
                 self.session.openWithCallback(self.ImageDownloadCB, MessageBox, _("Download Failed !!") + "\n%s" % e, type=MessageBox.TYPE_ERROR)
                 self.downloading = False
-            else:
-                self.downloading = False
-                self.session.open(MessageBox, _('Download Failed!!!'), MessageBox.TYPE_INFO, timeout=5)
-
         else:
             self.downloading = False
 
+    def ImageDownloadCB(self, ret):
+        if ret:
+            return
+        if job_manager.active_job:
+            job_manager.active_job = None
+            self.close()
+            return
+        if len(job_manager.failed_jobs) == 0:
+            self.LastJobView()
+        else:
+            self.downloading = False
+            self.session.open(MessageBox, _("Download Failed !!"), type=MessageBox.TYPE_ERROR)
+
     def downloadProgress(self, recvbytes, totalbytes):
+        self['info'].setText(_('Download...'))
         self["progress"].show()
         self['progress'].value = int(100 * float(recvbytes) / float(totalbytes))
         self['progresstext'].text = '%d of %d kBytes (%.2f%%)' % (float(recvbytes) / 1024, float(totalbytes) / 1024, 100 * float(recvbytes) / float(totalbytes))
         if recvbytes == totalbytes:
             self.downloading = False
 
-    def check(self, fplug):
-        checkfile = self.in_tmp
-        if os.path.exists(checkfile):
-            # self.downloading = False
-            self['progresstext'].text = ''
-            self.progclear = 0
-            self['progress'].setValue(self.progclear)
-            self["progress"].hide()
+    def finish(self, fplug):
+        self['info'].setText(_('Please select ...'))
+        self['progresstext'].text = ''
+        self.progclear = 0
+        self['progress'].setValue(self.progclear)
+        self["progress"].hide()
+        if os.path.exists(self.dest):
+            self['info'].setText(_('File Downloaded ...'))
+        self.downloading = False
 
     def showError(self, error):
         self.downloading = False
         self.session.open(MessageBox, _('Download Failed!!!'), MessageBox.TYPE_INFO, timeout=5)
+
+    def LastJobView(self):
+        currentjob = None
+        for job in job_manager.getPendingJobs():
+            currentjob = job
+        if currentjob is not None:
+            self.session.open(JobView, currentjob)
+        else:
+            self.downloading = False
 
     def openTest(self):
         url = self.url
@@ -1695,6 +1754,69 @@ class Playstream1X(Screen):
         except:
             pass
 
+    def load_poster(self):
+        try:
+            i = len(self.names)
+            if i < 0:
+                return
+            pixmaps = self.pic
+            if str(res_plugin_path) in pixmaps:
+                self.downloadPic(None, pixmaps)
+                return
+            if pixmaps != "" or pixmaps != "n/A" or pixmaps is not None or pixmaps != "null":
+                try:
+                    parsed = urlparse(pixmaps)
+                    domain = parsed.hostname
+                    scheme = parsed.scheme
+                    if scheme == "https" and sslverify:
+                        sniFactory = SNIFactory(domain)
+                        downloadPage(pixmaps, pictmp, sniFactory, timeout=5).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                    else:
+                        downloadPage(pixmaps, pictmp).addCallback(self.downloadPic, pictmp).addErrback(self.downloadError)
+                except Exception as e:
+                    print(e)
+        except Exception as e:
+            print(e)
+
+    def downloadPic(self, data, pictmp):
+        if os.path.exists(pictmp):
+            try:
+                self.poster_resize(pictmp)
+            except Exception as ex:
+                print("* error ** %s" % ex)
+                self.poster_resize(no_cover)
+                pass
+
+    def downloadError(self, png):
+        try:
+            if fileExists(png):
+                self.poster_resize(no_cover)
+        except Exception as ex:
+            self.poster_resize(no_cover)
+            print(ex)
+
+    def poster_resize(self, png):
+        self["poster"].hide()
+        size = self['poster'].instance.size()
+        self.picload = ePicLoad()
+        self.scale = AVSwitch().getFramebufferScale()
+        self.picload.setPara((size.width(),
+                              size.height(),
+                              self.scale[0],
+                              self.scale[1],
+                              False,
+                              1,
+                              '#FF000000'))
+        if os.path.exists('/var/lib/dpkg/status'):
+            self.picload.startDecode(png, False)
+        else:
+            self.picload.startDecode(png, 0, 0, False)
+        ptr = self.picload.getData()
+        if ptr is not None:
+            self['poster'].instance.setPixmap(ptr)
+            self['poster'].show()
+        return
+
 
 class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifications, InfoBarAudioSelection, TvInfoBarShowHide, InfoBarSubtitleSupport, SubsSupportStatus, SubsSupport):
     STATE_IDLE = 0
@@ -1756,11 +1878,7 @@ class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotific
         return
 
     def getAspect(self):
-        try:
-            aspect = AVSwitch().getAspectRatioSetting()
-            return aspect
-        except:
-            pass
+        return AVSwitch().getAspectRatioSetting()
 
     def getAspectString(self, aspectnum):
         return {
@@ -1783,7 +1901,7 @@ class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotific
                6: '16_9_letterbox'}
         config.av.aspectratio.setValue(map[aspect])
         try:
-            AVSwitch.setAspectRatio(aspect)
+            AVSwitch().setAspectRatio(aspect)
         except:
             pass
 
@@ -2002,6 +2120,262 @@ class plgnstrt(Screen):
 
     def clsgo(self):
         self.session.openWithCallback(self.close, RevolmainX)
+
+
+class StreamTasks(Screen):
+    def __init__(self, session):
+        Screen.__init__(self, session)
+        self.session = session
+        skin = os.path.join(skin_path, 'StreamTasks.xml')
+        with codecs.open(skin, "r", encoding="utf-8") as f:
+            self.skin = f.read()
+        self.setup_title = ('Filmxy Movies')
+        from Components.Sources.List import List
+        self["movielist"] = List([])
+        self["key_green"] = Label(_("Remove"))
+        self["key_red"] = Label(_("Close"))
+        self['actions'] = ActionMap(['OkCancelActions',
+                                     'ButtonSetupActions',
+                                     'SleepTimerEditorActions',
+                                     'ColorActions'], {"ok": self.keyOK,
+                                                       "esc": self.keyClose,
+                                                       "exit": self.keyClose,
+                                                       "green": self.message1,
+                                                       "red": self.keyClose,
+                                                       "blue": self.keyBlue,
+                                                       "cancel": self.keyClose}, -1)
+        self.initialservice = self.session.nav.getCurrentlyPlayingServiceReference()
+        self.Timer = eTimer()
+        try:
+            self.Timer_conn = self.Timer.timeout.connect(self.TimerFire)
+        except:
+            self.Timer.callback.append(self.TimerFire)
+        self.onLayoutFinish.append(self.layoutFinished)
+        self.onClose.append(self.__onClose)
+
+    def __onClose(self):
+        del self.Timer
+
+    def layoutFinished(self):
+        self.Timer.startLongTimer(2)
+
+    def TimerFire(self):
+        self.Timer.stop()
+        self.rebuildMovieList()
+
+    def rebuildMovieList(self):
+        if os.path.exists(Path_Movies):
+            self.movielist = []
+            self.getTaskList()
+            self.getMovieList()
+            self["movielist"].setList(self.movielist)
+            self["movielist"].updateList(self.movielist)
+        else:
+            message = "The Movie path not configured or path not exist!!!"
+            Utils.web_info(message)
+            self.close()
+
+    def getTaskList(self):
+        jobs = job_manager.getPendingJobs()
+        if len(jobs) >= 1:
+            for job in jobs:
+                jobname = str(job.name)
+                self.movielist.append((
+                    job,
+                    jobname,
+                    job.getStatustext(),
+                    int(100 * float(job.progress) / float(job.end)),
+                    str(100 * float(job.progress) / float(job.end)) + "%"))
+            if len(self.movielist) >= 1:
+                self.Timer.startLongTimer(10)
+        return
+
+    def getMovieList(self):
+        global filelist, file1
+        file1 = False
+        filelist = ''
+        self.pth = ''
+        if os.path.isdir(Path_Movies):
+            filelist = os.listdir(Path_Movies)
+        path = Path_Movies
+
+        if filelist is not None:
+            file1 = True
+            filelist.sort()
+            for filename in filelist:
+                if os.path.isfile(path + filename):
+                    if filename.endswith(".meta"):
+                        continue
+                    if ".m3u" in filename:
+                        continue
+                    if "autotimer" in filename:
+                        continue
+                self.movielist.append(("movie", filename, _("Finished"), 100, "100%"))
+
+    def keyOK(self):
+        global file1
+        current = self["movielist"].getCurrent()
+        path = Path_Movies
+        desc = 'local'
+        if current:
+            if current[0] == "movie":
+                if file1 is True:
+                    path = Path_Movies
+                url = path + current[1]
+                name = current[1]
+                file1 = False
+                isFile = os.path.isfile(url)
+                if isFile:
+                    self.session.open(Playstream2X, name, url, desc)
+                else:
+                    self.session.open(MessageBox, _("Is Directory or file not exist"), MessageBox.TYPE_INFO, timeout=5)
+            else:
+                job = current[0]
+                self.session.openWithCallback(self.JobViewCB, JobView, job)
+
+    def keyBlue(self):
+        pass
+
+    def JobViewCB(self, why):
+        pass
+
+    def keyClose(self):
+        self.close()
+
+    def message1(self):
+        current = self["movielist"].getCurrent()
+        sel = Path_Movies + current[1]
+        dom = sel
+        self.session.openWithCallback(self.callMyMsg1, MessageBox, _("Do you want to remove %s ?") % dom, MessageBox.TYPE_YESNO, timeout=15, default=False)
+
+    def callMyMsg1(self, result):
+        if result:
+            current = self["movielist"].getCurrent()
+            sel = Path_Movies + current[1]
+            from os.path import exists as file_exists
+            if file_exists(sel):
+                if self.Timer:
+                    self.Timer.stop()
+                cmd = 'rm -f ' + sel
+                os.system(cmd)
+                self.session.open(MessageBox, sel + _(" Movie has been successfully deleted\nwait time to refresh the list..."), MessageBox.TYPE_INFO, timeout=5)
+            else:
+                self.session.open(MessageBox, _("The movie not exist!\nwait time to refresh the list..."), MessageBox.TYPE_INFO, timeout=5)
+            self.onShown.append(self.rebuildMovieList)
+
+
+class downloadJob(Job):
+    def __init__(self, toolbox, cmdline, filename, filmtitle):
+        print("**** downloadJob init ***")
+        Job.__init__(self, filmtitle)
+        self.filename = filename
+        self.toolbox = toolbox
+        self.retrycount = 0
+        downloadTask(self, cmdline, filename, filmtitle)
+
+    def retry(self):
+        self.retrycount += 1
+        self.restart()
+
+    def cancel(self):
+        self.abort()
+        os.system("rm -f %s" % self.filename)
+
+    def createMetaFile(self, filename, filmtitle):
+        try:
+            serviceref = eServiceReference(4097, 0, filename)
+            with open("%s.meta" % (filename), "w") as f:
+                f.write("%s\n%s\n%s\n%i\n" % (serviceref.toString(), filmtitle, "", time.time()))
+        except Exception as e:
+            print(e)
+        return
+
+    def download_finished(self, filename, filmtitle):
+        self.createMetaFile(filename, filmtitle)
+
+
+class DownloaderPostcondition(Condition):
+    RECOVERABLE = True
+
+    def check(self, task):
+        if task.returncode == 0 or task.error is None:
+            return True
+        else:
+            return False
+
+    def getErrorMessage(self, task):
+        return {
+            task.ERROR_CORRUPT_FILE: _("MOVIE DOWNLOAD FAILED!") + '\n\n' + _("DOWNLOADED FILE CORRUPTED:") + '\n%s' % task.error_message,
+            task.ERROR_RTMP_ReadPacket: _("MOVIE DOWNLOAD FAILED!") + '\n\n' + _("COULD NOT READ RTMP PACKET:") + '\n%s' % task.error_message,
+            task.ERROR_SEGFAULT: _("MOVIE DOWNLOAD FAILED!") + '\n\n' + _("SEGMENTATION FAULT:") + '\n%s' % task.error_message,
+            task.ERROR_SERVER: _("MOVIE DOWNLOAD FAILED!") + '\n\n' + _("SERVER RETURNED ERROR:") + '\n%s' % task.error_message,
+            task.ERROR_UNKNOWN: _("MOVIE DOWNLOAD FAILED!") + '\n\n' + _("UNKNOWN ERROR:") + '\n%s' % task.error_message
+        }[task.error]
+
+
+class downloadTask(Task):
+    def __init__(self, job, cmdline, filename, filmtitle):
+        Task.__init__(self, job, filmtitle)
+        self.postconditions.append(DownloaderPostcondition())
+        self.job = job
+        self.toolbox = job.toolbox
+        self.url = cmdline
+        self.filename = filename
+        self.filmtitle = filmtitle
+        self.error_message = ""
+        self.last_recvbytes = 0
+        self.error_message = None
+        self.download = None
+        self.aborted = False
+
+    def run(self, callback):
+        self.callback = callback
+        self.download = downloadWithProgress(self.url, self.filename)
+        self.download.addProgress(self.download_progress)
+        self.download.start().addCallback(self.download_finished).addErrback(self.download_failed)
+        print("[downloadTask] downloading", self.url, "to", self.filename)
+
+    def abort(self):
+        self.downloading = False
+        print("[downloadTask] aborting", self.url)
+        if self.download:
+            self.download.stop()
+        self.aborted = True
+
+    def download_progress(self, recvbytes, totalbytes):
+        if (recvbytes - self.last_recvbytes) > 10000:  # anti-flicker
+            self.progress = int(100 * (float(recvbytes) / float(totalbytes)))
+            self.name = _("Downloading") + ' ' + _("%d of %d kBytes") % (recvbytes / 1024, totalbytes / 1024)
+            self.last_recvbytes = recvbytes
+
+    def download_failed(self, failure_instance=None, error_message=""):
+        self.downloading = False
+        self.error_message = error_message
+        if error_message == "" and failure_instance is not None:
+            self.error_message = failure_instance.getErrorMessage()
+        Task.processFinished(self, 1)
+
+    def download_finished(self, string=""):
+        self.downloading = False
+        if self.aborted:
+            self.finish(aborted=True)
+        else:
+            Task.processFinished(self, 0)
+
+    def afterRun(self):
+        if self.getProgress() == 0:
+            try:
+                self.toolbox.download_failed()
+            except:
+                pass
+        elif self.getProgress() == 100:
+            try:
+                self.toolbox.download_finished()
+                self.downloading = False
+                message = "Movie successfully transfered to your HDD!" + "\n" + self.filename
+                Utils.web_info(message)
+            except:
+                pass
 
 
 def main(session, **kwargs):

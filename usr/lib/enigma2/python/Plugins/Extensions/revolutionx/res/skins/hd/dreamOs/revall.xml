@@ -2,8 +2,8 @@
 <screen name="revall" position="0,0" size="1280,720" title="..::Revolutionx::.." backgroundColor="#ff000000" flags="wfNoBorder">
 	<widget name="title" position="354,28" size="340,32" font="Regular; 21" halign="right" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="5" />
     <widget name="info" position="150,63" size="546,33" font="Regular;20" halign="left" foregroundColor="yellow" backgroundColor="#000000" transparent="1" zPosition="5" />
-    <widget name="pth" position="146,682" size="552,29" font="Regular;20" halign="right" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5" render="rvRunningText" />
-    <widget source="desc" render="rvRunningText" position="144,494" size="550,146" font="Regular;20" foregroundColor="#ffb75b" backgroundColor="transparent" halign="center" transparent="1" zPosition="2" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap=1" />
+    <widget name="pth" position="146,682" size="552,29" font="Regular;20" halign="right" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5" render="rvxRunningText" />
+    <widget source="desc" render="rvxRunningText" position="144,494" size="550,146" font="Regular;20" foregroundColor="#ffb75b" backgroundColor="transparent" halign="center" transparent="1" zPosition="2" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap=1" />
     <eLabel position="144,500" size="552,146" backgroundColor="#30000000" zPosition="1" />
     <!-- Graph -->
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/main1.png" position="0,0" size="1280,720" scale="stretch" zPosition="1" />

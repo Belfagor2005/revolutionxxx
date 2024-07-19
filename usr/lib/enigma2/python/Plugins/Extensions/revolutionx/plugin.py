@@ -142,7 +142,7 @@ currversion = '1.5'  # getversioninfo()
 Path_Tmp = "/tmp"
 pictmp = os.path.join(Path_Tmp, "poster.jpg")
 title_plug = 'Revolution XXX V.%s' % currversion
-desc_plug = 'TivuStream Pro Revolution XXX'
+desc_plug = 'TVS Pro Revolution XXX'
 ico_path = os.path.join(THISPLUG, 'logo.png')
 res_plugin_path = os.path.join(THISPLUG, 'res/')
 pngori = os.path.join(THISPLUG, 'res/pics/nasa.jpg')
@@ -202,7 +202,7 @@ class rvList(MenuList):
             textfont = int(30)
             self.l.setFont(0, gFont('Regular', textfont))
         else:
-            self.l.setItemHeight(35)
+            self.l.setItemHeight(45)
             textfont = int(24)
             self.l.setFont(0, gFont('Regular', textfont))
 
@@ -211,13 +211,13 @@ def rvListEntry(name, idx):
     res = [name]
     pngs = os.path.join(THISPLUG, 'res/pics/plugins.png')
     if screenwidth.width() == 2560:
-        res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(50, 50), png=loadPNG(pngs)))
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 10), size=(40, 40), png=loadPNG(pngs)))
         res.append(MultiContentEntryText(pos=(100, 0), size=(1200, 60), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     elif screenwidth.width() == 1920:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(40, 40), png=loadPNG(pngs)))
         res.append(MultiContentEntryText(pos=(70, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
-        res.append(MultiContentEntryPixmapAlphaTest(pos=(3, 3), size=(30, 30), png=loadPNG(pngs)))
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(3, 2), size=(40, 40), png=loadPNG(pngs)))
         res.append(MultiContentEntryText(pos=(50, 0), size=(500, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     return res
 

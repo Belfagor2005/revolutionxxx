@@ -7,5 +7,5 @@
 	<eLabel position="55,30" size="1170,5" zPosition="1" backgroundColor="#30403f3f" />
 	<eLabel position="50,30" size="5,610" zPosition="1" backgroundColor="#30403f3f" />
 	<eLabel position="50,635" size="1175,5" zPosition="1" backgroundColor="#30403f3f" />
-	<widget source="list" render="rvRunningText" position="714,60" size="486,562" font="Regular;18" foregroundColor="#ffb75b" backgroundColor="#101010" halign="center" transparent="1" zPosition="2" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap" />
+	<widget source="list" render="rvxRunningText" position="714,60" size="486,562" font="Regular;18" foregroundColor="#ffb75b" backgroundColor="#101010" halign="center" transparent="1" zPosition="2" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap" />
 </screen>

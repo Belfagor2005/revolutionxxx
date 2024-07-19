@@ -2,14 +2,14 @@
 <screen name="revall" position="0,0" size="2560,1440" title="..::Revolutionx::.." backgroundColor="#ff000000" flags="wfNoBorder">
 	<widget name="title" position="708,58" size="682,64" font="Regular; 43" halign="right" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="5" />
     <widget name="info" position="302,127" size="1094,67" font="Regular;40" halign="left" foregroundColor="yellow" backgroundColor="#000000" transparent="1" zPosition="5" />
-    <widget name="pth" position="292,1366" size="1106,59" font="Regular;40" halign="right" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5" render="rvRunningText" />
-    <widget source="desc" render="rvRunningText" position="290,988" size="1102,294" font="Regular;40" foregroundColor="#ffb75b" backgroundColor="transparent" halign="center" transparent="1" zPosition="2" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap=1" />
+    <widget name="pth" position="292,1366" size="1106,59" font="Regular;40" halign="right" foregroundColor="#808080" backgroundColor="#000000" transparent="1" zPosition="5" render="rvxRunningText" />
+    <widget source="desc" render="rvxRunningText" position="290,988" size="1102,294" font="Regular;40" foregroundColor="#ffb75b" backgroundColor="transparent" halign="center" transparent="1" zPosition="2" options="movetype=running,startpoint=0,direction=top,steptime=80,repeat=0,always=0,oneshot=0,startdelay=6000,wrap=1" />
     <eLabel position="288,1002" size="1104,294" backgroundColor="#30000000" zPosition="1" />
     <!-- Graph -->
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/main1.png" position="0,0" scale="stretch" size="2560,1440" zPosition="1" />
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvs.png" alphatest="blend" position="294,54" size="372,67" zPosition="5" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/main1.png" position="0,0" size="2560,1440" scale="stretch" zPosition="1" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvs.png" position="294,54" size="372,67" alphatest="blend" zPosition="5" />
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sep.png" position="294,187" size="1107,11" zPosition="5" />
-    <ePixmap position="1847,200" size="560,784" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/img/tvposter.png" zPosition="2" scale="stretch" />    
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvposter.png" position="1847,200" size="560,784" zPosition="2" scale="stretch" />    
     <widget name="poster" position="1840,200" size="560,784" alphatest="blend" scale="stretch" zPosition="3" />
     <eLabel name="" position="1167,1294" size="74,70" backgroundColor="#003e4b53" halign="center" valign="center" transparent="0" cornerRadius="26" font="Regular; 23" zPosition="3" text="OK" />
     <eLabel name="" position="1247,1294" size="74,70" backgroundColor="#003e4b53" halign="center" valign="center" transparent="0" cornerRadius="26" font="Regular; 23" zPosition="3" text="MENU" />

@@ -240,7 +240,7 @@ except:
         cfg.movie = ConfigDirectory(default='/media/hdd/movie')
 
 
-currversion = getversioninfo()
+currversion = '1.5'  # getversioninfo()
 title_plug = 'Revolution XXX V.%s' % currversion
 desc_plug = 'TivuStream Pro Revolution XXX'
 cfg.code = ConfigText(default="1234")

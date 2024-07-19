@@ -43,7 +43,7 @@ def logdata(name='', data=None):
 
 
 def getversioninfo():
-    currversion = '1.8'
+    currversion = '1.0'
     version_file = os.path.join(THISPLUG, 'version')
     if os.path.exists(version_file):
         try:

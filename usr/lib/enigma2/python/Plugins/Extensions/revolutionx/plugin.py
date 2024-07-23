@@ -14,6 +14,7 @@ from . import _, logdata, getversioninfo, paypal
 from .resolver import Utils
 from .resolver import html_conv
 from .resolver.Console import Console as xConsole
+
 from Components.AVSwitch import AVSwitch
 from Components.ActionMap import ActionMap
 from Components.Button import Button
@@ -138,7 +139,7 @@ def threadGetPage(url=None, file=None, key=None, success=None, fail=None, *args,
         print(error)
 
 
-currversion = '1.5'  # getversioninfo()
+currversion = '1.6'  # getversioninfo()
 Path_Tmp = "/tmp"
 pictmp = os.path.join(Path_Tmp, "poster.jpg")
 title_plug = 'Revolution XXX V.%s' % currversion
@@ -570,32 +571,35 @@ class RevolmainX(Screen):
         self.onLayoutFinish.append(self.__layoutFinished)
 
     def check_vers(self):
-        remote_version = '0.0'
-        remote_changelog = ''
-        req = Utils.Request(Utils.b64decoder(installer_url), headers={'User-Agent': 'Mozilla/5.0'})
-        page = Utils.urlopen(req).read()
-        if PY3:
-            data = page.decode("utf-8")
-        else:
-            data = page.encode("utf-8")
-        if data:
-            lines = data.split("\n")
-            for line in lines:
-                if line.startswith("version"):
-                    remote_version = line.split("=")
-                    remote_version = line.split("'")[1]
-                if line.startswith("changelog"):
-                    remote_changelog = line.split("=")
-                    remote_changelog = line.split("'")[1]
-                    break
-        self.new_version = remote_version
-        self.new_changelog = remote_changelog
-        if currversion < remote_version:
-            self.Update = True
-            self['key_yellow'].show()
-            # self['key_green'].show()
-            self.session.open(MessageBox, _('New version %s is available\n\nChangelog: %s\n\nPress info_long or yellow_long button to start force updating.') % (self.new_version, self.new_changelog), MessageBox.TYPE_INFO, timeout=5)
-        # self.update_me()
+        try:
+            remote_version = '0.0'
+            remote_changelog = ''
+            req = Utils.Request(Utils.b64decoder(installer_url), headers={'User-Agent': 'Mozilla/5.0'})
+            page = Utils.urlopen(req).read()
+            if PY3:
+                data = page.decode("utf-8")
+            else:
+                data = page.encode("utf-8")
+            if data:
+                lines = data.split("\n")
+                for line in lines:
+                    if line.startswith("version"):
+                        remote_version = line.split("=")
+                        remote_version = line.split("'")[1]
+                    if line.startswith("changelog"):
+                        remote_changelog = line.split("=")
+                        remote_changelog = line.split("'")[1]
+                        break
+            self.new_version = remote_version
+            self.new_changelog = remote_changelog
+            if currversion < remote_version:
+                self.Update = True
+                self['key_yellow'].show()
+                # self['key_green'].show()
+                self.session.open(MessageBox, _('New version %s is available\n\nChangelog: %s\n\nPress info_long or yellow_long button to start force updating.') % (self.new_version, self.new_changelog), MessageBox.TYPE_INFO, timeout=5)
+            # self.update_me()
+        except Exception as e:
+            print('error check_vers:', e)
 
     def update_me(self):
         if self.Update is True:

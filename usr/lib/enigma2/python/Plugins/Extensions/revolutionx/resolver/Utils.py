@@ -164,6 +164,7 @@ if sslverify:
                 ClientTLSOptions(self.hostname, ctx)
             return ctx
 
+
 def ssl_urlopen(url):
     if sslContext:
         return urlopen(url, context=sslContext)

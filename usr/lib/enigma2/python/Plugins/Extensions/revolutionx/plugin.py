@@ -480,7 +480,7 @@ class myconfigX(Screen, ConfigListScreen):
         except Exception as e:
             print('openDirectoryBrowser get failed: ', e)
 
-    def openDirectoryBrowserCB(self, path):
+    def openDirectoryBrowserCB(self, path=None):
         if path is not None:
             if self.setting == 'cachefold':
                 cfg.cachefold.setValue(path)
@@ -657,7 +657,7 @@ class RevolmainX(Screen):
     def adultonly(self):
         self.session.openWithCallback(self.cancelConfirm, MessageBox, _('These streams may contain Adult content\n\nare you sure you want to continue??'))
 
-    def cancelConfirm(self, result):
+    def cancelConfirm(self, result=None):
         if not result:
             return
         else:
@@ -1597,7 +1597,7 @@ class Playstream1X(Screen):
                 self.downloading = False
                 self.session.open(MessageBox, _('Only VOD Movie allowed or not .ext Filtered!!!'), MessageBox.TYPE_INFO, timeout=5)
 
-    def download_m3u(self, result):
+    def download_m3u(self, result=None):
         if result:
             path = urlparse(self.urlm3u).path
             ext = splitext(path)[1]
@@ -1625,7 +1625,7 @@ class Playstream1X(Screen):
         else:
             self.downloading = False
 
-    def ImageDownloadCB(self, ret):
+    def ImageDownloadCB(self, ret=None):
         if ret:
             return
         if job_manager.active_job:
@@ -2252,7 +2252,7 @@ class StreamTasks(Screen):
         dom = sel
         self.session.openWithCallback(self.callMyMsg1, MessageBox, _("Do you want to remove %s ?") % dom, MessageBox.TYPE_YESNO, timeout=15, default=False)
 
-    def callMyMsg1(self, result):
+    def callMyMsg1(self, result=None):
         if result:
             current = self["movielist"].getCurrent()
             sel = Path_Movies + current[1]

@@ -2398,14 +2398,16 @@ def main(session, **kwargs):
 
 
 def menu(menuid, **kwargs):
-    if menuid == 'mainmenu':
-        from Tools.BoundFunction import boundFunction
-        return [(desc_plug,
-                 boundFunction(main, showExtentionMenuOption=True),
-                 'TiVuStream',
-                 44)]
-    else:
-        return []
+    return [(desc_plug, main(), 'www.TiVuStream.com', 44)] if menuid == "mainmenu" else []
+
+    # if menuid == 'mainmenu':
+        # from Tools.BoundFunction import boundFunction
+        # return [(desc_plug,
+                 # boundFunction(main, showExtentionMenuOption=True),
+                 # 'TiVuStream',
+                 # 44)]
+    # else:
+        # return []
 
 
 def mainmenu(session, **kwargs):

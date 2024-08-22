@@ -542,7 +542,6 @@ class RevolmainX(Screen):
         self['title'] = Label(title_plug)
         self.Update = False
         self['actions'] = ActionMap(['OkCancelActions',
-                                     'ColorActions',
                                      'HotkeyActions',
                                      'InfobarEPGActions',
                                      'MenuActions',

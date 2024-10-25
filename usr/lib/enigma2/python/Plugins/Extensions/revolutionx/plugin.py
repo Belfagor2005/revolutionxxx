@@ -344,7 +344,7 @@ class myconfigX(Screen, ConfigListScreen):
         self.list = []
         ConfigListScreen.__init__(self, self.list, session=self.session, on_change=self.changedEntry)
         self['key_red'] = Button(_('Back'))
-        self['key_green'] = Button(_('Save'))
+        self['key_green'] = Button(_('- - - -'))
         self['key_yellow'] = Button(_('Choice'))
         self["key_blue"] = Button(_('Empty Cache'))
         self["paypal"] = Label()
@@ -441,6 +441,7 @@ class myconfigX(Screen, ConfigListScreen):
             self.close(True)
 
     def changedEntry(self):
+        self['key_green'].instance.setText(_('Save') if self['config'].isChanged() else '- - - -')
         for x in self.onChangedEntry:
             x()
         try:

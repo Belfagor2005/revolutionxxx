@@ -1,19 +1,19 @@
 <!-- Skin FullHD1 10/05/2021 -->
 <screen name="Playstream1" position="0,0" size="2560,1440" title=".::REVOLUTION::.." backgroundColor="#FF000000" flags="wfNoBorder">
-	<eLabel position="307,160" size="1080,4" backgroundColor="#303030" zPosition="4" />
+	<widget name="title" position="708,58" size="682,64" font="Regular; 43" halign="right" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="5" />
+    <widget name="info" position="302,127" size="1094,67" font="Regular;40" halign="left" foregroundColor="yellow" backgroundColor="#000000" transparent="1" zPosition="5" />
+	<eLabel position="307,195" size="1080,4" backgroundColor="#303030" zPosition="4" />
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/main1.png" position="0,0" scale="stretch" size="2560,1440" zPosition="1" />
 	<eLabel position="307,1280" size="1080,4" backgroundColor="#303030" zPosition="4" />
-	<widget name="title" position="308,111" size="1075,47" font="Regular;38" halign="center" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="6" />
-	<widget name="poster" position="1667,200" size="560,784" alphatest="blend" scale="1" zPosition="3" />
-	<!-- Menu List -->
-	<widget name="info" position="307,174" size="1080,67" font="Regular;40" halign="center" valign="center" foregroundColor="yellow" backgroundColor="#202020" transparent="0" zPosition="5" />
-	<widget name="list" position="307,254" size="1080,1000" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#ffffff" backgroundColor="#000000" backgroundColorSelected="#001b3c85" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvposter.png" position="1847,200" size="560,784" zPosition="2" scale="stretch" />    
+    <widget name="poster" position="1840,200" size="560,784" alphatest="blend" scale="stretch" zPosition="3" />	
+    <widget name="list" position="292,204" size="1107,774" scrollbarMode="showOnDemand" enableWrapAround="1" transparent="1" zPosition="10" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#000b2049" backgroundColorSelected="#0b2049" />
 	<widget name="progress" position="304,1395" size="1083,35" foregroundColor="#2a70a4" backgroundColor="#10000000" transparent="1" zPosition="5" />
 	<widget source="progresstext" render="Label" font="Regular;27" position="304,1395" size="1083,35" backgroundColor="#202020" transparent="1" halign="center" zPosition="6" />
-    <eLabel position="307,1307" size="280,80" backgroundColor="#ff0033" zPosition="4" />
-    <eLabel position="602,1308" size="280,80" backgroundColor="#009900" zPosition="4" />
-    <!-- <eLabel position="895,1311" size="280,80" backgroundColor="#ffff00" zPosition="4" /> -->
-	<widget name="key_red" position="304,1307" size="284,84" font="Regular;40" halign="center" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
-	<widget name="key_green" position="603,1310" size="280,86" font="Regular;40" halign="center" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
-	<widget name="key_yellow" position="896,1310" size="280,80" font="Regular;40" halign="center" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
+	<eLabel position="307,1350" size="280,8" backgroundColor="#ff0033" zPosition="4" />   
+    <eLabel position="592,1350" size="280,8" backgroundColor="#009900" zPosition="4" />
+    <eLabel position="875,1350" size="280,8" backgroundColor="#ffff00" zPosition="4" />
+	<widget name="key_red" position="304,1280" size="280,84" font="Regular;40" halign="center" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
+	<widget name="key_green" position="588,1280" size="280,84" font="Regular;40" halign="center" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
+	<widget name="key_yellow" position="874,1280" size="280,84" font="Regular;40" halign="center" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
 </screen>

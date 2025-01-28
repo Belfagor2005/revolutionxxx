@@ -1,19 +1,21 @@
 <!-- Skin FullHD1 10/05/2021 -->
 <screen name="Playstream1" position="0,0" size="1920,1080" title=".::REVOLUTION::.." backgroundColor="#FF000000" flags="wfNoBorder">
+	<widget name="title" position="531,43" size="511,48" font="Regular; 32" halign="right" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="5" />
+    <widget name="info" position="226,95" size="820,50" font="Regular;30" halign="left" foregroundColor="yellow" backgroundColor="#000000" transparent="1" zPosition="5" />
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/main1.png" position="0,0" size="1920,1080" scale="stretch" zPosition="1" />
+
 	<eLabel position="230,120" size="810,3" backgroundColor="#303030" zPosition="4" />
-    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/main1.png" position="0,0" scale="stretch" size="1920,1080" zPosition="1" />
 	<eLabel position="230,960" size="810,3" backgroundColor="#303030" zPosition="4" />
-	<widget name="title" position="231,83" size="806,35" font="Regular;28" halign="center" valign="center" foregroundColor="#ffff00" backgroundColor="black" transparent="1" zPosition="6" />
-	<widget name="poster" position="1250,150" size="420,588" alphatest="blend" scale="1" zPosition="3" />
-	<!-- Menu List -->
-	<widget name="info" position="230,130" size="810,50" font="Regular;30" halign="center" valign="center" foregroundColor="yellow" backgroundColor="#202020" transparent="0" zPosition="5" />
-	<widget name="list" position="230,190" size="810,750" scrollbarMode="showOnDemand" transparent="1" zPosition="5" foregroundColor="#ffffff" backgroundColor="#000000" backgroundColorSelected="#001b3c85" />
+
+    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvposter.png" position="1385,150" size="420,588" zPosition="2" scale="stretch" />    
+    <widget name="poster" position="1380,150" size="420,588" alphatest="blend" scale="stretch" zPosition="3" />	
+    <widget name="list" position="219,153" size="830,605" scrollbarMode="showOnDemand" enableWrapAround="1" transparent="1" zPosition="10" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#000b2049" backgroundColorSelected="#0b2049" />
 	<widget name="progress" position="228,1046" size="812,26" foregroundColor="#2a70a4" backgroundColor="#10000000" transparent="1" zPosition="5" />
 	<widget source="progresstext" render="Label" font="Regular;20" position="228,1046" size="812,26" backgroundColor="#202020" transparent="1" halign="center" zPosition="6" />
-    <eLabel position="230,980" size="210,60" backgroundColor="#ff0033" zPosition="4" />
-    <eLabel position="451,981" size="210,60" backgroundColor="#009900" zPosition="4" />
-    <!-- <eLabel position="671,983" size="210,60" backgroundColor="#ffff00" zPosition="4" /> -->
+    <eLabel position="230,1040" size="210,6" backgroundColor="#ff0033" zPosition="4" />
+    <eLabel position="451,1040" size="210,6" backgroundColor="#009900" zPosition="4" />
+    <eLabel position="671,1035" size="210,6" backgroundColor="#ffff00" zPosition="4" />
 	<widget name="key_red" position="228,980" size="213,63" font="Regular;30" halign="center" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
-	<widget name="key_green" position="452,982" size="210,64" font="Regular;30" halign="center" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
+	<widget name="key_green" position="452,982" size="210,60" font="Regular;30" halign="center" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
 	<widget name="key_yellow" position="672,982" size="210,60" font="Regular;30" halign="center" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
 </screen>

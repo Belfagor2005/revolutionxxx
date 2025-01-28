@@ -1,11 +1,11 @@
 Package: enigma2-plugin-extensions-tvspro-xxx
-Version: 1.6
+Version: 1.7
 Section: extra
 Priority: optional
 Architecture: all
 Maintainer: @lululla
 Description: TiVuStream
-Source: @lululla
+Source: enigma2-plugin-extensions-tvspro-xxx
 Homepage: tivustream.com
-OE: 2.0-2.2-2.5
-License: O.S.
+OE: enigma2-plugin-extensions-tvspro-xxx
+License: gpl

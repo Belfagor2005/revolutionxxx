@@ -11,14 +11,14 @@
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/sep.png" position="146,93" size="553,5" zPosition="5" />
     <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx/res/pics/tvposter.png" position="923,100" size="280,392" zPosition="2" scale="stretch" />    
     <widget name="poster" position="920,100" size="280,392" alphatest="blend" scale="stretch" zPosition="3" />
-    <eLabel name="" position="583,646" size="36,34" backgroundColor="#003e4b53" halign="center" valign="center" transparent="0" cornerRadius="26" font="Regular; 11" zPosition="3" text="OK" />
+    <eLabel name="" position="588,646" size="36,34" backgroundColor="#003e4b53" halign="center" valign="center" transparent="0" cornerRadius="26" font="Regular; 11" zPosition="3" text="OK" />
     <eLabel name="" position="623,646" size="36,34" backgroundColor="#003e4b53" halign="center" valign="center" transparent="0" cornerRadius="26" font="Regular; 11" zPosition="3" text="MENU" />
     <eLabel name="" position="660,646" size="36,34" backgroundColor="#003e4b53" halign="center" valign="center" transparent="0" cornerRadius="26" font="Regular; 11" zPosition="3" text="INFO" />
     <!-- Menu List -->
     <widget name="list" position="146,102" size="553,386" scrollbarMode="showOnDemand" enableWrapAround="1" transparent="1" zPosition="10" foregroundColor="#00a0a0a0" foregroundColorSelected="#ffffff" backgroundColor="#000b2049" backgroundColorSelected="#0b2049" />
     <!-- Colors -->
-    <eLabel position="153,640" size="140,40" backgroundColor="#ff0033" zPosition="4" />       
-    <eLabel position="437,640" size="140,40" backgroundColor="#ffff00" zPosition="4" />
+    <eLabel position="153,680" size="140,4" backgroundColor="#ff0033" zPosition="4" />       
+    <eLabel position="437,680" size="140,4" backgroundColor="#ffff00" zPosition="4" />
 	<widget name="key_red" position="152,640" size="142,42" font="Regular;20" halign="center" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
 	<widget name="key_yellow" position="436,640" size="140,40" font="Regular;20" halign="center" valign="center" backgroundColor="#20000000" zPosition="5" transparent="1" />
 </screen>

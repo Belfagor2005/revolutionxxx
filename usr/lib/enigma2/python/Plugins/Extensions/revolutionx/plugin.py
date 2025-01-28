@@ -10,11 +10,19 @@
 Info http://t.me/tivustream
 '''
 from __future__ import print_function
-from . import _, logdata, getversioninfo, paypal
+from . import (
+    _,
+    logdata,
+    paypal,
+    # isDreamOS,
+    # getversioninfo,
+    installer_url,
+    developer_url,
+)
 from .resolver import Utils
 from .resolver import html_conv
 from .resolver.Console import Console as xConsole
-
+from .resolver.Utils import b64decoder
 from Components.AVSwitch import AVSwitch
 from Components.ActionMap import ActionMap
 from Components.Button import Button
@@ -42,9 +50,9 @@ from Components.config import (
 from Plugins.Plugin import PluginDescriptor
 from Screens.InfoBarGenerics import (
     InfoBarSubtitleSupport,
-    InfoBarMenu,
     InfoBarSeek,
     InfoBarAudioSelection,
+    InfoBarMenu,
     InfoBarNotifications,
 )
 from Screens.LocationBox import LocationBox
@@ -66,7 +74,6 @@ from enigma import (
     gPixmapPtr,
     getDesktop,
     iPlayableService,
-    iServiceInformation,
     loadPNG,
 )
 from os.path import splitext
@@ -80,14 +87,14 @@ import json
 import os
 import re
 import six
-import ssl
 import sys
 import time
 
-global skin_path, nextmodule, search, pngori, Path_Movies
+global nextmodule, search, pngori, Path_Movies
 
 PY3 = False
 PY3 = sys.version_info.major >= 3
+
 if PY3:
     print('six.PY3: True ')
 try:
@@ -100,24 +107,14 @@ except ImportError:
     from urllib2 import urlopen, Request
     from urllib2 import URLError
 
-THISPLUG = '/usr/lib/enigma2/python/Plugins/Extensions/revolutionx'
+
 search = False
 _session = None
 streamlink = False
 
+
 if Utils.isStreamlinkAvailable:
     streamlink = True
-try:
-    from Plugins.Extensions.SubsSupport import SubsSupport, SubsSupportStatus
-except ImportError:
-    class SubsSupport(object):
-        def __init__(self, *args, **kwargs):
-            pass
-
-
-class SubsSupportStatus(object):
-    def __init__(self, *args, **kwargs):
-        pass
 
 
 def threadGetPage(url=None, file=None, key=None, success=None, fail=None, *args, **kwargs):
@@ -139,45 +136,36 @@ def threadGetPage(url=None, file=None, key=None, success=None, fail=None, *args,
         print(error)
 
 
-currversion = '1.6'  # getversioninfo()
+currversion = '1.7'  # getversioninfo()
 Path_Tmp = "/tmp"
-pictmp = os.path.join(Path_Tmp, "poster.jpg")
-title_plug = 'Revolution XXX V.%s' % currversion
+plugin_path = '/usr/lib/enigma2/python/Plugins/Extensions/revolutionx'
+
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36',
+           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 'Accept-Encoding': 'deflate'}
+title_plug = 'Revolution XXX V. %s' % currversion
 desc_plug = 'TVS XXX Revolution'
-ico_path = os.path.join(THISPLUG, 'logo.png')
-res_plugin_path = os.path.join(THISPLUG, 'res/')
-pngori = os.path.join(THISPLUG, 'res/pics/nasa.jpg')
-piccons = os.path.join(THISPLUG, 'res/picons/')
+ico_path = os.path.join(plugin_path, 'logo.png')
+pictmp = os.path.join(Path_Tmp, "poster.jpg")
+res_plugin_path = os.path.join(plugin_path, 'res/')
+pngori = os.path.join(plugin_path, 'res/pics/nasa.jpg')
+piccons = os.path.join(plugin_path, 'res/picons/')
 imgjpg = ("nasa.jpg", "nasa1.jpg", "nasa2.jpg")
 no_cover = os.path.join(piccons, 'backg.png')
 piconinter = os.path.join(piccons, 'inter.png')
 piconlive = os.path.join(piccons, 'tv.png')
-# pixmaps = os.path.join(piccons, 'backg.png')
 nextpng = 'next.png'
 prevpng = 'prev.png'
-installer_url = 'aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0JlbGZhZ29yMjAwNS9yZXZvbHV0aW9ueHh4L21haW4vaW5zdGFsbGVyLnNo'
-developer_url = 'aHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS9yZXBvcy9CZWxmYWdvcjIwMDUvcmV2b2x1dGlvbnh4eA=='
+
 PanelMain = [('XXX')]
 
-screenwidth = getDesktop(0).size()
-if screenwidth.width() == 2560:
-    skin_path = THISPLUG + '/res/skins/uhd/'
-elif screenwidth.width() == 1920:
-    skin_path = THISPLUG + '/res/skins/fhd/'
-else:
-    skin_path = THISPLUG + '/res/skins/hd/'
-if os.path.exists('/var/lib/dpkg/status'):
-    skin_path = skin_path + 'dreamOs/'
 
-
-# https twisted client hack #
 sslverify = False
 try:
     from twisted.internet import ssl
     from twisted.internet._sslverify import ClientTLSOptions
     sslverify = True
 except ImportError:
-    pass
+    sslverify = False
 
 if sslverify:
     class SNIFactory(ssl.ClientContextFactory):
@@ -189,6 +177,45 @@ if sslverify:
             if self.hostname:
                 ClientTLSOptions(self.hostname, ctx)
             return ctx
+
+
+screenwidth = getDesktop(0).size()
+if screenwidth.width() == 2560:
+    path_skin = os.path.join(plugin_path, 'res/skins/uhd')
+elif screenwidth.width() == 1920:
+    path_skin = os.path.join(plugin_path, 'res/skins/fhd')
+else:
+    path_skin = os.path.join(plugin_path, 'res/skins/hd')
+if os.path.exists('/var/lib/dpkg/status'):
+    path_skin = os.path.join(path_skin, 'dreamOs')
+
+
+VIDEO_ASPECT_RATIO_MAP = {0: "4:3 Letterbox", 1: "4:3 PanScan", 2: "16:9", 3: "16:9 Always", 4: "16:10 Letterbox", 5: "16:10 PanScan", 6: "16:9 Letterbox"}
+VIDEO_FMT_PRIORITY_MAP = {"38": 1, "37": 2, "22": 3, "18": 4, "35": 5, "34": 6}
+
+
+REGEX = re.compile(
+    r'([\(\[]).*?([\)\]])|'
+    r'(: odc.\d+)|'
+    r'(\d+: odc.\d+)|'
+    r'(\d+ odc.\d+)|(:)|'
+    r'( -(.*?).*)|(,)|'
+    r'!|'
+    r'/.*|'
+    r'\|\s[0-9]+\+|'
+    r'[0-9]+\+|'
+    r'\s\d{4}\Z|'
+    r'([\(\[\|].*?[\)\]\|])|'
+    r'(\"|\"\.|\"\,|\.)\s.+|'
+    r'\"|:|'
+    r'Премьера\.\s|'
+    r'(х|Х|м|М|т|Т|д|Д)/ф\s|'
+    r'(х|Х|м|М|т|Т|д|Д)/с\s|'
+    r'\s(с|С)(езон|ерия|-н|-я)\s.+|'
+    r'\s\d{1,3}\s(ч|ч\.|с\.|с)\s.+|'
+    r'\.\s\d{1,3}\s(ч|ч\.|с\.|с)\s.+|'
+    r'\s(ч|ч\.|с\.|с)\s\d{1,3}.+|'
+    r'\d{1,3}(-я|-й|\sс-н).+|', re.DOTALL)
 
 
 class rvList(MenuList):
@@ -203,23 +230,24 @@ class rvList(MenuList):
             textfont = int(30)
             self.l.setFont(0, gFont('Regular', textfont))
         else:
-            self.l.setItemHeight(45)
+            self.l.setItemHeight(50)
             textfont = int(24)
             self.l.setFont(0, gFont('Regular', textfont))
 
 
-def rvListEntry(name, idx):
-    res = [name]
-    pngs = os.path.join(THISPLUG, 'res/pics/plugins.png')
+def rvListEntry(name, url, idx='None'):
+    res = [(name, url, idx)]
+    pngs = os.path.join(plugin_path, 'res/pics/plugins.png')
     if screenwidth.width() == 2560:
-        res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 10), size=(40, 40), png=loadPNG(pngs)))
-        res.append(MultiContentEntryText(pos=(100, 0), size=(1200, 60), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(50, 50), png=loadPNG(pngs)))
+        res.append(MultiContentEntryText(pos=(90, 0), size=(1200, 60), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     elif screenwidth.width() == 1920:
         res.append(MultiContentEntryPixmapAlphaTest(pos=(5, 5), size=(40, 40), png=loadPNG(pngs)))
         res.append(MultiContentEntryText(pos=(70, 0), size=(1000, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
     else:
-        res.append(MultiContentEntryPixmapAlphaTest(pos=(3, 2), size=(40, 40), png=loadPNG(pngs)))
+        res.append(MultiContentEntryPixmapAlphaTest(pos=(3, 8), size=(40, 40), png=loadPNG(pngs)))
         res.append(MultiContentEntryText(pos=(50, 0), size=(500, 50), font=0, text=name, color=0xa6d1fe, flags=RT_HALIGN_LEFT | RT_VALIGN_CENTER))
+
     return res
 
 
@@ -228,9 +256,10 @@ def showlist(data, list):
     plist = []
     for line in data:
         name = data[idx]
-        plist.append(rvListEntry(name, idx))
+        url = 'None'
+        plist.append(rvListEntry(str(name), url, idx))
         idx += 1
-        list.setList(plist)
+    list.setList(plist)
 
 
 modechoices = [("4097", _("IPTV(4097)")),
@@ -264,37 +293,15 @@ except:
 
 
 Path_Movies = str(cfg.movie.value)
-Path_Cache = cfg.cachefold.value.strip()
+Path_Cache = str(cfg.cachefold.value.strip())
+
+
 if not os.path.exists(Path_Cache):
     try:
         os.makedirs(Path_Cache)
     except OSError as e:
         print(('Error creating directory %s:\n%s') % (Path_Cache, e))
 logdata("path picons: ", str(Path_Cache))
-
-
-REGEX = re.compile(
-    r'([\(\[]).*?([\)\]])|'
-    r'(: odc.\d+)|'
-    r'(\d+: odc.\d+)|'
-    r'(\d+ odc.\d+)|(:)|'
-    r'( -(.*?).*)|(,)|'
-    r'!|'
-    r'/.*|'
-    r'\|\s[0-9]+\+|'
-    r'[0-9]+\+|'
-    r'\s\d{4}\Z|'
-    r'([\(\[\|].*?[\)\]\|])|'
-    r'(\"|\"\.|\"\,|\.)\s.+|'
-    r'\"|:|'
-    r'Премьера\.\s|'
-    r'(х|Х|м|М|т|Т|д|Д)/ф\s|'
-    r'(х|Х|м|М|т|Т|д|Д)/с\s|'
-    r'\s(с|С)(езон|ерия|-н|-я)\s.+|'
-    r'\s\d{1,3}\s(ч|ч\.|с\.|с)\s.+|'
-    r'\.\s\d{1,3}\s(ч|ч\.|с\.|с)\s.+|'
-    r'\s(ч|ч\.|с\.|с)\s\d{1,3}.+|'
-    r'\d{1,3}(-я|-й|\sс-н).+|', re.DOTALL)
 
 
 def returnIMDB(text_clear):
@@ -335,7 +342,7 @@ class myconfigX(Screen, ConfigListScreen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
-        skin = os.path.join(skin_path, 'myconfig.xml')
+        skin = os.path.join(path_skin, 'myconfig.xml')
         with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.setup_title = title_plug
@@ -409,7 +416,6 @@ class myconfigX(Screen, ConfigListScreen):
         try:
             sel = self['config'].getCurrent()[2]
             if sel:
-                # print('sel =: ', sel)
                 self['description'].setText(str(sel))
             else:
                 self['description'].setText(_('SELECT YOUR CHOICE'))
@@ -461,7 +467,6 @@ class myconfigX(Screen, ConfigListScreen):
         return SetupSummary
 
     def Ok_edit(self):
-        # ConfigListScreen.keyOK(self)
         sel = self['config'].getCurrent()[1]
         if sel and sel == cfg.cachefold:
             self.setting = 'cachefold'
@@ -526,13 +531,22 @@ class RevolmainX(Screen):
         self.session = session
         global _session
         _session = session
-        skin = os.path.join(skin_path, 'revall.xml')
+        skin = os.path.join(path_skin, 'revall.xml')
         with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         global nextmodule
         nextmodule = 'RevolmainX'
-        self['list'] = rvList([])
+        self.names = []
+        self.urls = []
+        self.pics = []
+        self.infos = []
+
+        self.menu_list = []
+        self.list = rvList([])
+        self['list'] = self.list
+
         self.setup_title = ('HOME REVOLUTION XXX')
+        self['title'] = Label(title_plug)
         self['pth'] = Label()
         self['pth'].setText(_('Cache folder ') + Path_Cache)
         self['poster'] = Pixmap()
@@ -543,14 +557,10 @@ class RevolmainX(Screen):
         self['key_yellow'] = Button(_('Update'))
         self['key_yellow'].hide()
         self.currentList = 'list'
-        self.names = []
-        self.urls = []
-        self.pics = []
-        self.infos = []
-        self.menulist = []
-        self['title'] = Label(title_plug)
         self.Update = False
+
         self['actions'] = ActionMap(['OkCancelActions',
+                                     'ColorActions',
                                      'HotkeyActions',
                                      'InfobarEPGActions',
                                      'MenuActions',
@@ -560,12 +570,16 @@ class RevolmainX(Screen):
                                                            'down': self.down,
                                                            'left': self.left,
                                                            'right': self.right,
-                                                           'yellow': self.update_me,  # update_me,
-                                                           'yellow_long': self.update_dev,
-                                                           'info_long': self.update_dev,
-                                                           'infolong': self.update_dev,
+                                                           'prevBouquet': self.down,
+                                                           'nextBouquet': self.up,
+                                                           'channelDown': self.down,
+                                                           'channelUp': self.up,
                                                            'showEventInfoPlugin': self.update_dev,
                                                            'menu': self.goConfig,
+                                                           'info_long': self.update_dev,
+                                                           'infolong': self.update_dev,
+                                                           'yellow': self.update_me,
+                                                           'yellow_long': self.update_dev,
                                                            'green': self.okRun,
                                                            'cancel': self.closerm,
                                                            'red': self.closerm}, -1)
@@ -579,35 +593,30 @@ class RevolmainX(Screen):
         self.onLayoutFinish.append(self.__layoutFinished)
 
     def check_vers(self):
-        try:
-            remote_version = '0.0'
-            remote_changelog = ''
-            req = Utils.Request(Utils.b64decoder(installer_url), headers={'User-Agent': 'Mozilla/5.0'})
-            page = Utils.urlopen(req).read()
-            if PY3:
-                data = page.decode("utf-8")
-            else:
-                data = page.encode("utf-8")
-            if data:
-                lines = data.split("\n")
-                for line in lines:
-                    if line.startswith("version"):
-                        remote_version = line.split("=")
-                        remote_version = line.split("'")[1]
-                    if line.startswith("changelog"):
-                        remote_changelog = line.split("=")
-                        remote_changelog = line.split("'")[1]
-                        break
-            self.new_version = remote_version
-            self.new_changelog = remote_changelog
-            if currversion < remote_version:
-                self.Update = True
-                self['key_yellow'].show()
-                # self['key_green'].show()
-                self.session.open(MessageBox, _('New version %s is available\n\nChangelog: %s\n\nPress info_long or yellow_long button to start force updating.') % (self.new_version, self.new_changelog), MessageBox.TYPE_INFO, timeout=5)
-            # self.update_me()
-        except Exception as e:
-            print('error check_vers:', e)
+        remote_version = '0.0'
+        remote_changelog = ''
+        req = Request(b64decoder(installer_url), headers=headers)
+        page = urlopen(req).read()
+        if PY3:
+            data = page.decode("utf-8")
+        else:
+            data = page.encode("utf-8")
+        if data:
+            lines = data.split("\n")
+            for line in lines:
+                if line.startswith("version"):
+                    remote_version = line.split("=")
+                    remote_version = line.split("'")[1]
+                if line.startswith("changelog"):
+                    remote_changelog = line.split("=")
+                    remote_changelog = line.split("'")[1]
+                    break
+        self.new_version = remote_version
+        self.new_changelog = remote_changelog
+        if currversion < remote_version:
+            self.Update = True
+            self['key_yellow'].show()
+            self.session.open(MessageBox, _('New version %s is available\n\nChangelog: %s\n\nPress info_long or yellow_long button to start force updating.') % (self.new_version, self.new_changelog), MessageBox.TYPE_INFO, timeout=5)
 
     def update_me(self):
         if self.Update is True:
@@ -617,8 +626,8 @@ class RevolmainX(Screen):
 
     def update_dev(self):
         try:
-            req = Utils.Request(Utils.b64decoder(developer_url), headers={'User-Agent': 'Mozilla/5.0'})
-            page = Utils.urlopen(req).read()
+            req = Request(b64decoder(developer_url), headers=headers)
+            page = urlopen(req).read()
             data = json.loads(page)
             remote_date = data['pushed_at']
             strp_remote_date = datetime.strptime(remote_date, '%Y-%m-%dT%H:%M:%SZ')
@@ -629,7 +638,7 @@ class RevolmainX(Screen):
 
     def install_update(self, answer=False):
         if answer:
-            cmd1 = 'wget -q "--no-check-certificate" ' + Utils.b64decoder(installer_url) + ' -O - | /bin/sh'
+            cmd1 = 'wget -q -no-check-certificate ' + b64decoder(installer_url) + ' -O - | /bin/sh'
             self.session.open(xConsole, 'Upgrading...', cmdlist=[cmd1], finishedCallback=self.myCallback, closeOnSuccess=False)
         else:
             self.session.open(MessageBox, _("Update Aborted!"),  MessageBox.TYPE_INFO, timeout=3)
@@ -713,7 +722,6 @@ class RevolmainX(Screen):
         try:
             sel = self['list'].getSelectionIndex()
             if sel is not None or sel != -1:
-                # pixmaps = os.path.join(THISPLUG, 'res/picons/backg.png')
                 size = self['poster'].instance.size()
                 if os.path.exists('/var/lib/dpkg/status'):
                     self['poster'].instance.setPixmap(gPixmapPtr())
@@ -749,14 +757,21 @@ class live_streamX(Screen):
         self.session = session
         global _session
         _session = session
-        skin = os.path.join(skin_path, 'revall.xml')
+        skin = os.path.join(path_skin, 'revall.xml')
         with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
-        self.setup_title = ('HOME REVOLUTION XXX')
-        self.setTitle(title_plug)
-        self.list = []
+
+        self.names = []
+        self.urls = []
+        self.pics = []
+        self.infos = []
+
+        self.menu_list = []
+        self.list = rvList([])
         self['list'] = self.list
-        self['list'] = rvList([])
+
+        self.setup_title = (title_plug)
+        self['title'] = Label(title_plug)
         self['info'] = Label(name)
         self['pth'] = Label()
         self['pth'].setText(_('Cache folder ') + Path_Cache)
@@ -764,27 +779,29 @@ class live_streamX(Screen):
         self["poster"] = Pixmap()
         self["poster"].hide()
         self['key_red'] = Button(_('Back'))
-        self['key_yellow'] = Button(_('Update'))
+        self['key_yellow'] = Button()
         self['key_yellow'].hide()
-        self.names = []
-        self.urls = []
-        self.pics = []
-        self.infos = []
+
         self.name = name
         self.url = url
         self.pic = pic
         self.type = self.name
         self.downloading = False
         self.currentList = 'list'
-        self['title'] = Label(title_plug)
+
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ColorActions',
                                      'EPGSelectActions',
                                      'MenuActions',
+                                     'ChannelSelectBaseActions',
                                      'DirectionActions'], {'ok': self.okRun,
                                                            'red': self.cancel,
                                                            'up': self.up,
                                                            'down': self.down,
+                                                           'prevBouquet': self.down,
+                                                           'nextBouquet': self.up,
+                                                           'channelDown': self.down,
+                                                           'channelUp': self.up,
                                                            'left': self.left,
                                                            'right': self.right,
                                                            'epg': self.showIMDB,
@@ -825,7 +842,7 @@ class live_streamX(Screen):
         while i < 50:
 
             try:
-                print('In live_stream y["channels"][i]["name"] =', y["channels"][i]["name"])
+                # print('In live_stream y["channels"][i]["name"] =', y["channels"][i]["name"])
                 name = str(y["channels"][i]["name"])
                 name = REGEX.sub('', name.strip())
                 name = str(i) + "_" + name
@@ -839,7 +856,7 @@ class live_streamX(Screen):
                 self.pics.append(pic)
                 self.infos.append(html_conv.html_unescape(info))
                 i += 1
-
+                self.menu_list.append((name, url, i))
             except Exception as e:
                 print(e)
                 break
@@ -855,17 +872,19 @@ class live_streamX(Screen):
         self.__layoutFinished()
 
     def okRun(self):
-
+        global search
+        i = len(self.names)
+        if i < 0:
+            return
         idx = self['list'].getSelectionIndex()
-        if idx != '' or idx > -1:
-            name = self.names[idx]
-            url = self.urls[idx]
-            pic = self.pics[idx]
-            info = self.infos[idx]
-            if 'ADDON' in name:
-                return
-            if nextmodule == 'Videos1':
-                self.session.open(video1X, name, url, pic, info, nextmodule)
+        name = self.names[idx]
+        url = self.urls[idx]
+        pic = self.pics[idx]
+        info = self.infos[idx]
+        if 'ADDON' in name:
+            return
+        if nextmodule == 'Videos1':
+            self.session.open(video1X, name, url, pic, info, nextmodule, self.menu_list)
 
     def __layoutFinished(self):
         self.setTitle(self.setup_title)
@@ -920,9 +939,8 @@ class live_streamX(Screen):
         callInThread(threadGetPage, url=link, file=None, success=name, fail=self.downloadError)
 
     def getPoster1(self, output):
-        f = open(pictmp, 'wb')
-        f.write(output)
-        f.close()
+        with open(pictmp, 'wb') as f:
+            f.write(output)
         self.showPoster1(pictmp)
 
     def showPoster1(self, poster1):
@@ -969,8 +987,8 @@ class live_streamX(Screen):
         if os.path.exists(pictmp):
             try:
                 self.poster_resize(pictmp)
-            except Exception as ex:
-                print("* error ** %s" % ex)
+            except Exception as e:
+                print("* error ** %s" % e)
                 self.showPoster1(no_cover)
                 pass
 
@@ -978,9 +996,9 @@ class live_streamX(Screen):
         try:
             if fileExists(png):
                 self.poster_resize(no_cover)
-        except Exception as ex:
+        except Exception as e:
             self.poster_resize(no_cover)
-            print(ex)
+            print(e)
 
     def poster_resize(self, png):
         self["poster"].hide()
@@ -1000,42 +1018,54 @@ class live_streamX(Screen):
 
 
 class video1X(Screen):
-    def __init__(self, session, name, url, pic, info, nextmodule):
+    def __init__(self, session, name, url, pic, info, nextmodule, menu_list):
         Screen.__init__(self, session)
         self.session = session
         global _session
         _session = session
-        skin = os.path.join(skin_path, 'revall.xml')
+        skin = os.path.join(path_skin, 'revall.xml')
         with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
-        self.setup_title = ('HOME REVOLUTION XXX')
-        self.list = []
+        self.names = []
+        self.urls = []
+        self.pics = []
+        self.infos = []
+        self.menu_list_tmp = menu_list
+        self.menu_list = []
+        self.list = rvList([])
         self['list'] = self.list
-        self['list'] = rvList([])
+
+        self.setup_title = (title_plug)
+        self['title'] = Label(title_plug)
         self['info'] = Label(name)
         self['pth'] = Label()
         self['pth'].setText(_('Cache folder ') + Path_Cache)
         self['desc'] = StaticText()
         self["poster"] = Pixmap()
         self['key_red'] = Button(_('Back'))
-        self['key_yellow'] = Button(_('Update'))
+        self['key_yellow'] = Button()
         self['key_yellow'].hide()
+
         self.name = name
         self.url = url
         self.pic = pic
         self.info = info
         self.downloading = False
         self.currentList = 'list'
-        self['title'] = Label(title_plug)
+
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ColorActions',
                                      'EPGSelectActions',
                                      'MenuActions',
-                                     # 'ButtonSetupActions',
+                                     'ChannelSelectBaseActions',
                                      'DirectionActions'], {'ok': self.okRun,
                                                            'red': self.cancel,
                                                            'up': self.up,
                                                            'down': self.down,
+                                                           'prevBouquet': self.down,
+                                                           'nextBouquet': self.up,
+                                                           'channelDown': self.down,
+                                                           'channelUp': self.up,
                                                            'left': self.left,
                                                            'right': self.right,
                                                            'epg': self.showIMDB,
@@ -1082,7 +1112,6 @@ class video1X(Screen):
         if PY3:
             content = six.ensure_str(content)
         content = json.loads(content)
-        # y = json.loads(content)
         folder_path = "/tmp/tivustream/"
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
@@ -1093,11 +1122,9 @@ class video1X(Screen):
         x = self.name.split("_")
         n = int(x[0])
         try:
-            # i = 0
-            # while i < 50:
             for item in y["channels"][n]["items"]:
                 name = str(item["title"])
-                name = re.sub('\[.*?\]', "", name)
+                name = re.sub(r'\[.*?\]', "", name)
                 name = Utils.cleanName(name)
                 url = item["link"]
                 url = url.replace("\\", "").replace('https', 'http')
@@ -1106,29 +1133,29 @@ class video1X(Screen):
                 except:
                     pic = str(self.pic)
                 info = str(item["info"])
+                info = re.sub(r'\r\n', '', info)
                 self.names.append(name)
                 self.urls.append(url)
                 self.pics.append(pic)
                 self.infos.append(html_conv.html_unescape(info))
-            nextmodule = "Videos3"
-            showlist(self.names, self['list'])
-            self.__layoutFinished()
+                self.menu_list.append((name, url, n))
         except:
             print('are here ? ')
-            return
+        nextmodule = "Videos3"
+        showlist(self.names, self['list'])
+        self.__layoutFinished()
 
     def okRun(self):
         i = len(self.names)
         if i < 0:
             return
         idx = self['list'].getSelectionIndex()
-        if idx != '' or idx > -1:
-            name = self.names[idx]
-            url = self.urls[idx]
-            pic = self.pics[idx]
-            info = self.infos[idx]
-            print('item tot= ', name, url, pic, info)
-            self.session.open(video3X, name, url, pic, info, nextmodule)
+        name = self.names[idx]
+        url = self.urls[idx]
+        pic = self.pics[idx]
+        info = self.infos[idx]
+        print('item tot= ', name, url, pic, info)
+        self.session.open(video3X, name, url, pic, info, nextmodule, self.menu_list)
 
     def cancel(self):
         global nextmodule
@@ -1151,17 +1178,6 @@ class video1X(Screen):
     def right(self):
         self[self.currentList].pageDown()
         self.__layoutFinished()
-
-    def download(self, link, name):
-        if PY3:
-            link = link.encode()
-        callInThread(threadGetPage, url=link, file=None, success=name, fail=self.downloadError)
-
-    def showPoster1(self, poster1):
-        if fileExists(poster1):
-            self["poster"].instance.setPixmapFromFile(poster1)
-            self['poster'].show()
-        return
 
     def load_poster(self):
         try:
@@ -1219,7 +1235,13 @@ class video1X(Screen):
         size = self['poster'].instance.size()
         self.picload = ePicLoad()
         self.scale = AVSwitch().getFramebufferScale()
-        self.picload.setPara([size.width(), size.height(), self.scale[0], self.scale[1], 0, 1, '#00000000'])
+        self.picload.setPara((size.width(),
+                              size.height(),
+                              self.scale[0],
+                              self.scale[1],
+                              False,
+                              1,
+                              '#FF000000'))
         if os.path.exists('/var/lib/dpkg/status'):
             self.picload.startDecode(png, False)
         else:
@@ -1230,31 +1252,45 @@ class video1X(Screen):
             self['poster'].show()
         return
 
+    def download(self, link, name):
+        if PY3:
+            link = link.encode()
+        callInThread(threadGetPage, url=link, file=None, success=name, fail=self.downloadError)
+
+    def showPoster1(self, poster1):
+        if fileExists(poster1):
+            self["poster"].instance.setPixmapFromFile(poster1)
+            self['poster'].show()
+        return
+
 
 class video3X(Screen):
-    def __init__(self, session, name, url, pic, info, nextmodule):
+    def __init__(self, session, name, url, pic, info, nextmodule, menu_list):
         Screen.__init__(self, session)
         self.session = session
         global _session
         _session = session
-        skin = os.path.join(skin_path, 'revall.xml')
+        skin = os.path.join(path_skin, 'revall.xml')
         with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
-        self.setup_title = ('HOME REVOLUTION XXX')
-        self.list = []
         self.names = []
         self.urls = []
         self.pics = []
         self.infos = []
+        # self.menu_list = []
+        self.menu_list = menu_list
+
+        self.list = rvList([])
         self['list'] = self.list
-        self['list'] = rvList([])
+        self.setup_title = (title_plug)
+        self['title'] = Label(title_plug)
         self['info'] = Label(name)
         self['pth'] = Label()
         self['pth'].setText(_('Cache folder ') + Path_Cache)
         self['desc'] = StaticText()
         self["poster"] = Pixmap()
         self['key_red'] = Button(_('Back'))
-        self['key_yellow'] = Button(_('Update'))
+        self['key_yellow'] = Button()
         self['key_yellow'].hide()
         self.name = name
         self.url = url
@@ -1262,16 +1298,19 @@ class video3X(Screen):
         self.info = info
         self.downloading = False
         self.currentList = 'list'
-        self['title'] = Label(title_plug)
         self['actions'] = ActionMap(['OkCancelActions',
                                      'ColorActions',
                                      'EPGSelectActions',
                                      'MenuActions',
-                                     # 'ButtonSetupActions',
+                                     'ChannelSelectBaseActions',
                                      'DirectionActions'], {'ok': self.okRun,
                                                            'red': self.cancel,
                                                            'up': self.up,
                                                            'down': self.down,
+                                                           'prevBouquet': self.down,
+                                                           'nextBouquet': self.up,
+                                                           'channelDown': self.down,
+                                                           'channelUp': self.up,
                                                            'left': self.left,
                                                            'right': self.right,
                                                            'epg': self.showIMDB,
@@ -1312,10 +1351,13 @@ class video3X(Screen):
         self.urls = []
         self.pics = []
         self.infos = []
+        i = 0
         self.names.append(self.name)
         self.urls.append(self.url)
         self.pics.append(self.pic)
         self.infos.append(self.info)
+        i += 1
+        # self.menu_list.append((self.name, self.url, i))
         showlist(self.names, self['list'])
         self.__layoutFinished()
 
@@ -1325,13 +1367,13 @@ class video3X(Screen):
             return
         global nextmodule
         idx = self['list'].getSelectionIndex()
-        if idx != '' or idx > -1:
-            name = self.names[idx]
-            url = self.urls[idx]
-            pic = self.pics[idx]
-            info = self.infos[idx]
-            nextmodule = "Player"
-            self.session.open(Playstream1X, name, url, info, pic)
+        name = self.names[idx]
+        url = self.urls[idx]
+        pic = self.pics[idx]
+        info = self.infos[idx]
+        nextmodule = "Player"
+        self.session.open(Playstream1X, name, url, info, pic, idx, self.menu_list)
+        # self.session.open(Playstream1X, name, url, info, pic)
 
     def cancel(self):
         global nextmodule
@@ -1355,17 +1397,6 @@ class video3X(Screen):
     def right(self):
         self[self.currentList].pageDown()
         self.__layoutFinished()
-
-    def download(self, link, name):
-        if PY3:
-            link = link.encode()
-        callInThread(threadGetPage, url=link, file=None, success=name, fail=self.downloadError)
-
-    def showPoster1(self, poster1):
-        if fileExists(poster1):
-            self["poster"].instance.setPixmapFromFile(poster1)
-            self['poster'].show()
-        return
 
     def load_poster(self):
         try:
@@ -1423,8 +1454,13 @@ class video3X(Screen):
         size = self['poster'].instance.size()
         self.picload = ePicLoad()
         self.scale = AVSwitch().getFramebufferScale()
-        # if self.picload:
-        self.picload.setPara([size.width(), size.height(), self.scale[0], self.scale[1], 0, 1, '#00000000'])
+        self.picload.setPara((size.width(),
+                              size.height(),
+                              self.scale[0],
+                              self.scale[1],
+                              False,
+                              1,
+                              '#FF000000'))
         if os.path.exists('/var/lib/dpkg/status'):
             self.picload.startDecode(png, False)
         else:
@@ -1432,6 +1468,17 @@ class video3X(Screen):
         ptr = self.picload.getData()
         if ptr is not None:
             self['poster'].instance.setPixmap(ptr)
+            self['poster'].show()
+        return
+
+    def download(self, link, name):
+        if PY3:
+            link = link.encode()
+        callInThread(threadGetPage, url=link, file=None, success=name, fail=self.downloadError)
+
+    def showPoster1(self, poster1):
+        if fileExists(poster1):
+            self["poster"].instance.setPixmapFromFile(poster1)
             self['poster'].show()
         return
 
@@ -1452,7 +1499,7 @@ class TvInfoBarShowHide():
         }, 0)
 
         self.__event_tracker = ServiceEventTracker(screen=self, eventmap={
-            iPlayableService.evStart: self.serviceStarted
+            iPlayableService.evStart: self.serviceStarted,
         })
         self.__state = self.STATE_SHOWN
         self.__locked = 0
@@ -1468,35 +1515,24 @@ class TvInfoBarShowHide():
     def OkPressed(self):
         self.toggleShow()
 
-    def toggleShow(self):
-        if self.skipToggleShow:
-            self.skipToggleShow = False
-            return
-        if self.__state == self.STATE_HIDDEN:
-            self.show()
-            self.hideTimer.stop()
-        else:
-            self.hide()
-            self.startHideTimer()
-
-    def serviceStarted(self):
-        if self.execing:
-            if config.usage.show_infobar_on_zap.value:
-                self.doShow()
-
     def __onShow(self):
         self.__state = self.STATE_SHOWN
         self.startHideTimer()
 
-    def startHideTimer(self):
-        if self.__state == self.STATE_SHOWN and not self.__locked:
-            # self.hideTimer.stop()
-            idx = config.usage.infobar_timeout.index
-            if idx:
-                self.hideTimer.start(idx * 1500, True)
-
     def __onHide(self):
         self.__state = self.STATE_HIDDEN
+
+    def serviceStarted(self):
+        if self.execing:
+            self.doShow()
+
+    def startHideTimer(self):
+        if self.__state == self.STATE_SHOWN and not self.__locked:
+            self.hideTimer.stop()
+            self.hideTimer.start(3000, True)
+        elif hasattr(self, "pvrStateDialog"):
+            self.hideTimer.stop()
+        self.skipToggleShow = False
 
     def doShow(self):
         self.hideTimer.stop()
@@ -1507,6 +1543,17 @@ class TvInfoBarShowHide():
         self.hideTimer.stop()
         if self.__state == self.STATE_SHOWN:
             self.hide()
+
+    def toggleShow(self):
+        if self.skipToggleShow:
+            self.skipToggleShow = False
+            return
+        if self.__state == self.STATE_HIDDEN:
+            self.show()
+            self.hideTimer.stop()
+        else:
+            self.hide()
+            self.startHideTimer()
 
     def lockShow(self):
         try:
@@ -1528,25 +1575,23 @@ class TvInfoBarShowHide():
         if self.execing:
             self.startHideTimer()
 
-    def debug(obj, text=""):
-        print(text + " %s\n" % obj)
-
 
 class Playstream1X(Screen):
-    def __init__(self, session, name, url, desc, pic):
+    # def __init__(self, session, name, url, desc, pic):
+    def __init__(self, session, name, url, desc, pic, idx, menu_list):
         Screen.__init__(self, session)
         self.session = session
         global _session
         _session = session
-        skin = os.path.join(skin_path, 'Playstream1.xml')
+        skin = os.path.join(path_skin, 'Playstream1.xml')
         with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
-        self.setup_title = ('Select Player Stream')
-        self.list = []
+
+        self.setup_title = (title_plug)
+        self['title'] = Label(title_plug)
         self['list'] = rvList([])
         self['info'] = Label()
         self['info'].setText(name)
-        self['title'] = Label('Select Player')
         self['poster'] = Pixmap()
         self['key_red'] = Button(_('Back'))
         self['key_green'] = Button(_('Select'))
@@ -1554,6 +1599,13 @@ class Playstream1X(Screen):
         self['progress'] = ProgressBar()
         self['progresstext'] = StaticText()
         self["progress"].hide()
+
+        self.name1 = name
+        self.url = url
+        self.desc = desc
+        self.pic = pic
+        self.index = idx
+        self.menu_list = menu_list
         self.downloading = False
         self['actions'] = ActionMap(['MoviePlayerActions',
                                      'MovieSelectionActions',
@@ -1561,7 +1613,6 @@ class Playstream1X(Screen):
                                      'EPGSelectActions',
                                      'MediaPlayerSeekActions',
                                      'DirectionActions',
-                                     # 'ButtonSetupActions',
                                      'OkCancelActions',
                                      'InfobarShowHideActions',
                                      'InfobarActions',
@@ -1575,10 +1626,7 @@ class Playstream1X(Screen):
                                                              'instantRecord': self.runRec,
                                                              'ShortRecord': self.runRec,
                                                              'ok': self.okClicked}, -2)
-        self.name1 = Utils.cleanName(name)
-        self.url = url
-        self.desc = desc
-        self.pic = pic
+
         self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
         self.leftt = eTimer()
         try:
@@ -1738,23 +1786,52 @@ class Playstream1X(Screen):
         self.serverList[serverint].play(self.session, self.url, self.name)
 
     def play(self):
+        from urllib.parse import quote
         desc = self.desc
-        url = self.url
         name = self.name1
-        self.session.open(Playstream2X, name, url, desc)
+        url = self.url
+        url = quote(url, safe=":/?&=")
+        selection = self['list'].getCurrent()
+        if selection is not None:
+            item = selection
+        else:
+            print("Error: No item selected.")
+            return
+        self.session.open(Playstream2X, name, url, desc, self.index, item, self.menu_list)
+        # self.session.open(Playstream2X, name, url, desc)
         self.close()
 
     def play2(self):
         if Utils.isStreamlinkAvailable():
+            from urllib.parse import quote
             desc = self.desc
             name = self.name1
             url = self.url
-            url = url.replace(':', '%3a')
-            ref = '5002:0:1:0:0:0:0:0:0:0:' + 'http%3a//127.0.0.1%3a8088/' + str(url)
-            sref = eServiceReference(ref)
-            sref.setName(name)
-            self.session.open(Playstream2X, name, sref, desc)
+            url = quote(url, safe=":/?&=")
+            selection = self['list'].getCurrent()
+            if selection is not None:
+                item = selection
+                desc = self.desc
+                name = self.name1
+                url = self.url
+                if isinstance(url, bytes):
+                    url = url.decode("utf-8")
+                url = url.replace(':', '%3a')
+                ref = '5002:0:1:0:0:0:0:0:0:0:' + 'http%3a//127.0.0.1%3a8088/' + str(url)
+                sref = eServiceReference(ref)
+                sref.setName(name)
+            else:
+                print("Error: No item selected.")
+                return
+            self.session.open(Playstream2X, name, url, desc, self.index, item, self.menu_list)
             self.close()
+
+            # url = url.replace(':', '%3a')
+            # ref = '5002:0:1:0:0:0:0:0:0:0:' + 'http%3a//127.0.0.1%3a8088/' + str(url)
+            # sref = eServiceReference(ref)
+            # sref.setName(name)
+            # self.session.open(Playstream2X, name, sref, desc)
+            # self.close()
         else:
             self.session.open(MessageBox, _('Install Streamlink first'), MessageBox.TYPE_INFO, timeout=5)
 
@@ -1830,78 +1907,121 @@ class Playstream1X(Screen):
         return
 
 
-class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotifications, InfoBarAudioSelection, TvInfoBarShowHide, InfoBarSubtitleSupport, SubsSupportStatus, SubsSupport):
+class Playstream2X(InfoBarBase, TvInfoBarShowHide, InfoBarSeek, InfoBarNotifications, InfoBarAudioSelection, InfoBarSubtitleSupport, InfoBarMenu, Screen):
     STATE_IDLE = 0
     STATE_PLAYING = 1
     STATE_PAUSED = 2
     ENABLE_RESUME_SUPPORT = True
     ALLOW_SUSPEND = True
-    screen_timeout = 4000
+    screen_timeout = 5000
 
-    def __init__(self, session, name, url, desc):
+    # def __init__(self, session, name, url, desc):
+    def __init__(self, session, name, url, desc, index, item, menu_list):
         global streaml, _session
-        _session = session
-        streaml = False
         Screen.__init__(self, session)
         self.session = session
+        _session = session
         self.skinName = 'MoviePlayer'
-        InfoBarMenu.__init__(self)
-        InfoBarNotifications.__init__(self)
+
+        self.name = name
+        self.url = url
+        self.desc = desc
+        self.currentindex = index
+        self.item = item
+        self.menu_list = menu_list
+        self.itemscount = len(self.menu_list) if self.menu_list else 0
+
+        streaml = False
         InfoBarBase.__init__(self, steal_current_service=True)
         TvInfoBarShowHide.__init__(self)
-        InfoBarSubtitleSupport.__init__(self)
+        InfoBarSeek.__init__(self, actionmap="InfobarSeekActions")
         InfoBarAudioSelection.__init__(self)
+        InfoBarSubtitleSupport.__init__(self)
+        InfoBarMenu.__init__(self)
+        InfoBarNotifications.__init__(self)
         try:
             self.init_aspect = int(self.getAspect())
         except:
             self.init_aspect = 0
-
-        try:
-            SubsSupport.__init__(self, searchSupport=True, embeddedSupport=True)
-            SubsSupportStatus.__init__(self)
-        except:
-            pass
         self.new_aspect = self.init_aspect
-        self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
-        self.service = None
-        self.allowPiP = False
-        self.desc = desc
-        self.url = url
-        self.name = name
         self.state = self.STATE_PLAYING
-        self['actions'] = ActionMap(['WizardActions', 'MoviePlayerActions', 'MovieSelectionActions', 'MediaPlayerActions', 'EPGSelectActions', 'MediaPlayerSeekActions', 'ColorActions',
-                                     'InfobarShowHideActions', 'InfobarActions', 'InfobarSeekActions'], {
-            'leavePlayer': self.cancel,
-            'epg': self.showIMDB,
-            'info': self.showIMDB,
-            # 'info': self.cicleStreamType,
-            'tv': self.cicleStreamType,
-            'stop': self.leavePlayer,
-            'cancel': self.cancel,
-            'back': self.cancel
-        }, -1)
-
-        InfoBarSeek.__init__(self, actionmap='InfobarSeekActions')
-
+        self.srefInit = self.session.nav.getCurrentlyPlayingServiceReference()
+        self['actions'] = ActionMap(
+            [
+                'ButtonSetupActions',
+                'ChannelSelectBaseActions',
+                'ColorActions',
+                'DirectionActions',
+                'EPGSelectActions',
+                'InfobarActions',
+                'InfobarSeekActions',
+                'InfobarShowHideActions',
+                'MediaPlayerActions',
+                'MediaPlayerSeekActions',
+                'MoviePlayerActions',
+                'MovieSelectionActions',
+                'OkCancelActions',
+            ],
+            {
+                'epg': self.showIMDB,
+                'info': self.showIMDB,
+                'stop': self.cancel,
+                'leavePlayer': self.cancel,
+                'back': self.cancel,
+                'prevBouquet': self.previousitem,
+                'nextBouquet': self.nextitem,
+                'channelDown': self.previousitem,
+                'channelUp': self.nextitem,
+                'down': self.previousitem,
+                'up': self.nextitem,
+                'cancel': self.cancel,
+            },
+            -1
+        )
         if '8088' in str(self.url):
+            streaml = True
             self.onFirstExecBegin.append(self.slinkPlay)
         else:
-            self.onFirstExecBegin.append(self.cicleStreamType)
-        return
+            self.onFirstExecBegin.append(self.openTest)
+        self.onClose.append(self.cancel)
+
+    def nextitem(self):
+        try:
+            currentindex = int(self.currentindex) + 1
+            if currentindex == self.itemscount:
+                currentindex = 0
+            self.currentindex = currentindex
+            item = self.menu_list[self.currentindex]
+            self.name = item[0]
+            self.url = item[1]
+            self.openTest()
+        except Exception as e:
+            print("Error in nextitem:", str(e))
+
+    def previousitem(self):
+        try:
+            currentindex = int(self.currentindex) - 1
+            if currentindex < 0:
+                currentindex = self.itemscount - 1
+            self.currentindex = currentindex
+            item = self.menu_list[self.currentindex]
+            self.name = item[0]
+            self.url = item[1]
+            self.openTest()
+        except Exception as e:
+            print("Error in previousitem:", str(e))
 
     def getAspect(self):
         return AVSwitch().getAspectRatioSetting()
 
     def getAspectString(self, aspectnum):
-        return {
-            0: '4:3 Letterbox',
-            1: '4:3 PanScan',
-            2: '16:9',
-            3: '16:9 always',
-            4: '16:10 Letterbox',
-            5: '16:10 PanScan',
-            6: '16:9 Letterbox'
-        }[aspectnum]
+        return {0: '4:3 Letterbox',
+                1: '4:3 PanScan',
+                2: '16:9',
+                3: '16:9 always',
+                4: '16:10 Letterbox',
+                5: '16:10 PanScan',
+                6: '16:9 Letterbox'}[aspectnum]
 
     def setAspect(self, aspect):
         map = {0: '4_3_letterbox',
@@ -1918,12 +2038,15 @@ class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotific
             pass
 
     def av(self):
-        temp = int(self.getAspect())
-        temp += 1
-        if temp > 6:
-            temp = 0
-        self.new_aspect = temp
-        self.setAspect(temp)
+        self.new_aspect += 1
+        if self.new_aspect > 6:
+            self.new_aspect = 0
+        try:
+            AVSwitch.getInstance().setAspectRatio(self.new_aspect)
+            return VIDEO_ASPECT_RATIO_MAP[self.new_aspect]
+        except Exception as error:
+            print(error)
+            return _("Resolution Change Failed")
 
     def showIMDB(self):
         text_clear = self.name
@@ -1931,78 +2054,63 @@ class Playstream2X(Screen, InfoBarMenu, InfoBarBase, InfoBarSeek, InfoBarNotific
             print('show imdb/tmdb')
 
     def slinkPlay(self):
-        ref = str(self.url)
-        ref = ref.replace(':', '%3a').replace(' ', '%20')
-        print('final reference 1:   ', ref)
-        ref = "{0}:{1}".format(ref, self.name)
+        name = self.name
+        url = self.url
+        ref = "{0}:{1}".format(url.replace(":", "%3a"), name.replace(":", "%3a"))
+        print('final reference:   ', ref)
         sref = eServiceReference(ref)
-        sref.setName(self.name)
+        sref.setName(str(name))
         self.session.nav.stopService()
         self.session.nav.playService(sref)
 
-    def openPlay(self, servicetype, url):
-        url = url.replace(':', '%3a').replace(' ', '%20')
-        ref = str(servicetype) + ':0:1:0:0:0:0:0:0:0:' + str(url)  # + ':' + self.name
-        if streaml is True:
-            ref = str(servicetype) + ':0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + str(url) + ':' + self.name
-        print('final reference 2:   ', ref)
-        sref = eServiceReference(ref)
-        sref.setName(self.name)
-        self.session.nav.stopService()
-        self.session.nav.playService(sref)
+    def openTest(self):
+        servicetype = '4097'
+        name = self.name
+        url = self.url
 
-    def cicleStreamType(self):
-        global streaml
-        from itertools import cycle, islice
-        self.servicetype = str(cfg.services.value)
-        print('servicetype1: ', self.servicetype)
-        url = str(self.url)
-        if str(os.path.splitext(url)[-1]) == ".m3u8":
-            if self.servicetype == "1":
-                self.servicetype = "4097"
-        currentindex = 0
-        streamtypelist = ["4097"]
-        """
-        # if "youtube" in str(self.url):
-            # self.mbox = self.session.open(MessageBox, _('For Stream Youtube coming soon!'), MessageBox.TYPE_INFO, timeout=5)
-            # return
-        # if Utils.isStreamlinkAvailable():
-            # streamtypelist.append("5002")  # ref = '5002:0:1:0:0:0:0:0:0:0:http%3a//127.0.0.1%3a8088/' + url
-            # streaml = True
-        # elif os.path.exists("/usr/bin/gstplayer"):
-            # streamtypelist.append("5001")
-        # if os.path.exists("/usr/bin/exteplayer3"):
-            # streamtypelist.append("5002")
-            """
-        if os.path.exists("/usr/bin/apt-get"):
-            streamtypelist.append("8193")
-        for index, item in enumerate(streamtypelist, start=0):
-            if str(item) == str(self.servicetype):
-                currentindex = index
-                break
-        nextStreamType = islice(cycle(streamtypelist), currentindex + 1, None)
-        self.servicetype = str(next(nextStreamType))
-        print('servicetype2: ', self.servicetype)
-        self.openPlay(self.servicetype, url)
+        if isinstance(url, tuple):
+            url = url[0] if len(url) > 0 and isinstance(url[0], str) else None
 
-    def up(self):
-        pass
+        if not isinstance(url, str):
+            print("Error: URL is not valid. Found:", type(url), "Value:", url)
+            return
 
-    def down(self):
-        self.up()
+        try:
+            ref = "{0}:0:1:0:0:0:0:0:0:0:{1}:{2}".format(
+                servicetype,
+                url.replace(":", "%3a"),
+                name.replace(":", "%3a")
+            )
+            print('reference:', ref)
+
+            if streaml is True:
+                url = 'http://127.0.0.1:8088/' + str(url)
+                ref = "{0}:0:0:0:0:0:0:0:0:0:{1}:{2}".format(
+                    servicetype,
+                    url.replace(":", "%3a"),
+                    name.replace(":", "%3a")
+                )
+            print('final reference:', ref)
+
+            sref = eServiceReference(ref)
+            sref.setName(name)
+            self.session.nav.stopService()
+            self.session.nav.playService(sref)
+        except Exception as e:
+            print("Error in openTest:", str(e))
+            print("url =", url, "name =", name)
 
     def doEofInternal(self, playing):
-        self.close()
+        print('doEofInternal', playing)
+        Utils.MemClean()
+        if self.execing and playing:
+            self.openTest()
 
     def __evEOF(self):
+        print('__evEOF')
         self.end = True
-
-    def showVideoInfo(self):
-        if self.shown:
-            self.hideInfobar()
-        if self.infoCallback is not None:
-            self.infoCallback()
-        return
+        Utils.MemClean()
+        self.openTest()
 
     def showAfterSeek(self):
         if isinstance(self, TvInfoBarShowHide):
@@ -2028,7 +2136,7 @@ class plgnstrt(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
-        skin = os.path.join(skin_path, 'Plgnstrt.xml')
+        skin = os.path.join(path_skin, 'Plgnstrt.xml')
         with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self["poster"] = Pixmap()
@@ -2073,7 +2181,7 @@ class plgnstrt(Screen):
         return
 
     def image_downloaded(self):
-        pngori = os.path.join(THISPLUG, 'res/pics/nasa.jpg')
+        pngori = os.path.join(plugin_path, 'res/pics/nasa.jpg')
         if os.path.exists(pngori):
             try:
                 self.poster_resize(pngori)
@@ -2084,7 +2192,7 @@ class plgnstrt(Screen):
         import random
         print("*** failure *** %s" % failure)
         global pngori
-        fldpng = os.path.join(THISPLUG, 'res/pics/')
+        fldpng = os.path.join(plugin_path, 'res/pics/')
         npj = random.choice(imgjpg)
         pngori = fldpng + npj
         self.poster_resize(pngori)
@@ -2097,7 +2205,7 @@ class plgnstrt(Screen):
             self.timer_conn = self.timer.timeout.connect(self.OpenCheck)
         else:
             self.timer.callback.append(self.OpenCheck)
-        self.timer.start(200, 1)
+        self.timer.start(250, 1)
 
     def getinfo(self):
         continfo = _("========       WELCOME     ==========\n")
@@ -2138,7 +2246,7 @@ class StreamTasks(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
-        skin = os.path.join(skin_path, 'StreamTasks.xml')
+        skin = os.path.join(path_skin, 'StreamTasks.xml')
         with codecs.open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.setup_title = ('Filmxy Movies')
@@ -2398,24 +2506,8 @@ def main(session, **kwargs):
         traceback.print_exc()
 
 
-# def menu(menuid, **kwargs):
-    # if menuid == 'mainmenu':
-        # return [(desc_plug, main, 'TiVuStream', 44)]
-    # else:
-        # return []
-
-
 def menu(menuid, **kwargs):
     return [(desc_plug, main(), 'www.TiVuStream.com', 44)] if menuid == "mainmenu" else []
-
-    # if menuid == 'mainmenu':
-        # from Tools.BoundFunction import boundFunction
-        # return [(desc_plug,
-                 # boundFunction(main, showExtentionMenuOption=True),
-                 # 'TiVuStream',
-                 # 44)]
-    # else:
-        # return []
 
 
 def mainmenu(session, **kwargs):

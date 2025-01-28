@@ -1,4 +1,5 @@
 ﻿#!/bin/sh
+
 # <!-- **************************************  -->
 # <!-- Don't Remove this Disclaimer            -->
 # <!-- **************************************  -->
@@ -6,24 +7,10 @@ echo
 echo "*****************************************"
 echo "*         Uninstall revolutionx         *"
 echo "*****************************************"
-
-if [ -d /usr/lib/python2.6 ]; then
-if [ ! -d /usr/lib/python2.7 ]; then
-echo "**********************************************************"
-echo "*                        Oooooooops                      *"
-echo "*                Not Compatible with (OE1.6)             *"
-echo "**********************************************************"
-sleep 2
-exit 1 
-fi
-fi
-
 EXTDIR="/usr/lib/enigma2/python/Plugins/Extensions/revolutionx"
-
 if [ -d "$EXTDIR" ]; then
    rm -rf "$EXTDIR" > /dev/null 2>&1
 fi
-
 echo "*****************************************"
 echo "*          ....done                     *"
 echo "*****************************************"

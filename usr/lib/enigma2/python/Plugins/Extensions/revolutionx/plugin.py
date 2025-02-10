@@ -251,6 +251,14 @@ def rvListEntry(name, url, idx='None'):
     return res
 
 
+def showlist(datal, list):
+    plist = []
+    for name in datal:
+        plist.append(show_list_1(name))
+    list.setList(plist)
+
+
+"""
 def showlist(data, list):
     idx = 0
     plist = []
@@ -260,6 +268,7 @@ def showlist(data, list):
         plist.append(rvListEntry(str(name), url, idx))
         idx += 1
     list.setList(plist)
+"""
 
 
 modechoices = [("4097", _("IPTV(4097)")),

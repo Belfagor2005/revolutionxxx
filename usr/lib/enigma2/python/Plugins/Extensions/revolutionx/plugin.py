@@ -23,7 +23,7 @@ from .resolver import Utils
 from .resolver import html_conv
 from .resolver.Console import Console as xConsole
 from .resolver.Utils import b64decoder
-from .resolver.ASpectManager import	AspectManager
+from .resolver.AspectManager import	AspectManager
 from Components.AVSwitch import AVSwitch
 from Components.ActionMap import ActionMap
 from Components.Button import Button

@@ -23,7 +23,7 @@ from .resolver import Utils
 from .resolver import html_conv
 from .resolver.Console import Console as xConsole
 from .resolver.Utils import b64decoder
-from .resolver.AspectManager import	AspectManager
+from .resolver.AspectManager import AspectManager
 from Components.AVSwitch import AVSwitch
 from Components.ActionMap import ActionMap
 from Components.Button import Button
@@ -254,7 +254,8 @@ def rvListEntry(name, url, idx='None'):
 def showlist(datal, list):
 	plist = []
 	for name in datal:
-		plist.append(rvListEntry(name))
+		url = 'None'
+		plist.append(rvListEntry(name, url))
 	list.setList(plist)
 
 

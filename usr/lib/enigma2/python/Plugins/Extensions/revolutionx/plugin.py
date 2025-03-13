@@ -137,12 +137,18 @@ def threadGetPage(url=None, file=None, key=None, success=None, fail=None, *args,
 		print(error)
 
 
-currversion = '1.8'  # getversioninfo()
+currversion = '1.9'  # getversioninfo()
 Path_Tmp = "/tmp"
 plugin_path = '/usr/lib/enigma2/python/Plugins/Extensions/revolutionx'
 
-headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36',
-		   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 'Accept-Encoding': 'deflate'}
+headers = {
+	'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+				  'AppleWebKit/537.36 (KHTML, like Gecko) '
+				  'Chrome/76.0.3809.100 Safari/537.36',
+	'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+	'Accept-Encoding': 'deflate'
+}
+
 title_plug = 'Revolution XXX V. %s' % currversion
 desc_plug = 'TVS XXX Revolution'
 ico_path = os.path.join(plugin_path, 'logo.png')
@@ -272,8 +278,10 @@ def showlist(data, list):
 """
 
 
-modechoices = [("4097", _("IPTV(4097)")),
-			   ("1", _("Dvb(1)"))]
+modechoices = [
+	("4097", _("IPTV(4097)")),
+	("1", _("Dvb(1)"))
+]
 
 if os.path.exists("/usr/bin/gstplayer"):
 	modechoices.append(("5001", _("Gstreamer(5001)")))
@@ -368,19 +376,27 @@ class myconfigX(Screen, ConfigListScreen):
 		self['info'] = Label()
 		self['title'] = Label(title_plug)
 		self['description'] = Label()
-		self["setupActions"] = ActionMap(['OkCancelActions',
-										  'DirectionActions',
-										  'ColorActions',
-										  'VirtualKeyboardActions'], {'cancel': self.extnok,
-																	  'red': self.extnok,
-																	  'back': self.close,
-																	  'left': self.keyLeft,
-																	  'right': self.keyRight,
-																	  'showVirtualKeyboard': self.KeyText,
-																	  'yellow': self.Ok_edit,
-																	  'ok': self.Ok_edit,
-																	  'blue': self.cachedel,
-																	  'green': self.msgok}, -1)
+		self["setupActions"] = ActionMap(
+			[
+				'OkCancelActions',
+				'DirectionActions',
+				'ColorActions',
+				'VirtualKeyboardActions'
+			],
+			{
+				'cancel': self.extnok,
+				'red': self.extnok,
+				'back': self.close,
+				'left': self.keyLeft,
+				'right': self.keyRight,
+				'showVirtualKeyboard': self.KeyText,
+				'yellow': self.Ok_edit,
+				'ok': self.Ok_edit,
+				'blue': self.cachedel,
+				'green': self.msgok
+			},
+			-1
+		)
 		self.createSetup()
 		self.onLayoutFinish.append(self.layoutFinished)
 		if self.setInfo not in self['config'].onSelectionChanged:
@@ -568,31 +584,38 @@ class RevolmainX(Screen):
 		self['key_yellow'].hide()
 		self.currentList = 'list'
 		self.Update = False
-
-		self['actions'] = ActionMap(['OkCancelActions',
-									 'ColorActions',
-									 'HotkeyActions',
-									 'InfobarEPGActions',
-									 'MenuActions',
-									 'ChannelSelectBaseActions',
-									 'DirectionActions'], {'ok': self.okRun,
-														   'up': self.up,
-														   'down': self.down,
-														   'left': self.left,
-														   'right': self.right,
-														   'prevBouquet': self.down,
-														   'nextBouquet': self.up,
-														   'channelDown': self.down,
-														   'channelUp': self.up,
-														   'showEventInfoPlugin': self.update_dev,
-														   'menu': self.goConfig,
-														   'info_long': self.update_dev,
-														   'infolong': self.update_dev,
-														   'yellow': self.update_me,
-														   'yellow_long': self.update_dev,
-														   'green': self.okRun,
-														   'cancel': self.closerm,
-														   'red': self.closerm}, -1)
+		self['actions'] = ActionMap(
+			[
+				'OkCancelActions',
+				'ColorActions',
+				'HotkeyActions',
+				'InfobarEPGActions',
+				'MenuActions',
+				'ChannelSelectBaseActions',
+				'DirectionActions'
+			],
+			{
+				'ok': self.okRun,
+				'up': self.up,
+				'down': self.down,
+				'left': self.left,
+				'right': self.right,
+				'prevBouquet': self.down,
+				'nextBouquet': self.up,
+				'channelDown': self.down,
+				'channelUp': self.up,
+				'showEventInfoPlugin': self.update_dev,
+				'menu': self.goConfig,
+				'info_long': self.update_dev,
+				'infolong': self.update_dev,
+				'yellow': self.update_me,
+				'yellow_long': self.update_dev,
+				'green': self.okRun,
+				'cancel': self.closerm,
+				'red': self.closerm
+			},
+			-1
+		)
 		self.timer = eTimer()
 		if os.path.exists('/var/lib/dpkg/status'):
 			self.timer_conn = self.timer.timeout.connect(self.check_vers)
@@ -733,30 +756,39 @@ class RevolmainX(Screen):
 			sel = self['list'].getSelectionIndex()
 			if sel is not None or sel != -1:
 				size = self['poster'].instance.size()
+
 				if os.path.exists('/var/lib/dpkg/status'):
 					self['poster'].instance.setPixmap(gPixmapPtr())
 				else:
 					self['poster'].instance.setPixmap(None)
+
 				self.scale = AVSwitch().getFramebufferScale()
 				self.picload = ePicLoad()
-				self.picload.setPara((size.width(),
-									  size.height(),
-									  self.scale[0],
-									  self.scale[1],
-									  False,
-									  1,
-									  '#FF000000'))
+				self.picload.setPara((
+					size.width(),
+					size.height(),
+					self.scale[0],
+					self.scale[1],
+					False,
+					1,
+					'#FF000000'
+				))
+
 				ptr = self.picload.getData()
+
 				if os.path.exists('/var/lib/dpkg/status'):
 					if self.picload.startDecode(no_cover, False) == 0:
 						ptr = self.picload.getData()
 				else:
 					if self.picload.startDecode(no_cover, 0, 0, False) == 0:
 						ptr = self.picload.getData()
+
 				if ptr is not None:
 					self['poster'].instance.setPixmap(ptr)
 					self['poster'].show()
+
 				return
+
 		except Exception as e:
 			print(e)
 
@@ -798,25 +830,32 @@ class live_streamX(Screen):
 		self.type = self.name
 		self.downloading = False
 		self.currentList = 'list'
-
-		self['actions'] = ActionMap(['OkCancelActions',
-									 'ColorActions',
-									 'EPGSelectActions',
-									 'MenuActions',
-									 'ChannelSelectBaseActions',
-									 'DirectionActions'], {'ok': self.okRun,
-														   'red': self.cancel,
-														   'up': self.up,
-														   'down': self.down,
-														   'prevBouquet': self.down,
-														   'nextBouquet': self.up,
-														   'channelDown': self.down,
-														   'channelUp': self.up,
-														   'left': self.left,
-														   'right': self.right,
-														   'epg': self.showIMDB,
-														   'info': self.showIMDB,
-														   'cancel': self.cancel}, -2)
+		self['actions'] = ActionMap(
+			[
+				'OkCancelActions',
+				'ColorActions',
+				'EPGSelectActions',
+				'MenuActions',
+				'ChannelSelectBaseActions',
+				'DirectionActions'
+			],
+			{
+				'ok': self.okRun,
+				'red': self.cancel,
+				'up': self.up,
+				'down': self.down,
+				'prevBouquet': self.down,
+				'nextBouquet': self.up,
+				'channelDown': self.down,
+				'channelUp': self.up,
+				'left': self.left,
+				'right': self.right,
+				'epg': self.showIMDB,
+				'info': self.showIMDB,
+				'cancel': self.cancel
+			},
+			-2
+		)
 		self.readJsonTimer = eTimer()
 		try:
 			self.readJsonTimer_conn = self.readJsonTimer.timeout.connect(self.readJsonFile)
@@ -1015,23 +1054,26 @@ class live_streamX(Screen):
 		size = self['poster'].instance.size()
 		self.picload = ePicLoad()
 		self.scale = AVSwitch().getFramebufferScale()
-		self.picload = ePicLoad()
-		self.picload.setPara((size.width(),
-							  size.height(),
-							  self.scale[0],
-							  self.scale[1],
-							  False,
-							  1,
-							  '#FF000000'))
+
+		self.picload.setPara((
+			size.width(),
+			size.height(),
+			self.scale[0],
+			self.scale[1],
+			False,
+			1,
+			'#FF000000'
+		))
+
 		if os.path.exists('/var/lib/dpkg/status'):
 			self.picload.startDecode(png, False)
 		else:
 			self.picload.startDecode(png, 0, 0, False)
+
 		ptr = self.picload.getData()
 		if ptr is not None:
 			self['poster'].instance.setPixmap(ptr)
 			self['poster'].show()
-		return
 
 
 class video1X(Screen):
@@ -1471,21 +1513,27 @@ class video3X(Screen):
 		size = self['poster'].instance.size()
 		self.picload = ePicLoad()
 		self.scale = AVSwitch().getFramebufferScale()
-		self.picload.setPara((size.width(),
-							  size.height(),
-							  self.scale[0],
-							  self.scale[1],
-							  False,
-							  1,
-							  '#FF000000'))
+
+		self.picload.setPara((
+			size.width(),
+			size.height(),
+			self.scale[0],
+			self.scale[1],
+			False,
+			1,
+			'#FF000000'
+		))
+
 		if os.path.exists('/var/lib/dpkg/status'):
 			self.picload.startDecode(png, False)
 		else:
 			self.picload.startDecode(png, 0, 0, False)
+
 		ptr = self.picload.getData()
 		if ptr is not None:
 			self['poster'].instance.setPixmap(ptr)
 			self['poster'].show()
+
 		return
 
 	def download(self, link, name):

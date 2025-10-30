@@ -8,9 +8,9 @@ PY3 = sys.version_info.major >= 3
 print("Update.py")
 
 
-def upd_done():        
-    print( "In upd_done")
-    xfile ='http://patbuweb.com/revolutionlite/revolutionx.tar'
+def upd_done():
+    print("In upd_done")
+    xfile = 'http://patbuweb.com/revolutionlite/revolutionx.tar'
     # print('xfile: ', xfile)
     if PY3:
         xfile = b"http://patbuweb.com/revolutionlite/revolutionx.tar"

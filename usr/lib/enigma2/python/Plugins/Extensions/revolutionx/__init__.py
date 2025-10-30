@@ -19,71 +19,76 @@ PluginLanguagePath = 'Extensions/revolutionx/locale'
 
 isDreamOS = False
 if os.path.exists("/usr/bin/apt-get"):
-	isDreamOS = True
+    isDreamOS = True
 
 
 def paypal():
-	conthelp = "If you like what I do you\n"
-	conthelp += "can contribute with a coffee\n"
-	conthelp += "scan the qr code and donate € 1.00"
-	return conthelp
+    conthelp = "If you like what I do you\n"
+    conthelp += "can contribute with a coffee\n"
+    conthelp += "scan the qr code and donate € 1.00"
+    return conthelp
 
 
 def trace_error():
-	import traceback
-	import sys
-	try:
-		traceback.print_exc(file=sys.stdout)
-		traceback.print_exc(file=open('/tmp/tracebackx.log', 'a'))
-	except:
-		pass
+    import traceback
+    import sys
+    try:
+        traceback.print_exc(file=sys.stdout)
+        traceback.print_exc(file=open('/tmp/tracebackx.log', 'a'))
+    except BaseException:
+        pass
 
 
 def logdata(name='', data=None):
-	try:
-		data = str(data)
-		fp = open('/tmp/revolutionx.log', 'a')
-		fp.write(str(name) + ': ' + data + "\n")
-		fp.close()
-	except:
-		trace_error()
-		pass
+    try:
+        data = str(data)
+        fp = open('/tmp/revolutionx.log', 'a')
+        fp.write(str(name) + ': ' + data + "\n")
+        fp.close()
+    except BaseException:
+        trace_error()
+        pass
 
 
 def getversioninfo():
-	currversion = '1.0'
-	version_file = os.path.join(plugin_path, 'version')
-	if os.path.exists(version_file):
-		try:
-			fp = open(version_file, 'r').readlines()
-			for line in fp:
-				if 'version' in line:
-					currversion = line.split('=')[1].strip()
-		except:
-			pass
-	logdata("Plugin ", plugin_path)
-	logdata("Version ", currversion)
-	return (currversion)
+    currversion = '1.0'
+    version_file = os.path.join(plugin_path, 'version')
+    if os.path.exists(version_file):
+        try:
+            fp = open(version_file, 'r').readlines()
+            for line in fp:
+                if 'version' in line:
+                    currversion = line.split('=')[1].strip()
+        except BaseException:
+            pass
+    logdata("Plugin ", plugin_path)
+    logdata("Version ", currversion)
+    return (currversion)
 
 
 def localeInit():
-	if isDreamOS:
-		lang = language.getLanguage()[:2]
-		os.environ["LANGUAGE"] = lang
-	gettext.bindtextdomain(PluginLanguageDomain, resolveFilename(SCOPE_PLUGINS, PluginLanguagePath))
+    if isDreamOS:
+        lang = language.getLanguage()[:2]
+        os.environ["LANGUAGE"] = lang
+    gettext.bindtextdomain(
+        PluginLanguageDomain,
+        resolveFilename(
+            SCOPE_PLUGINS,
+            PluginLanguagePath))
 
 
 if isDreamOS:
-	def _(txt):
-		return gettext.dgettext(PluginLanguageDomain, txt) if txt else ""
+    def _(txt):
+        return gettext.dgettext(PluginLanguageDomain, txt) if txt else ""
 else:
-	def _(txt):
-		translated = gettext.dgettext(PluginLanguageDomain, txt)
-		if translated:
-			return translated
-		else:
-			print(("[%s] fallback to default translation for %s" % (PluginLanguageDomain, txt)))
-			return gettext.gettext(txt)
+    def _(txt):
+        translated = gettext.dgettext(PluginLanguageDomain, txt)
+        if translated:
+            return translated
+        else:
+            print(("[%s] fallback to default translation for %s" %
+                  (PluginLanguageDomain, txt)))
+            return gettext.gettext(txt)
 
 localeInit()
 language.addCallback(localeInit)

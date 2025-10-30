@@ -54,7 +54,8 @@ def validate_certificate(cert, key):
 
 def get_random():
     try:
-        xor = lambda a, b: ''.join(chr(ord(c) ^ ord(d)) for c, d in zip(a, b * 100))
+        def xor(a, b): return ''.join(chr(ord(c) ^ ord(d))
+                                      for c, d in zip(a, b * 100))
         random = os.urandom(8)
         x = str(time())[-8:]
         result = xor(random, x)
@@ -67,7 +68,7 @@ def get_random():
 def bin2long(s):
     try:
         return reduce(lambda x, y: (x << 8) + y, list(map(ord, s)))
-    except:
+    except BaseException:
         pass
 
 
@@ -98,7 +99,135 @@ def decrypt_block(src, mod):
 def tpm_check():
     try:
         tpm = eTPM()
-        rootkey = ['\x9f', '|', '\xe4', 'G', '\xc9', '\xb4', '\xf4', '#', '&', '\xce', '\xb3', '\xfe', '\xda', '\xc9', 'U', '`', '\xd8', '\x8c', 's', 'o', '\x90', '\x9b', '\\', 'b', '\xc0', '\x89', '\xd1', '\x8c', '\x9e', 'J', 'T', '\xc5', 'X', '\xa1', '\xb8', '\x13', '5', 'E', '\x02', '\xc9', '\xb2', '\xe6', 't', '\x89', '\xde', '\xcd', '\x9d', '\x11', '\xdd', '\xc7', '\xf4', '\xe4', '\xe4', '\xbc', '\xdb', '\x9c', '\xea', '}', '\xad', '\xda', 't', 'r', '\x9b', '\xdc', '\xbc', '\x18', '3', '\xe7', '\xaf', '|', '\xae', '\x0c', '\xe3', '\xb5', '\x84', '\x8d', '\r', '\x8d', '\x9d', '2', '\xd0', '\xce', '\xd5', 'q', '\t', '\x84', 'c', '\xa8', ')', '\x99', '\xdc', '<', '"', 'x', '\xe8', '\x87', '\x8f', '\x02', ';', 'S', 'm', '\xd5', '\xf0', '\xa3', '_', '\xb7', 'T', '\t', '\xde', '\xa7', '\xf1', '\xc9', '\xae', '\x8a', '\xd7', '\xd2', '\xcf', '\xb2', '.', '\x13', '\xfb', '\xac', 'j', '\xdf', '\xb1', '\x1d', ':', '?']
+        rootkey = [
+            '\x9f',
+            '|',
+            '\xe4',
+            'G',
+            '\xc9',
+            '\xb4',
+            '\xf4',
+            '#',
+            '&',
+            '\xce',
+            '\xb3',
+            '\xfe',
+            '\xda',
+            '\xc9',
+            'U',
+            '`',
+            '\xd8',
+            '\x8c',
+            's',
+            'o',
+            '\x90',
+            '\x9b',
+            '\\',
+            'b',
+            '\xc0',
+            '\x89',
+            '\xd1',
+            '\x8c',
+            '\x9e',
+            'J',
+            'T',
+            '\xc5',
+            'X',
+            '\xa1',
+            '\xb8',
+            '\x13',
+            '5',
+            'E',
+            '\x02',
+            '\xc9',
+            '\xb2',
+            '\xe6',
+            't',
+            '\x89',
+            '\xde',
+            '\xcd',
+            '\x9d',
+            '\x11',
+            '\xdd',
+            '\xc7',
+            '\xf4',
+            '\xe4',
+            '\xe4',
+            '\xbc',
+            '\xdb',
+            '\x9c',
+            '\xea',
+            '}',
+            '\xad',
+            '\xda',
+            't',
+            'r',
+            '\x9b',
+            '\xdc',
+            '\xbc',
+            '\x18',
+            '3',
+            '\xe7',
+            '\xaf',
+            '|',
+            '\xae',
+            '\x0c',
+            '\xe3',
+            '\xb5',
+            '\x84',
+            '\x8d',
+            '\r',
+            '\x8d',
+            '\x9d',
+            '2',
+            '\xd0',
+            '\xce',
+            '\xd5',
+            'q',
+            '\t',
+            '\x84',
+            'c',
+            '\xa8',
+            ')',
+            '\x99',
+            '\xdc',
+            '<',
+            '"',
+            'x',
+            '\xe8',
+            '\x87',
+            '\x8f',
+            '\x02',
+            ';',
+            'S',
+            'm',
+            '\xd5',
+            '\xf0',
+            '\xa3',
+            '_',
+            '\xb7',
+            'T',
+            '\t',
+            '\xde',
+            '\xa7',
+            '\xf1',
+            '\xc9',
+            '\xae',
+            '\x8a',
+            '\xd7',
+            '\xd2',
+            '\xcf',
+            '\xb2',
+            '.',
+            '\x13',
+            '\xfb',
+            '\xac',
+            'j',
+            '\xdf',
+            '\xb1',
+            '\x1d',
+            ':',
+            '?']
         random = None
         result = None
         # l2r = False
@@ -155,9 +284,16 @@ def getAllInfo():
         f = open("/proc/stb/info/hwmodel", 'r')
         procmodel = f.readline().strip()
         f.close()
-        if (procmodel.startswith("optimuss") or procmodel.startswith("pingulux")):
+        if (procmodel.startswith("optimuss")
+                or procmodel.startswith("pingulux")):
             brand = "Edision"
-            model = procmodel.replace("optimmuss", "Optimuss ").replace("plus", " Plus").replace(" os", " OS")
+            model = procmodel.replace(
+                "optimmuss",
+                "Optimuss ").replace(
+                "plus",
+                " Plus").replace(
+                " os",
+                " OS")
         elif (procmodel.startswith("fusion") or procmodel.startswith("purehd") or procmodel.startswith("revo4k") or procmodel.startswith("galaxy4k")):
             brand = "Xsarius"
             if procmodel == "fusionhd":
@@ -182,7 +318,8 @@ def getAllInfo():
                 model = procmodel.replace("lunix4k", "Lunix4K")
     elif fileExists("/proc/stb/info/azmodel"):
         brand = "AZBox"
-        f = open("/proc/stb/info/model", 'r')  # To-Do: Check if "model" is really correct ...
+        # To-Do: Check if "model" is really correct ...
+        f = open("/proc/stb/info/model", 'r')
         procmodel = f.readline().strip()
         f.close()
         model = procmodel.lower()
@@ -192,7 +329,9 @@ def getAllInfo():
         procmodel = f.readline().strip()
         f.close()
         if procmodel == "GBQUAD PLUS":
-            model = procmodel.replace("GBQUAD", "Quad").replace("PLUS", " Plus")
+            model = procmodel.replace(
+                "GBQUAD", "Quad").replace(
+                "PLUS", " Plus")
         elif procmodel == "gbquad4k":
             model = procmodel.replace("gbquad4k", "UHD Quad 4k")
         elif procmodel == "quad4k":
@@ -208,7 +347,15 @@ def getAllInfo():
         f = open("/proc/stb/info/vumodel", 'r')
         procmodel = f.readline().strip()
         f.close()
-        model = procmodel.title().replace("olose", "olo SE").replace("olo2se", "olo2 SE").replace("2", "²").replace("4Kse", "4K SE")
+        model = procmodel.title().replace(
+            "olose",
+            "olo SE").replace(
+            "olo2se",
+            "olo2 SE").replace(
+            "2",
+            "²").replace(
+                "4Kse",
+            "4K SE")
         if not procmodel.startswith("vu"):
             procmodel = "vu%s" % procmodel
     elif fileExists("/proc/boxtype"):
@@ -596,7 +743,16 @@ def getAllInfo():
     info['type'] = type
 
     remote = "dmm1"
-    if procmodel in ("vusolo", "vuduo", "vuuno", "vusolo2", "vusolose", "vuzero", "vusolo4k", "vuuno4k", "vuultimo4k"):
+    if procmodel in (
+        "vusolo",
+        "vuduo",
+        "vuuno",
+        "vusolo2",
+        "vusolose",
+        "vuzero",
+        "vusolo4k",
+        "vuuno4k",
+            "vuultimo4k"):
         remote = "vu_normal"
     elif procmodel == "vuduo2":
         remote = "vu_duo2"
@@ -725,9 +881,16 @@ def getAllInfo():
 
     try:
         kernel = int(about.getKernelVersionString()[0])
-    except:  # when "about" is not available
+    except BaseException:  # when "about" is not available
         try:
-            kernel = int(open("/proc/version", "r").read().split(' ', 4)[2].split('.', 2)[0])
+            kernel = int(
+                open(
+                    "/proc/version",
+                    "r").read().split(
+                    ' ',
+                    4)[2].split(
+                    '.',
+                    2)[0])
         except:  # nosec  # noqa: E722  # set a default
             kernel = 2
 
@@ -754,7 +917,13 @@ def getAllInfo():
     elif fileExists("/etc/vtiversion.info"):
         distro = "VTi-Team Image"
         f = open("/etc/vtiversion.info", 'r')
-        imagever = f.readline().strip().replace("VTi-Team Image ", "").replace("Release ", "").replace("v.", "")
+        imagever = f.readline().strip().replace(
+            "VTi-Team Image ",
+            "").replace(
+            "Release ",
+            "").replace(
+            "v.",
+            "")
         f.close()
         oever = "OE 1.6"
         imagelist = imagever.split('.')
@@ -770,7 +939,8 @@ def getAllInfo():
             imagever = about.getImageVersionString()
         except:  # nosec  # noqa: E722
             pass
-    # ToDo: If your distro gets detected as OpenPLi, feel free to add a detection for your distro here ...
+    # ToDo: If your distro gets detected as OpenPLi, feel free to add a
+    # detection for your distro here ...
     else:
         # OE 2.2 uses apt, not opkg
         if not fileExists("/etc/opkg/all-feed.conf"):
@@ -787,7 +957,8 @@ def getAllInfo():
         if distro in ("openpli", "satdreamgr", "openvision", "openrsi"):
             oever = "PLi-OE"
             try:
-                imagelist = open("/etc/issue").readlines()[-2].split()[1].split('.')
+                imagelist = open(
+                    "/etc/issue").readlines()[-2].split()[1].split('.')
                 imagever = imagelist.pop(0)
                 if imagelist:
                     imagebuild = "".join(imagelist)
@@ -804,8 +975,10 @@ def getAllInfo():
             except:  # nosec  # noqa: E722
                 pass
 
-        if (distro == "unknown" and brand == "Vu+" and fileExists("/etc/version")):
-            # Since OE-A uses boxbranding and bh or vti can be detected, there isn't much else left for Vu+ boxes
+        if (distro == "unknown" and brand ==
+                "Vu+" and fileExists("/etc/version")):
+            # Since OE-A uses boxbranding and bh or vti can be detected, there
+            # isn't much else left for Vu+ boxes
             distro = "Vu+ original"
             f = open("/etc/version", 'r')
             imagever = f.readline().strip()
@@ -813,16 +986,20 @@ def getAllInfo():
             if kernel > 2:
                 oever = "OpenVuplus 2.1"
 
-    # reporting the installed dvb-module version is as close as we get without too much hassle
+    # reporting the installed dvb-module version is as close as we get without
+    # too much hassle
     driverdate = 'unknown'
     try:
-        driverdate = os.popen('/usr/bin/opkg -V0 list_installed *dvb-modules*').readline().split()[2]  # nosec
+        driverdate = os.popen(
+            '/usr/bin/opkg -V0 list_installed *dvb-modules*').readline().split()[2]  # nosec
     except:  # noqa: E722
         try:
-            driverdate = os.popen('/usr/bin/opkg -V0 list_installed *dvb-proxy*').readline().split()[2]  # nosec
+            driverdate = os.popen(
+                '/usr/bin/opkg -V0 list_installed *dvb-proxy*').readline().split()[2]  # nosec
         except:  # noqa: E722
             try:
-                driverdate = os.popen('/usr/bin/opkg -V0 list_installed *kernel-core-default-gos*').readline().split()[2]  # nosec
+                driverdate = os.popen(
+                    '/usr/bin/opkg -V0 list_installed *kernel-core-default-gos*').readline().split()[2]  # nosec
             except:  # nosec # noqa: E722
                 pass
     re_search = re.search('([0-9]{8})', driverdate)
@@ -834,8 +1011,16 @@ def getAllInfo():
     info['imagever'] = imagever
     info['imagebuild'] = imagebuild
     info['driverdate'] = driverdate
-    info['lcd'] = distro in ("openpli", "satdreamgr", "openvision", "openrsi") and lcd or 0
-    info['grabpip'] = distro in ("openpli", "satdreamgr", "openvision", "openrsi") and grabpip or 0
+    info['lcd'] = distro in (
+        "openpli",
+        "satdreamgr",
+        "openvision",
+        "openrsi") and lcd or 0
+    info['grabpip'] = distro in (
+        "openpli",
+        "satdreamgr",
+        "openvision",
+        "openrsi") and grabpip or 0
     return info
 
 

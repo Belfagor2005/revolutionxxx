@@ -38,7 +38,10 @@ except NameError:
 class_types = (type,) if six.PY3 else (type, types.ClassType)
 MAXSIZE = sys.maxsize  # Compatibile con entrambe le versioni
 
-_UNICODE_MAP = {k: unichr(v) for k, v in iteritems(html_entities.name2codepoint)}
+_UNICODE_MAP = {
+    k: unichr(v) for k,
+    v in iteritems(
+        html_entities.name2codepoint)}
 _ESCAPE_RE = re.compile("[&<>\"']")
 _UNESCAPE_RE = re.compile(r"&\s*(#?)(\w+?)\s*;")
 _ESCAPE_DICT = {
@@ -62,7 +65,7 @@ def ensure_str(s, encoding="utf-8", errors="strict"):
     """
     if not isinstance(s, string_types + (binary_type,)):
         raise TypeError("not expecting type '%s'" % type(s))
-    
+
     if isinstance(s, text_type):
         return s.encode(encoding, errors)
     elif isinstance(s, binary_type):
@@ -75,7 +78,8 @@ def ensure_str(s, encoding="utf-8", errors="strict"):
 
 
 def html_escape(value):
-    return _ESCAPE_RE.sub(lambda match: _ESCAPE_DICT[match.group(0)], ensure_str(value).strip())
+    return _ESCAPE_RE.sub(
+        lambda match: _ESCAPE_DICT[match.group(0)], ensure_str(value).strip())
 
 
 def html_unescape(value):
@@ -85,7 +89,8 @@ def html_unescape(value):
 def _convert_entity(m):
     if m.group(1) == "#":
         try:
-            return unichr(int(m.group(2)[1:], 16)) if m.group(2)[:1].lower() == "x" else unichr(int(m.group(2)))
+            return unichr(int(m.group(2)[1:], 16)) if m.group(
+                2)[:1].lower() == "x" else unichr(int(m.group(2)))
         except ValueError:
             return "&#%s;" % m.group(2)
     return _UNICODE_MAP.get(m.group(2), "&%s;" % m.group(2))

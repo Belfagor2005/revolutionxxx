@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import re
 import sys
 import six
@@ -9,33 +7,33 @@ from six.moves import html_entities
 
 # Python 2/3 compatibility definitions
 if sys.version_info[0] < 3:
-    # Python 2
+    # Python 2 - these names exist natively
     string_types = (basestring,)
     integer_types = (int, long)
     text_type = unicode
     binary_type = str
 else:
-    # Python 3
+    # Python 3 - define aliases for compatibility
     string_types = (str,)
     integer_types = (int,)
     text_type = str
     binary_type = bytes
 
-# Define missing names for Python 3 compatibility
-try:
-    unicode
-except NameError:
-    unicode = str  # Python 3
-
+# Alternative approach - define the names safely
 try:
     basestring
 except NameError:
-    basestring = str  # Python 3
+    basestring = str
 
 try:
     long
 except NameError:
-    long = int  # Python 3
+    long = int
+
+try:
+    unicode
+except NameError:
+    unicode = str
 
 class_types = (type,) if six.PY3 else (type, types.ClassType)
 MAXSIZE = sys.maxsize  # Compatibile con entrambe le versioni

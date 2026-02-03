@@ -7,7 +7,6 @@ except ImportError:
 
 
 class AspectManager:
-    def __init__(self):
 	def __init__(self):
 		self.init_aspect = self.get_current_aspect()
 		print("[INFO] Initial aspect ratio:", self.init_aspect)

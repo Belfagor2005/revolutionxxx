@@ -54,15 +54,7 @@ class Console(Screen):
             <eLabel text="Restart GUI" position="1626,1004" zPosition="2" size="250,40" font="Regular;28" halign="center" valign="center" backgroundColor="#16000000" foregroundColor="#00ffffff" transparent="1"/>
         </screen>'''
 
-    def __init__(
-            self,
-            session,
-            title='Console',
-            cmdlist=None,
-            finishedCallback=None,
-            closeOnSuccess=False,
-            showStartStopText=True,
-            skin=None):
+    def __init__(self, session, title='Console', cmdlist=None, finishedCallback=None, closeOnSuccess=False, showStartStopText=True, skin=None):
         Screen.__init__(self, session)
         self.finishedCallback = finishedCallback
         self.closeOnSuccess = closeOnSuccess
@@ -71,10 +63,9 @@ class Console(Screen):
             self.skinName = [skin, 'Console']
         self.errorOcurred = False
         self['text'] = ScrollLabel('')
-        self['key_red'] = Label(_('Cancel'))  # Fixed: Added _ function
-        self['key_green'] = Label(_('Hide/Show'))  # Fixed: Added _ function
-        self['key_blue'] = Label(_('Restart'))  # Fixed: Added _ function
-
+        self['key_red'] = Label(_('Cancel'))
+        self['key_green'] = Label(_('Hide/Show'))
+        self['key_blue'] = Label(_('Restart'))
         self["actions"] = ActionMap(
             ["WizardActions", "DirectionActions", 'ColorActions'],
             {
@@ -87,9 +78,7 @@ class Console(Screen):
                 "exit": self.cancel,
             }, -1
         )
-
-        self.newtitle = title == 'Console' and _(
-            'Console') or title  # Fixed: Added _ function
+        self.newtitle = title == 'Console' and _('Console') or title
         self.cmdlist = isinstance(cmdlist, list) and cmdlist or [cmdlist]
         self.cancel_msg = None
         self.onShown.append(self.updateTitle)
@@ -99,11 +88,9 @@ class Console(Screen):
         try:
             self.container.appClosed.append(self.runFinished)
             self.container.dataAvail.append(self.dataAvail)
-        except BaseException:
-            self.container.appClosed_conn = self.container.appClosed.connect(
-                self.runFinished)
-            self.container.dataAvail_conn = self.container.dataAvail.connect(
-                self.dataAvail)
+        except:
+            self.container.appClosed_conn = self.container.appClosed.connect(self.runFinished)
+            self.container.dataAvail_conn = self.container.dataAvail.connect(self.dataAvail)
         self.onLayoutFinish.append(self.startRun)
 
     def updateTitle(self):
@@ -111,12 +98,9 @@ class Console(Screen):
 
     def startRun(self):
         if self.showStartStopText:
-            # Fixed: Added _ function
             self['text'].setText(_('Execution progress\n\n'))
-        print('[Console] executing in run', self.run,
-              ' the command:', self.cmdlist[self.run])
-        print("[Console] Executing command:",
-              self.cmdlist[self.run])  # Aggiungi questo print
+        print('[Console] executing in run', self.run, ' the command:', self.cmdlist[self.run])
+        print("[Console] Executing command:", self.cmdlist[self.run])
         if self.container.execute(self.cmdlist[self.run]):
             self['text'].setText(self.cmdlist[self.run])
             self.runFinished(-1)
@@ -125,31 +109,33 @@ class Console(Screen):
         if retval:
             self.errorOcurred = True
             self.show()
+
         self.run += 1
+
         if self.run != len(self.cmdlist):
             if self.container.execute(self.cmdlist[self.run]):
                 self.runFinished(-1)
+            return  # Exit early
+
+        # All commands have finished
+        self.show()
+        self.finished = True
+
+        if self.cancel_msg:
+            self.cancel_msg.close()
+
+        if self.showStartStopText:
+            self['text'].appendText('Execution finished!!')
+
+        if self.finishedCallback:
+            self.finishedCallback()
+
+        if self.errorOcurred or not self.closeOnSuccess:
+            self['text'].appendText('\nPress OK or Exit to abort!')
+            self['key_red'].setText('Exit')
+            self['key_green'].setText('')
         else:
-            self.show()
-            self.finished = True
-            """
-            try:
-                lastpage = self['text'].isAtLastPage()
-            except:
-                lastpage = self['text']
-            """
-            if self.cancel_msg:
-                self.cancel_msg.close()
-            if self.showStartStopText:
-                self['text'].appendText(_('Execution finished!!'))
-            if self.finishedCallback is not None:
-                self.finishedCallback()
-            if not self.errorOcurred and self.closeOnSuccess:
-                self.closeConsole()
-            else:
-                self['text'].appendText(_('\nPress OK or Exit to abort!'))
-                self['key_red'].setText(_('Exit'))  # Fixed: Added _ function
-                self['key_green'].setText('')
+            self.closeConsole()
 
     def toggleHideShow(self):
         if self.finished:
@@ -163,12 +149,7 @@ class Console(Screen):
         if self.finished:
             self.closeConsole()
         else:
-            self.cancel_msg = self.session.openWithCallback(
-                self.cancelCallback,
-                MessageBox,
-                _('Cancel execution?'),
-                type=MessageBox.TYPE_YESNO,
-                default=False)
+            self.cancel_msg = self.session.openWithCallback(self.cancelCallback, MessageBox, _('Cancel execution?'), type=MessageBox.TYPE_YESNO, default=False)
 
     def cancelCallback(self, ret=None):
         self.cancel_msg = None
@@ -176,7 +157,7 @@ class Console(Screen):
             try:
                 self.container.appClosed.remove(self.runFinished)
                 self.container.dataAvail.remove(self.dataAvail)
-            except BaseException:
+            except:
                 self.container.appClosed_conn = None
                 self.container.dataAvail_conn = None
             self.container.kill()
@@ -187,18 +168,30 @@ class Console(Screen):
             try:
                 self.container.appClosed.remove(self.runFinished)
                 self.container.dataAvail.remove(self.dataAvail)
-            except BaseException:
+            except:
                 self.container.appClosed_conn = None
                 self.container.dataAvail_conn = None
             self.close()
         else:
             self.show()
 
-    def dataAvail(self, str):
-        if PY3:
-            data = str.decode()
-        else:
-            data = str
+    def dataAvail(self, data):
+        try:
+            # Prova UTF-8 normale
+            text = data.decode('utf-8')
+        except UnicodeDecodeError:
+            try:
+                # Fallback 1: Latin-1 (accetta qualsiasi byte)
+                text = data.decode('latin-1')
+            except:
+                try:
+                    # Fallback 2: Ignora caratteri problematici
+                    text = data.decode('utf-8', errors='ignore')
+                except:
+                    # Ultima risorsa: replacement
+                    text = data.decode('utf-8', errors='replace')
+        
+        data += text
         print("[Console] Data received: ", data)
         self['text'].appendText(data)
 

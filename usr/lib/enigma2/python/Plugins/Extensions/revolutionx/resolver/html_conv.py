@@ -5,38 +5,27 @@ import types
 from six import unichr, iteritems
 from six.moves import html_entities
 
-# Python 2/3 compatibility definitions
-if sys.version_info[0] < 3:
-    # Python 2 - these names exist natively
-    string_types = (basestring,)
-    integer_types = (int, long)
-    text_type = unicode
-    binary_type = str
-else:
+# Python 2/3 compatibility definitions with safe fallbacks
+try:
+    # Try to use native Python 2 types
+    basestring = basestring
+    long = long
+    unicode = unicode
+except NameError:
     # Python 3 - define aliases for compatibility
-    string_types = (str,)
-    integer_types = (int,)
-    text_type = str
-    binary_type = bytes
-
-# Alternative approach - define the names safely
-try:
-    basestring
-except NameError:
     basestring = str
-
-try:
-    long
-except NameError:
     long = int
-
-try:
-    unicode
-except NameError:
     unicode = str
 
+# Type definitions for cross-version compatibility
+string_types = (basestring,)
+integer_types = (int, long)
+text_type = unicode
+binary_type = bytes if sys.version_info[0] >= 3 else str
+
+# Class types compatibility
 class_types = (type,) if six.PY3 else (type, types.ClassType)
-MAXSIZE = sys.maxsize  # Compatibile con entrambe le versioni
+MAXSIZE = sys.maxsize  # Compatible with both versions
 
 _UNICODE_MAP = {
     k: unichr(v) for k,

@@ -92,7 +92,7 @@ import re
 import six
 import sys
 import time
-
+from . import __version__
 global nextmodule, search, pngori, Path_Movies
 
 PY3 = False
@@ -147,7 +147,6 @@ def threadGetPage(
         print(error)
 
 
-currversion = '1.9'  # getversioninfo()
 Path_Tmp = "/tmp"
 plugin_path = '/usr/lib/enigma2/python/Plugins/Extensions/revolutionx'
 
@@ -158,7 +157,7 @@ headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
     'Accept-Encoding': 'deflate'}
 
-title_plug = 'Revolution XXX V. %s' % currversion
+title_plug = 'Revolution XXX V. %s' % __version__
 desc_plug = 'TVS XXX Revolution'
 ico_path = os.path.join(plugin_path, 'logo.png')
 pictmp = os.path.join(Path_Tmp, "poster.jpg")
@@ -754,7 +753,7 @@ class RevolmainX(Screen):
                     break
         self.new_version = remote_version
         self.new_changelog = remote_changelog
-        if currversion < remote_version:
+        if __version__ < remote_version:
             self.Update = True
             self['key_yellow'].show()
             self.session.open(
